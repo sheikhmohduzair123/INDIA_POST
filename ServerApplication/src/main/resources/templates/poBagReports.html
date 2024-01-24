@@ -1,0 +1,425 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer create-label">
+	<div class="site-wrapper market-US">
+		<div class="container">
+			<div style="display: none">
+				<p id="postofficeUser" th:text="${postalcode}"></p>
+			</div>
+
+			<h1 class="text-center" th:text="#{bag.inward.outward.reports}">Bag
+				Inward/Outward Reports</h1>
+
+			<form autocomplete="off" name="Form" id="poBagReportForm" role="form">
+
+				<div class="downloadReport">
+					<div class="col-md-12">
+						<div class="col-md-1"></div>
+
+						<div class="col-md-10">
+							<div class="col-md-12">
+
+								<div class="col-md-3 form-group">
+									<label th:text="#{from.date}">From Date </label> <input
+										autocomplete="off" class="form-control name"
+										data-toggle="tooltip" id="fromdate" name="fromdate"
+										type="date">
+									<div id="dateErrorContainer"
+										class="errorForm errorHeight text-left">
+										<p th:text="#{not.valid.date}">Please select a valid date.
+											Date does not exist!!</p>
+									</div>
+
+								</div>
+
+
+								<div class="col-md-3 form-group">
+									<label th:text="#{to.date}">To Date </label> <input
+										autocomplete="off" class="form-control name"
+										data-toggle="tooltip" id="todate" name="todate" type="date">
+									<div id="dateErrorContainer1"
+										class="errorForm errorHeight text-left">
+										<p th:text="#{not.valid.date}">Please select a valid date.
+											Date does not exist!!</p>
+									</div>
+
+								</div>
+
+
+								<div class="col-md-3 form-group">
+									<label> <span th:text="#{bag.status}">Bag Status</span>
+									</label> <select class="form-control name" id="reportType"
+										list="reportType">
+										<option value="IN">Inward</option>
+										<option value="OUT">Outward</option>
+									</select>
+								</div>
+
+								<div class="col-md-3 spacer-bottom-sm spacer-top-md">
+									<button type="button" id="getReport"
+										class="btn btn-primary btn-md" th:text="#{get.report}">
+										Get Report</button>
+								</div>
+
+							</div>
+							<!-- <div class="col-md-12">
+								<div id="dateErrorContainer"
+									class="errorForm errorHeight text-center">
+									<p th:text="#{not.valid.date}">Please select a valid date.
+										Date does not exist!!</p>
+								</div>
+
+								<div id="dateErrorContainer1"
+									class="errorForm errorHeight text-center">
+									<p th:text="#{not.valid.date.period}">Please select valid
+										dates. From Date cannot be greater than To Date!!</p>
+								</div>
+							</div> -->
+						</div>
+						<div class="col-md-1"></div>
+					</div>
+
+					<div id="no_data">
+						<h3 class="tableTitle text-center">
+							<span th:text="#{no.transactions.available}"> No
+								Transactions Available </span><span>!!!</span>
+						</h3>
+					</div>
+				</div>
+			</form>
+
+			<div class="col-md-12" id="poBagList">
+				<div id="tabletitle">
+					<h2 class="text-center poBagBottomMargin">
+						<span id="title"></span><span> </span><span th:text="#{bag.list}">Bag
+							List</span>
+					</h2>
+				</div>
+				<div class="col-md-2 pull-right padding-right">
+					<input type="text" id="searchbox" class="form-control name"
+						placeholder="search">
+				</div>
+				<table id="poBagListTable" class="table table-bordered text-center">
+					<thead>
+						<tr>
+							<th class="text-center" th:text="#{s.no}">S.No.</th>
+							<th class="text-center" th:text="#{bagid}">Bag Id</th>
+							<th class="text-center" th:text="#{bag.title}">Bag Title</th>
+							<th class="text-center" th:text="#{bag.description}">Bag
+								Description</th>
+							<th class="text-center" th:text="#{date.time}">Date & Time</th>
+							<th class="text-center" th:text="#{parcel.count}">Parcel
+								Count</th>
+							<th class="text-center" th:text="#{weight.in.gms}">Weight
+								(in gms)</th>
+							<th class="text-center" th:text="#{amount}">Amount (in Rs)</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+					</tbody>
+					<tfoot id="tfooter">
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+    // Check if body height is higher than window height :)
+    if ($(document).height() > $(window).height()) {
+        $("#foot").addClass("footer-top-margin");
+    }
+
+    var oTable;
+
+    function getreport() {
+
+        $.ajax({
+            type: "post",
+            url: "/po/getPoBagReport?ajax=true&",
+            data: {
+                reportType: $("#reportType").val(),
+                fdate: $("#fromdate").val(),
+                tdate: $("#todate").val()
+            },
+            dataType: "json",
+            cache: false,
+            success: function(response) {
+
+                $('#poBagListTable').dataTable().fnDestroy();
+
+                if (jQuery.isEmptyObject(response)) {
+                    $("#no_data").show();
+                    $("#poBagList").hide();
+                } else {
+                    var date_string;
+                    $('#poBagListTable tbody').empty();
+                    $('#tfooter').empty();
+
+                    $("#no_data").hide();
+                    $("#poBagList").show();
+                    $("#title").text($("#reportType  option:selected").html());
+
+                    var total_parcel_cnt = 0;
+                    var total_wgt = 0;
+                    var total_amt = 0;
+                    var k = 0;
+                    $.each(response, function(key, value) {
+
+                        var parcel_cnt = 0;
+                        var wgt = 0;
+                        var amt = 0;
+
+                        var item = value[0];
+                        for (var i = 0; i < value.length; i++) {
+                            if (value[i].trackId != null) {
+                                parcel_cnt = parcel_cnt + 1;
+                                wgt = parseInt(wgt) + parseInt(value[i].actWt);
+                                amt = parseInt(amt) + parseInt(value[i].payableAmnt);
+                            }
+                        }
+                        total_parcel_cnt = parseInt(total_parcel_cnt) + parseInt(parcel_cnt);
+                        total_wgt = parseInt(total_wgt) + parseInt(wgt);
+                        total_amt = parseInt(total_amt) + parseInt(amt);
+
+                        var updated_date = item.updatedOn;
+                        var time = new Date(updated_date);
+                        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                        var dayName = days[time.getDay()];
+                        var userDate = item.updatedOn.substring(0, 10);
+                        var date = userDate.split("-");
+                        date_string = date[2] + "/" + date[1] + "/" + date[0];
+
+                        var data = $('<tr>').append(
+                            $('<td>').text(++k),
+                            $('<td>').text(item.bagId),
+                            $('<td>').text(item.bagTitle),
+                            $('<td>').text(item.bagDesc),
+                            $('<td>' + date_string + " " + time.toString().substring(16, 21) + " (" + dayName + ")" + '</td>'),
+                            $('<td>').text(parcel_cnt),
+                            $('<td>').text(wgt),
+                            $('<td>').text(amt)
+                        );
+
+                        $('#tbody').append(data);
+                    });
+                    data = $('<tr>').append(
+                        $('<td>' + '' + '</td>'),
+                        $('<td>' + '' + '</td>'),
+                        $('<td>' + '' + '</td>'),
+                        $('<td>' + '' + '</td>'),
+                        $('<td>').text("TOTAL:"),
+                        $('<td>').text(total_parcel_cnt),
+                        $('<td>').text(total_wgt),
+                        $('<td>').text(total_amt)
+                    );
+
+                    $('#tfooter').append(data);
+
+                    var d2 = new Date($("#fromdate").val());
+                    var from_date = d2.getDate() + '/' + (d2.getMonth() + 1) + '/' + d2.getFullYear();
+                    var d3 = new Date($("#todate").val());
+                    var to_date = d3.getDate() + '/' + (d3.getMonth() + 1) + '/' + d3.getFullYear();
+
+                    oTable = $('#poBagListTable').removeAttr('width').dataTable({
+
+                        "dom": '<"top"lB>rt<"bottom"ip>',
+                        "deferRender": true,
+                        'lengthMenu': [10, 25, 50],
+                        'oLanguage': {
+                            "sLengthMenu": "_MENU_"
+                        },
+                        //to disble page no for 1st page
+                        "fnDrawCallback": function(oSettings) {
+                            if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                                $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                            } else {
+                                $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                            }
+                        },
+                        bAutoWidth: false,
+                        aoColumns: [{
+                            sWidth: '1%'
+                        }, {
+                            sWidth: '13%'
+                        }, {
+                            sWidth: '20%'
+                        }, {
+                            sWidth: '20%'
+                        }, {
+                            sWidth: '35%'
+                        }, {
+                            sWidth: '3%'
+                        }, {
+                            sWidth: '4%'
+                        }, {
+                            sWidth: '4%'
+                        }, ],
+
+                        buttons: [
+                            {
+                                extend: 'pdfHtml5',
+
+                                text: '<span class="fa fa-file-pdf-o"></span>',
+                                title: 'Post Office ' + $("#title").text() + ' Bag Report (' + $("#postofficeUser").text() + ')\n(' + from_date + ' - ' + to_date + ')',
+                                orientation: 'landscape',
+                                alignment: 'center',
+
+                                pageSize: 'A4',
+                                "charset": "utf-8",
+                                footer: true,
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all',
+                                        search: 'none'
+                                    },
+                                },
+                                customize: function(doc) {
+                                    doc.content[1].layout = "Borders";
+                                    doc.content[1].margin = [0, 0, 0, 0]; //left, top, right, bottom
+                                    doc.content[1].table.widths = ["4%", "9%", "25%", "25%", "19%", "6%", "6%", "6%"];
+
+                                    doc.defaultStyle.alignment = 'center';
+                                    doc.styles.tableHeader.alignment = 'center';
+
+                                    //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                                    var d1 = new Date();
+                                    var jsDate = d1.getDate() + '/' + (d1.getMonth() + 1) + '/' + d1.getFullYear();
+
+                                    doc['footer'] = (function(page, pages) {
+                                        return {
+                                            columns: [{
+                                                alignment: 'left',
+                                                text: ['Created on: ', {
+                                                    text: d1.toString().substring(0, 21)
+                                                }]
+                                            }, {
+                                                alignment: 'right',
+                                                text: ['page ', {
+                                                    text: page.toString()
+                                                }, ' of ', {
+                                                    text: pages.toString()
+                                                }]
+                                            }],
+                                            margin: 20
+                                        }
+                                    });
+                                },
+                            }, {
+                                extend: 'excelHtml5',
+                                text: '<span class="fa fa-file-excel-o"></span>',
+                                title: 'Post Office ' + $("#title").text() + ' Bag Report (' + $("#postofficeUser").text() + ')\n(' + from_date + ' - ' + to_date + ')',
+                                orientation: 'landscape',
+                                pageSize: 'A4',
+                                footer: true,
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all',
+                                        search: 'none'
+                                    },
+                                },
+
+                            }
+                        ],
+                    });
+
+                    $('#searchbox').keyup(function() {
+
+                        if ($(this).val().length > 0) {
+                            $('#tfooter').hide();
+                        } else {
+                            $('#tfooter').show();
+                        }
+                        oTable.fnFilter(this.value);
+                    })
+
+                    $(".dataTables_length").css('clear', 'none');
+                    $(".dataTables_length").css('margin-bottom', '-4%');
+                }
+            }
+        });
+    }
+
+    $(window).on('load', function() {
+        now = new Date();
+
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+        today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#fromdate").val(today);
+        $("#todate").val(today);
+    });
+
+    $(document).ready(function() {
+
+        $('#dateErrorContainer').hide();
+        $('#dateErrorContainer1').hide();
+        $("#no_data").hide();
+        $("#poBagList").hide();
+
+        //onclick of enter key also, button event must be triggered
+        $("#poBagReportForm").keydown(function(event) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);
+            //keycode for enter key is 13
+            if (keyCode == 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("getReport").click();
+            }
+        });
+
+        $('#fromdate').on('change', function() {
+    		var today = new Date();
+
+    		var day = ("0" + today.getDate()).slice(-2);
+    		var month = ("0" + (today.getMonth() + 1)).slice(-2);
+
+    	   var today1 = today.getFullYear()+"-"+(month)+"-"+(day) ;
+
+    	    //if date doesnot exist
+    		if($('#fromdate').val() > today1)
+    			$('#dateErrorContainer').show();
+    		else
+    			$('#dateErrorContainer').hide();
+
+    		});
+      
+      $('#todate').on('change', function() {
+    		var today = new Date();
+
+    		var day = ("0" + today.getDate()).slice(-2);
+    		var month = ("0" + (today.getMonth() + 1)).slice(-2);
+
+    	   var today1 = today.getFullYear()+"-"+(month)+"-"+(day) ;
+
+    	    //if date doesnot exist
+    		if($('#todate').val() > today1)
+    			$('#dateErrorContainer1').show();
+    		else
+    			$('#dateErrorContainer1').hide();
+
+    		});
+
+        $("#getReport").click(function() {
+        	if($('#todate').val() > today){
+				$('#dateErrorContainer1').show();
+				$("#poBagList").css("display","none");
+			}
+			else if($('#fromdate').val() > today){
+				$('#dateErrorContainer').show();
+				$("#poBagList").css("display","none");
+			}else{
+            getreport();
+			}
+        });
+    });
+</script>
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

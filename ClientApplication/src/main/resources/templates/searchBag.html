@@ -1,0 +1,485 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="container fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+
+        <!-- Input the tracking id -->
+        <div class="floating-unit">
+        <h1 class="text-center spacer-top-sm" th:text="#{search.bag}">Search Bag</h1>
+            <form autocomplete="off" name="searchBagForm"
+                  id="searchBagForm" role="form">
+                <div class="form-group">
+                    <label th:text=#{tracking.bag.id}>Enter Your Bag ID</label> 
+                    <input id="trackId" name="trackId" type="text" class="form-control" th:maxlength="9" th:placeholder="#{bagid}">
+                        <div id="ReceiverErrorContainer" class="errorForm" >
+									<ul></ul>
+								</div>
+                </div>
+                <button id="trackButton" type="button"
+                        class="btn btn-primary btn-block btn-lg" data-toggle="modal"
+                        th:text=#{fetch.details}>Fetch Details</button>
+            </form>
+        </div>
+        <div id="noTransaction" style="display: none">
+                <h3 class="tableTitle text-center">
+                    <span th:text="#{no.transactions.available}"> No
+                       Transactions Available</span><span>!!!</span>
+                </h3>
+            </div>
+            
+        </div>
+             <div class="col-sm-12">
+                        <div id="bagTable">
+                            <h3 class="text-center" th:text="#{bag.details}">Bag
+                                Details</h3>
+                            <table id="recentTable" class="table table-bordered text-center width: 100%; height: 100%">
+                                <thead>
+                                <tr>
+		                        <th class="col-sm-1 text-center" th:text="#{S.no}">S.No.</th>
+		                        <th class="col-sm-2 text-center"  th:text="#{bagid}">Bag Id</th>
+		                        <th class="col-sm-2 text-center" th:text="#{bag.title1}">Bag Title</th>
+		                        
+		                        <th class="col-sm-3 text-center" th:text="#{bag.description}">Bag Description</th>
+		                        
+		                        <th class="col-sm-2 text-center" th:text="#{last.updatedon}">Last Updated On </th>
+                  			  </tr>
+                                </thead>
+                				<tbody id="recenttbody">
+               					 </tbody>
+            				</table>
+                        </div>
+                    </div>
+           
+            
+        </div>
+        <!-- Recent transactions table end-->
+    </div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{bagid.not.exist.error}">Bag id does not exist.
+                    Please check again.</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+                </button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" class="btn btn-primary" data-dismiss="modal"
+                        th:text="#{close}">Close</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Error Modal -->
+
+<!-- view Parcel Details -->
+<!-- view Parcel Details -->
+<div id="viewParcelModal" class="modal" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog modal-lg modal90">
+        <div class="modal-content">
+            <div class="modal-header">
+            <div class="col-sm-12">
+                        
+                        <span class="h4 pull-left" th:text=#{bag.details}><strong>Bag Details</strong></span>
+                            
+                           
+                            <span class="h4 pull-right" id="bdModalTrackId"></span>
+                            <span class="h4 pull-right"> : </span>
+                   			 <span class="h4 pull-right" th:text=#{bagid}>Bag ID</span>
+                   			 
+                     </div>
+               
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true"></span><span class="sr-only">Close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="fetchdetail">
+                     
+                      <div class="col-sm-12">
+                        <!-- <div class="col-sm-1">
+                            <h5 th:text="#{bag.fill.status}">Bag Fill Status</h5>
+                            <p id="bdModalBagFillDetails"></p>
+                        </div> -->
+                        <div class="col-sm-4">
+                            <b th:text="#{bag.status}" >Bag Status</b>
+                            <span id="bdModalBagStatus"></span>
+                        </div>
+                         <div class="col-sm-4">
+                            <b th:text="#{last.updatedon1}">Last Updated On </b>
+                            <span id="bdModaldateAndTime"></span>
+                        </div>
+                        
+                        <div class="col-sm-4">
+                            <b th:text="#{last.location}">Last Location</b>
+                            <span id="bdModalBagLocation"></span>
+                            <span id="rmsNameId" th:text=${rmsName}></span>
+                        </div>
+                        </div>
+                        <div class="col-sm-12 spacer-top-md spacer-bottom-md">
+                         <div class="col-sm-4 ">
+                            <b th:text="#{bag.title}">Bag Title</b>
+                            <span id="bdModalBagTitle"></span>
+                        </div>
+                        
+                        <div class="col-sm-4">
+                            <b th:text="#{bag.desc}">Bag Description</b>
+                            <span id="bdModalBagDesc"></span>
+                        </div>
+                        
+                       </div>
+                        
+                        <!-- <div class="col-sm-2">
+                            <h5 th:text="#{tracking.desc}">Tracking Description</h5>
+                            <p id="bdModalBagTrackingDesc"></p>
+                        </div> -->
+                        
+                
+                    
+                    <div class="col-sm-12">
+                    <div id="errorMessage" style="display: none">
+                <h3 class="tableTitle text-center">
+                    <span th:text="#{no.parcel.available}"> No
+                        Parcel Available </span><span>!!!</span>
+                </h3>
+            	</div>
+            	 </div>
+            	 		
+                        <div id = "parcelDataTableDiv" >
+                            <h4 class="text-center spacer-top-md" th:text="#{order.details}">Parcel
+                                Details</h4>
+                               
+                            <table id="rtable" class="table table-bordered text-center ">
+                                <thead>
+                                <tr >
+                                <!-- th:text="#{p.status}" -->
+                                <th class="text-center" th:text="#{S.no}">S.No.</th>
+                                    <th class="text-center" th:text="#{parcel.id}">Parcel Id</th>
+                                     <th class="text-center" th:text="#{current.bag.id}">Current Bag Id</th>
+                                    <th class="text-center" th:text="#{recipient.details}">Recipient's Details</th>
+                                    <!-- <th  th:text="#{recipient.mobile1}">mob No.</th> -->
+                                    <!-- <th  th:text="#{recipient.address}">Recipient Address</th> -->
+                                    <th class="text-center" th:text="#{p.status}" > Status</th>
+                                    <th class="text-center" th:text="#{last.updatedon}">Last UpdatedOn</th>
+                                    <th class="text-center" th:text="#{amount}">Amount<span th:text="#{taka}"></span> </th>
+                                </tr>
+                                </thead>
+                				<tbody id="tbody">
+               					 </tbody>
+                			<tfoot id="tfooter">
+                			</tfoot>
+            				</table>
+            				
+                        </div>
+                   
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Receipt Reprint Success Modal End -->
+
+<script type="text/javascript">
+
+var subOfficeName;
+var masterId;
+var dtable;
+$(document).ready(function () {	
+	$('#errorMessage').hide();
+	$('#viewParcelModal').hide();
+	//$('#recentTransactionsId').show();
+	RecentbagData();
+});
+
+
+
+//for validation
+$("#searchBagForm").validate(
+		{
+			rules: {
+				"trackId": {
+
+					required: true,
+					minlength : 9,
+					maxlength : 9,
+					digits : true
+
+				}
+
+			},
+			errorPlacement: function (error, element) {
+				if ((element.attr("name") == "trackId")){
+					$("#ReceiverErrorContainer").html(error);
+					$("#ReceiverErrorContainer").show();
+				}
+
+				//displays a tooltip
+				element.attr('title', error.text());
+				$(".error").tooltip({
+					position: {
+						my: "left+5 center",
+						at: "right center"
+					},
+					trigger: "hover"
+				});
+			},
+			//highlight the error field with red
+			highlight: function (element, error) {
+				$(element).css('background', '#FFCCCB');
+			},
+			// Called when the element is valid:
+			unhighlight: function (element) {
+				$(element).css('background', '#ffffff');
+			}
+		});
+
+
+
+
+
+function bagData(bagId){
+	$('#errorMessage').hide();
+	$('#rtable').DataTable().destroy();
+    $('#tbody').empty();
+    $('#tfooter').empty();
+if(bagId != null){
+	$.ajax({
+	type : "get",
+	url : "/pbTracking/findBagDetails?ajax=true&",
+	dataType: "json",
+    cache: false,
+    data: {
+    	bagId: bagId
+    },
+	success : function(result) {
+		
+		if(jQuery.isEmptyObject(result)){
+    		 $('#parcelDataTableDiv').hide();
+    		 $('#errorMessage').show();
+    	}
+    	else{
+    		var amount=0;
+    		var g=1;
+		 $.each(result, function (i, value) {
+			
+						 
+			                 var update_date = value.updatedOn;
+				 				var uTime = new Date(update_date);
+				 				var updateDate = value.updatedOn.substr(0, 10);
+				 				var UpdateOndate = updateDate.split("-");
+				 				var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+						 $("#viewParcelModal").modal('show');
+						 $("#bdModalTrackId").html(value.bagId);
+						 //$("#bdModalBagFillDetails").html(value.bagFillStatus);
+						 $("#bdModalBagStatus").html(value.bagStatus);
+						 $("#bdModaldateAndTime").html(updatedOnDate_string + " " + uTime.toString().substring(16, 24));
+						 $("#bdModalBagLocation").html((value.locationType=="RMS") ? (value.rmsName+" ("+value.rmsType+")") : (value.subOfficeName+" ("+value.postalCode+")"));
+						 $("#bdModalBagTitle").html(value.bagTitle);
+						 $("#bdModalBagDesc").html(value.bagDesc);
+						 
+						// $("#bdModalBagTrackingDesc").html(value.trackingDesc);
+						
+						 
+					 });
+		 
+		 				$.each(result, function (i, value) {
+		 					
+					       if(value.objParcelVo == null){
+					    	   $('#parcelDataTableDiv').hide();
+			              		$('#errorMessage').show();
+			              		
+			              	}
+			              	else{
+			              		$('#errorMessage').hide();
+			              		$('#parcelDataTableDiv').show();
+			              		
+			              		 var update_date = value.updatedOn;
+					 				var uTime = new Date(update_date);
+					 				var updateDate = value.updatedOn.substr(0, 10);
+					 				var UpdateOndate = updateDate.split("-");
+					 				var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+					 				
+			              		if(value.parcelUpdatedOn!=null){
+					              	    var update_date1 = value.parcelUpdatedOn;
+						 				var uTime1 = new Date(update_date1);
+						 				var updateDate1 = value.parcelUpdatedOn.substr(0, 10);
+						 				var UpdateOndate1 = updateDate1.split("-");
+						 				var updatedOnDate_string1 = UpdateOndate1[2] + "-" + UpdateOndate1[1] + "-" + UpdateOndate1[0];
+			              		}
+			                 amount += value.objParcelVo.invoiceBreakup.payableAmnt;
+			                 var $tr = $('<tr>').append(
+			                         $('<td>').text(g),
+			                         $('<td>').text(value.objParcelVo.trackId),
+			                         $('<td>').text((value.newBagId==null) ? (value.bagId) : (value.newBagId)),
+			                        // $('<td>').html(value.objParcelVo.recipientName+"<br>"+value.objParcelVo.recipientMobileNumber),
+			   			        //  $('<td>').text(value.objParcel.recipientMobileNumber),
+			   			          $('<td>').html(value.objParcelVo.recipientName+", "+value.objParcelVo.receiverAddress.addressLine1+", "+
+			              			          (value.objParcelVo.receiverAddress.addressLine2 != "" ? value.objParcelVo.receiverAddress.addressLine2 +"," : "")+ (value.objParcelVo.receiverAddress.landmark != "" ? value.objParcelVo.receiverAddress.landmark +"," : "")+
+			              			        value.objParcelVo.receiverAddress.subOffice+", "+ value.objParcelVo.receiverAddress.thana+", "+
+			              			      value.objParcelVo.receiverAddress.district+", "+ value.objParcelVo.receiverAddress.division+", "+
+			              			    value.objParcelVo.receiverAddress.zone+", India, "+ value.objParcelVo.receiverAddress.postalCode+", "+value.objParcelVo.recipientMobileNumber),
+			           			       $('<td>').text(value.objParcelVo.pStatus),
+			           			    $('<td>').html((value.parcelUpdatedOn==null) ? (updatedOnDate_string + " " + uTime.toString().substring(16, 24)) : (updatedOnDate_string1 + " " + uTime1.toString().substring(16, 24))),
+			                        $('<td>'+ value.objParcelVo.invoiceBreakup.payableAmnt +'</td>'),
+			                     );
+			                 
+			                 $('#tbody').append($tr);
+			                 g++;
+			              	}
+						 
+						 
+		 				 });
+					       $('#tfooter').append(
+				                    '<tr><td></td><td></td><td></td><td></td><td></td><td th:text="#{total:}"><strong>TOTAL:</strong></td><td>' + amount + '</tr>'
+				                );
+						
+							 dtable = $('#rtable').DataTable({
+				        		 "order": ([0, "asc"]),
+				        		 "columnDefs": [
+				        			    { "width": "20%", "targets": 5 },
+				        			    { "width": "15%", "targets": 1 }
+				        			  ],
+				                 "paging": true,
+				                 "oLanguage": {
+				                     "sLengthMenu": "_MENU_"
+				                 },
+				                 
+				                 
+				               //to disble page no for 1st page
+									"fnDrawCallback": function(oSettings) {
+								        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+								            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+								        }
+								        else
+								        {
+								            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+								        }
+								    }
+				        	
+				        });
+				        	
+				        	 $(".dataTables_length").css('clear', 'none');
+				             $(".dataTables_length").css('margin-top', '0px');
+				             $(".dataTables_length").css('margin-left', '0px');
+				
+				 
+				 
+			 } 
+			 
+				 
+		 },
+    	
+	
+	error : function(result) {
+		$('#errorModal').modal('show');
+	}	
+						 
+	});
+	
+}
+}
+	
+function RecentbagData(){
+	$('#errorMessage').hide();
+	$('#recentTable').DataTable().destroy();
+    $('#recenttbody').empty();
+		$.ajax({
+		type : "get",
+		url : "/pbTracking/findRecentTransaction?ajax=true&",
+		dataType: "json",
+	    cache: false,
+	    
+		success : function(result) {
+			console.log(result);
+			if(jQuery.isEmptyObject(result)){
+				$('#bagTable').hide();
+        		$('#noTransaction').show();
+        	}
+        	else{
+        		$('#bagTable').show();
+        		$('#noTransaction').hide();
+			var j = 1;
+			//$('#noTransaction').hide();
+			 $.each(result, function (i, item) {
+				
+	 				var update_date = item.updatedOn;
+	 				var uTime = new Date(update_date);
+	 				var updateDate = item.updatedOn.substr(0, 10);
+	 				var UpdateOndate = updateDate.split("-");
+	 				var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+	                 var $tr = $('<tr>').append(
+	                         $('<td>'+ j +'</td>'),
+	                         $('<td><a href="#" onclick="bagData(\''+item.bagId+'\')">'+ item.bagId +'</a></td>'),
+	                         $('<td>'+ item.bagTitle +'</td>'),
+	   			          $('<td>'+ item.bagDesc+'</td>'),
+	   			       $('<td>' + updatedOnDate_string + " " + uTime.toString().substring(16, 24)+'</td>'),
+	   			         
+	                     );
+	                 $('#recenttbody').append($tr);
+	                 j++;
+				 
+				
+				
+				 
+			 });
+        	}
+			var tabled = $('#recentTable').DataTable({
+        		 //"order": ([4, "desc"]),
+        		 //"order": ([0, "asc"]),
+        		 "columnDefs": [
+        			    { "width": "10%", "targets": 2 }
+        			  ],
+                 "paging": true,
+                 "oLanguage": {
+                     "sLengthMenu": "_MENU_"
+                 },
+                 
+               //to disble page no for 1st page
+					"fnDrawCallback": function(oSettings) {
+				        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+				            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+				        }
+				        else
+				        {
+				            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+				        }
+				    }
+        	
+        });
+        	
+        	 $(".dataTables_length").css('clear', 'none');
+             $(".dataTables_length").css('margin-top', '-41px');
+             $(".dataTables_length").css('margin-left', '0px');
+		},
+		error : function(result) {
+			$('#errorModal').modal('show');
+		}
+	});
+	}
+
+$("#trackButton").click(function() {
+	if ($("#searchBagForm").valid()){
+	$('#errorMessage').hide();
+	$('#rtable').DataTable().destroy();
+    $('#tbody').empty();
+    $('#tfooter').empty();
+        var bagId = $('#trackId').val();
+		bagData(bagId);
+	}
+});
+	
+</script>
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

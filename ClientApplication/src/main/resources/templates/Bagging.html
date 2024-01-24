@@ -1,0 +1,574 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer">
+	<div class="site-wrapper market-US">
+		<div class="container text-center">
+			<b>
+				<h1 th:text="#{bagging}">Bagging</h1>
+			</b>
+		</div>
+
+		<div>
+			<div class="container col-md-8 spacer-top-MD">
+				<h3 class="text-center" th:text="#{parcel.list}">Parcel List</h3>
+				<div
+					class="col-md-3 text-right padding- spacer-top-sm col-md-offset-9">
+					<input type="text" id="searchbox" class="form-control name"
+						placeholder="Search Parcels">
+				</div>
+				<table id="showParcel" class="table table-striped">
+					<thead>
+						<tr>
+							<th class="select-all-th"><input type="checkbox" name="select_all"
+								id="select_all" onchange="checkAll()"></th>
+							<th th:text="#{trackid}">Track Id</th>
+							<th class="text-center" th:text="#{recipient.details}">Recipient Details</th>
+							<th th:text="#{parcel.contents}">Parcel Contents</th>
+							<th th:text="#{service.name}">Services</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+					</tbody>
+				</table>
+				<input id="count" type="hidden" name="count" value="">
+			</div>
+
+			<div class="container col-md-4 spacer-top-xl">
+				<h3 class="text-center spacer-bottom-xl createBag"
+					th:text="#{created.bag}">Bag List</h3>
+				<div class="card pocard x-scroll-row">
+
+					<div class="card-body" id="card">
+						<h3 id="o-bag" th:text="#{no.bag}">No Bag</h3>
+					</div>
+				</div>
+				<div class="col-md-6 text-left spacer-top-xl">
+					<button type="button" class="btn btn-primary btn-block"
+						id="add-to-bag" th:text="#{add.bag}">Add To Bag</button>
+				</div>
+				<div class="col-md-6 text-right spacer-top-xl">
+					<button type="button" class="btn btn-primary btn-block"
+						id="save-bag" th:text="#{generate.bag.id}">Generate Bag</button>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+
+		<div id="modal-div"></div>
+
+		<!-- success modal  -->
+		<div id="success-modal" class="modal fade bag-modal"
+			data-backdrop="static" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" onclick="pageReload();" data-dismiss="modal"
+							aria-hidden="true"></button>
+						<h5 class="modal-title" th:text="#{generated.bag}">Generated
+							Bags Details</h5>
+					</div>
+					<table id="success-modal-table" class="table table-striped">
+						<col width="20">
+						<thead>
+							<tr>
+								<th th:text="#{s.no}">S.No</th>
+								<th th:text="#{bagid}">Bag Id</th>
+								<th th:text="#{bag.title}">Bag Title</th>
+								<th th:text="#{bag.status}">Bag Status</th>
+								<th th:text="#{parcel.list.pdf}">Parcel List (PDF)</th>
+								<th th:text="#{bag.lable.pdf}">Bag Label (PDF)</th>
+							</tr>
+						</thead>
+						<tbody id="success-body"></tbody>
+					</table>
+					<div class="text-center"><button type="button" class="btn btn-primary" onclick="pageReload();" data-dismiss="modal" aria-hidden="true">Okay</button></div>
+				</div>
+			</div>
+		</div>
+		<!-- pop-up modal -->
+		<div id="parcel-select" class="modal fade" tabindex="-1" role="dialog" >
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content text-center">
+
+					<h3 class="select-parcels text-danger" th:text="#{select.Parcels}">Please Select Parcels</h3>
+					<h3 class="create-bag-pop text-danger" th:text="#{create.bag}">Please Create Bag</h3>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" th:text="#{okay}">Okay</button>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+	</div>
+</div>
+<script>
+
+var bagMap = new Object();
+var bagDetails = new Object();
+var singleValue = [];
+var finalArray;
+
+$(document).ready(function () {
+
+	if ($(document).height() > $(window).height()) {
+		$("#foot").addClass("footer-top-margin");
+	}
+
+	$.ajax({
+		type: "post",
+		url: "/po/getAllParcel?ajax=true&",
+		dataType: "json",
+		cache: false,
+		success: function (result) {
+			$.each(result, function (i, item) {
+				var $tr = $('<tr id="rowClass' + i + '" class="active">').append(
+					$('<td> <input class="control checkbox" type="checkbox" name="trackid' + i + '"  id="trackid' + i + '" value="' + item.trackId + '" onclick="handleClick(this)" /></td>'),
+					$('<td class="tkId">').text(item.trackId),
+					$('<td>').text(item.receiverAddress.addressLine1 +","+item.receiverAddress.subOffice + ", " + item.receiverAddress.thana + ", " + item.receiverAddress.district + ", " + item.receiverAddress.division + ", " + item.receiverAddress.zone + ", India," + item.receiverAddress.postalCode),
+					$('<td>').text(item.parcelContent),
+					$('<td>').text(item.invoiceBreakup.name)
+				);
+				$('#tbody').append($tr);
+				$('#count').val(i);
+			});
+
+			var dTable = $('#showParcel').dataTable({
+			"columnDefs": [
+        			    { "width": "20%", "targets": 1 }
+        			  ],
+				"oLanguage": {
+					"sLengthMenu": "_MENU_"
+				},
+				//to disble page no for 1st page
+				"fnDrawCallback": function(oSettings) {
+			        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+			            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+			        }
+			        else
+			        {
+			            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+			        }
+			    }
+			});
+
+			<!--custom search box-->
+			$("#searchbox").keyup(function () {
+				dTable.fnFilter(this.value);
+			});
+
+			$(".dataTables_length").css('clear', 'none');
+			$(".dataTables_length").css('margin-top', '-40px');
+			$(".dataTables_length").css('margin-left', '20px');
+		},
+		error: function (result) {
+		}
+	});
+});
+
+//select all checkbox
+function checkAll() {
+	singleValue = [];
+	if ($("#select_all").is(":checked")) {
+		$("#showParcel #tbody tr.active input.checkbox").each(function () {
+			$(this).prop('checked', true);
+			singleValue.push($(this).val());
+		});
+	} else {
+		$("#showParcel #tbody tr.active input.checkbox").each(function () {
+			$(this).prop('checked', false);
+		});
+	}
+}
+
+
+//single checkbox select and save into array--
+function handleClick(cb) {
+
+	var checked = $(cb).is(":checked");
+	if (checked) {
+		singleValue.push($(cb).val());
+
+	} else {
+
+		var index = singleValue.indexOf($(cb).val());
+		if (index > -1) {
+			singleValue.splice(index, 1);
+		}
+	}
+}
+
+//add to bag
+var flag = 1;
+$("#add-to-bag").on('click', function () {
+
+	/*if ($("#select_all").is(":checked")) {
+		$('#tbody').append('<tr><td valign="top" class="dataTables_empty" colspan="5 ">No data available in table</td></tr>');
+	}*/
+	if(singleValue[0] == null){
+		$(".create-bag-pop").css("display", "none");
+		$('.select-parcels').show();
+		$('#parcel-select').modal('show');
+	}
+
+	if (singleValue[0] != null) {
+		$('#o-bag').hide();
+		modalTable(flag);
+		$("#select_all").prop('checked', false);
+		$("#showParcel tr.active input[type=checkbox]:checked").each(function (i) {
+
+			var $item = $(this).closest("tr") // Finds the closest row <tr>
+				.find(".tkId") // Gets a descendent with class="nr"
+				.text();
+
+			var row = $(this).closest("tr").html();
+			$(this).closest("tr").removeClass('active');
+			$(this).closest("tr").addClass('hide');
+
+			$('#modal-table' + flag + ' tbody').append('<tr>' + row + '<td><button type="button" id="BAG' + flag + '" value = "' + $item + '" class="btn btn-primary fa fa-trash" onclick="removeParcel(this.id, this.value)"/></td></tr>');
+		});
+
+		$("#modal-table" + flag + " td:first-child").remove();
+		var modaldTable = $('#modal-table'+flag).dataTable({
+			"lengthChange": false,
+			"paging": false
+		});
+
+		$('#searchboxmodal'+flag).keyup(function () {
+				modaldTable.fnFilter(this.value);
+			});
+
+		if (singleValue[0] != null) {
+
+			//bagMap.set("BAG"+flag,singleValue);
+			bagMap["BAG" + flag] = singleValue;
+
+			singleValue = [];
+		}
+		var showTr = parseInt($('#count').val())+1;
+		if($('#tbody tr.hide').length == showTr){
+			$('#tbody').append('<tr><td valign="top" class="dataTables_empty" colspan="5 ">No data available in table</td></tr>');
+		}
+		$('#BAG' + flag).modal('show');
+		add("BAG" + flag);
+		++flag;
+	} else {
+
+	}
+});
+
+
+//dynamic bag button
+function add(type) {
+
+	var flag = type.replace('BAG','');
+
+	//Create an input type dynamically.
+	var element = document.createElement("input");
+
+	//Assign different attributes to the element.
+	element.type = "button";
+	element.value = type; // Really? You want the default value to be the type string?
+
+	//element.style = "background-color:red"; // And the name too?
+	element.className = "btn btn-primary " + type + "";
+	element.toggleClass = "modal";
+	element.setAttribute("data-toggle", "modal");
+	element.setAttribute("data-target", "#BAG" + flag + "");
+	element.setAttribute("onClick", 'showParcel("' + type + '")');
+	var card = document.getElementById("card");
+	//Append the element in page (in span).
+	card.appendChild(element);
+	//$('#modal-table').dataTable();
+}
+
+//save bag
+$('#save-bag').on('click', function () {
+	if (Object.entries(bagMap).length == 0) {
+		$(".select-parcels").css("display", "none");
+		$('.create-bag-pop').show();
+		$('#parcel-select').modal('show');
+	}
+	if (Object.entries(bagMap).length != 0) {
+
+		var bagData = {
+			bagParcel: bagMap,
+			bagDetails: bagDetails
+
+		}
+
+		//var keys = JSON.stringify(Object.keys(bagMap))
+
+		/* var  bagDesc = $('#bag_desc').val();
+		var bagTitle = $('#bag_title').val();  */
+
+		$.ajax({
+			type: "post",
+			url: "/po/savePoBag?",
+			//data: {[keys] : JSON.stringify(Object.values(bagMap))},
+			data: JSON.stringify(bagData),
+			success: function (response) {
+
+				//initilize flag
+				flag = 1;
+				//set bag to empty
+				for (var data in bagMap) delete bagMap[data];
+				//bag empty
+				$('#card').empty();
+				//show empty bag
+				$('#card').html('<h3 id="o-bag" th:text="#{no.bag}">No Bag</h3>');
+				// $('#o-bag').show();
+				//window.location.href = "/tracking/bagPrintPage"
+
+				var a = [];
+				var flag = 1;
+				$.each(response, function (i, item) {
+					if ($.inArray(item.bagId, a) == -1) {
+						a.push(item.bagId);
+						var $tr = $('<tr>').append(
+							$('<td>').text(flag),
+							$('<td>').text(item.bagId),
+							$('<td>').text(item.bagTitle),
+							$('<td>').text(item.bagStatus),
+							$('<td>').html("<button class='td-custom-margin' value='" + item.bagId + "' onclick='bagPrint(this);'><i class='fa fa-print' aria-hidden='true'></i></button>"),
+							$('<td>').html("<button class='td-custom-margin' value='" + item.bagId + "' onclick='bagLabel(this);'><i class='fa fa-print' aria-hidden='true'></i></button>")
+						);
+						$('#success-body').append($tr);
+					}
+					++flag;
+				});
+				$('#success-modal').modal('show');
+			},
+			error: function (e) {
+			}
+		});
+	}
+});
+
+//dynamic modal
+function modalTable(i) {
+	var table_body = '<div id="BAG' + i + '" class="modal fade bag-modal Bag" data-backdrop="static" tabindex="-1"' +
+		'role="dialog" aria-labelledby="myModalLabel" >' +
+		'<div class="modal-dialog modal-lg" role="document">' +
+		'<div class="modal-content"><div class="modal-header">' +
+
+		'<div class="col-md-3"><h5 class="modal-title">Bag ' + i + ' Parcels</h5></div></div>'+
+		'<table id="modal-table' + i + '" class="table table-striped text-center" ><col width="130"><thead>' +
+		'<tr><th>Track Id</th><th>Recipient Details </th><th>Parcel Content</th><th>Service Name</th><th>Remove Parcel</th></tr>' +
+		'</thead><tbody></tbody></table>' +
+
+		'<div class="modal-footer">' +
+
+		'<div class="col-md-4" >' +
+		'<label for="bag_title" th:text="#{bag.title.optional}">Bag Title (Optional)</label>' +
+		'<input list="browsers" name="bag_title"  class="form-control name bag_title" id="bag-title' + i + '" />' +
+		'<datalist id="browsers">' +
+		' <option value="TWO-DAYS">' +
+		' <option value="INSURED">' +
+		' <option value="NON-INSURED">' +
+		' <option value="FRAGILE">' +
+		'</datalist></div>' +
+
+		'<div class="col-md-4">' +
+		'<label for="bag_desc" class="bag_desc_label" th:text="#{bag.description.optional}">Bag Description (Optional) </label>' +
+		'<textarea class="form-control bag_desc noresize" id="bag-desc' + i + '" ></textarea>'+
+
+		'</div>' +
+
+		'<div class="col-md-4">' +
+		'<button type="button" data-dismiss="modal" class="btn btn-primary spacer-top-md spacer-left-lg right-md" onclick="updateBag(' + i + ');" th:text="#{save.bag}">Save & Close</button>' +
+		'<button type="button" class="btn btn-primary remove-bag " id="remove-bag" onclick= "deleteFn(' + i + ');"th:text="#{delete.bag}">Delete Bag </button>' +
+		'</div>'+
+		'</div>'+
+
+		'</div></div></div>';
+
+		//popupmodal dynamic
+		var popUpModal = '<div id="modalConfirmDelete' + i + '" class="modal" tabindex="-1" role="dialog" >'+
+		'<div class="modal-dialog modal-sm">'+
+		'<div class="modal-content text-center">'+
+		'<h3>Are you sure ?</h3>' +
+		'<button type="button"  onclick="confirmyes(' + i + ');" class="btn btn-danger btn-outline-danger spacer-top-xs">Yes</button>' +
+		'<button type="button" class="btn btn-primary waves-effect spacer-top-xs" onclick="updateBag(' + i + ');" data-dismiss="modal">No</button>' +
+		'</div></div></div>';
+
+	var $container = $("#modal-div");
+	$container.append('<div id="modal-view' + i + '"></div>');
+	$container.append('<div id="popUp'+i+'"></div>');
+	$('#popUp'+i).html(popUpModal);
+	$('#modal-view' + i).html(table_body);
+}
+
+var parcelArray;
+
+//show modal when bag clicked
+function showParcel(bagKey) {
+	parcelArray = bagMap[bagKey];
+}
+
+//remove parcel from dynamic modal
+function removeParcel(id, value) {
+	var confId = id.replace('BAG','');
+
+	parcelArray = bagMap[id];
+	var index = parcelArray.indexOf(value);
+	if (index > -1) {
+		parcelArray.splice(index, 1);
+	}
+	bagMap[id] = parcelArray;
+
+	$('#' + id + ' :input[value="' + value + '"]').closest('tr').remove();
+
+	$("#showParcel tr.hide input[type=checkbox]").each(function (i) {
+		if ($(this).val() == value) {
+			$(this).prop('checked', false);
+			$(this).closest('tr').addClass('active');
+			$(this).closest('tr').removeClass('hide');
+		}
+	});
+	if(parcelArray.length === 0){
+
+		delete bagMap[id];
+		delete bagDetails['BAG' + confId];
+		$('#modal-table'+confId).DataTable().destroy();
+		$('#' + id).modal('hide');
+		$("." + id).remove();
+		$('#bag-title'+confId).val("");
+		$('#bag-desc'+confId).val("");
+
+	}
+	if($('#card input').length == 0){
+		 $('#o-bag').show();
+		flag = 1;
+	}
+	$('.dataTables_empty').hide();
+}
+
+//update title & description
+function updateBag(key) {
+	bagDetails["BAG" + key] = $('#bag-title' + key).val() + "," + $('#bag-desc' + key).val();
+	finalArray = bagMap["BAG" + key]
+	$('#BAG' + key).modal('hide');
+}
+
+//delete Bag
+function confirmyes(key) {
+	var removeArray = bagMap['BAG' + key];
+	removeArray.forEach(deleteParcel);
+	function deleteParcel(item , index){
+		$("#showParcel tr.hide input[type=checkbox]").each(function (i) {
+		if ($(this).val() == item) {
+			$(this).prop('checked', false);
+			$(this).closest('tr').addClass('active');
+			$(this).closest('tr').removeClass('hide');
+		}
+		});
+	}
+
+	delete bagMap['BAG' + key];
+	delete bagDetails['BAG' + key];
+
+	$('#bag-title'+key).val("");
+	$('#bag-desc'+key).val("");
+
+	$(".BAG" + key).remove();
+	$('#modal-table'+key).DataTable().destroy();
+
+	if($('#card input').length == 0){
+		 $('#o-bag').show();
+		flag = 1;
+
+		//location.reload(true);
+	}
+	$('#modalConfirmDelete' + key).modal('hide');
+	$('#BAG' + key).modal('hide');
+	$('.dataTables_empty').hide();
+
+}
+
+//on delete button show confirmation modal
+function deleteFn(key) {
+	$('#BAG' + key).modal('show');
+	$('#modalConfirmDelete' + key).modal('show');
+}
+
+//bag parcel print
+function bagPrint(bag_id) {
+
+	<!--download in pdf-->
+	$.ajax({
+		url: "/pbTracking/bagParcelListPrint?ajax=true&" + bag_id,
+		method: 'post',
+		data: {
+			bagId: $(bag_id).val()
+		},
+		xhrFields: {
+			responseType: 'blob'
+		},
+		success: function (data) {
+
+		var date=new Date();
+			var day=date.getDate();
+			var month=date.getMonth()+1;
+			var year=date.getFullYear();
+			var h=date.getHours();
+			var m=date.getMinutes();
+			var s=date.getSeconds();
+            var finalDate = day+"-"+month+"-"+year+"-"+h+"-"+m+"-"+s;
+
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(data);
+			a.href = url;
+			a.download = 'Bag-Parcels-'+finalDate+'.pdf';
+			document.body.append(a);
+			a.click();
+			a.remove();
+			window.URL.revokeObjectURL(url);
+		}
+	});
+}
+
+//bag label print
+function bagLabel(bag_id) {
+	<!--download in pdf-->
+	$.ajax({
+		url: "/pbTracking/bagLabel?ajax=true&" + bag_id,
+		method: 'post',
+		data: {
+			bagId: $(bag_id).val()
+		},
+		xhrFields: {
+			responseType: 'blob'
+		},
+		success: function (data) {
+
+		//format date
+            var date=new Date();
+			var day=date.getDate();
+			var month=date.getMonth()+1;
+			var year=date.getFullYear();
+			var h=date.getHours();
+			var m=date.getMinutes();
+			var s=date.getSeconds();
+            var finalDate = day+"-"+month+"-"+year+"-"+h+"-"+m+"-"+s;
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(data);
+			a.href = url;
+			a.download = 'Bag-Label-'+finalDate+'.pdf';
+			document.body.append(a);
+			a.click();
+			a.remove();
+			window.URL.revokeObjectURL(url);
+		}
+	});
+}
+
+//close final modal
+function pageReload() {
+	location.reload(true);
+}
+</script>
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

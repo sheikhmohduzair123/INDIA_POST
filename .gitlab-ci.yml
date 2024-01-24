@@ -1,0 +1,156 @@
+stages:
+  - test
+  - build
+  - dockerbuild
+
+# UnitTest:
+#     stage: test
+#     image: gradle:7.5.1-jdk17
+#     rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#     - if: $CI_COMMIT_BRANCH == "dev"
+#     script:
+#       - cd ClientApplication/ 
+#       - gradle clean test
+#       - cd ../ServerApplication
+#       - gradle clean test
+#       - cd ../RateAPI
+#       - gradle clean test
+#       - cd ../ServerAPI
+#       - gradle clean test 
+
+
+# Jacoco_codecoverage:
+#   stage: test
+#   image: gradle:7.5.1-jdk17
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#     - if: $CI_COMMIT_BRANCH == "dev"
+#   script:
+#     - cd ClientApplication/
+#     - gradle build jacocoTestReport
+#     - cd ../ServerApplication
+#     - gradle build jacocoTestReport
+#     - cd ../RateAPI
+#     - gradle build jacocoTestReport
+#     - cd ../ServerAPI
+#     - gradle build jacocoTestReport
+#   artifacts:
+#     paths:
+#       - /builds/liberintech/India-Post/ClientApplication/build/jacoco/
+#       - /builds/liberintech/India-Post/ServerApplication/build/jacoco/
+#       - /builds/liberintech/India-Post/RateAPI/build/jacoco/
+#       - /builds/liberintech/India-Post/ServerAPI/build/jacoco/
+ 
+
+
+
+# Sonarqube:
+#   stage: test 
+#   variables:
+#     GRADLE_HOME: $GADLE_HOME
+#     GIT: $GIT
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#     - if: $CI_COMMIT_BRANCH == "dev"
+#   script:
+#     - cd ClientApplication/
+#     # - gradle sonarqube -D"sonar.projectKey=indiapost" -D"sonar.host.url=http://localhost:9000" -D"sonar.login=3858e5b849895d9d46e9a9f72bc8db0b85873f6d"
+#     - gradle sonarqube -D"sonar.projectKey=indiapost" -D"sonar.host.url=http://localhost:9000" -D"sonar.login=0a624d7500281f306e8971ffd3821b72e21a4092"
+#     - cd ../ServerApplication
+#     - gradle sonarqube -D"sonar.host.url=http://localhost:9000" -D"sonar.login=3858e5b849895d9d46e9a9f72bc8db0b85873f6d"
+#     # - gradle sonarqube -D"sonar.projectKey=indiapost2" -D"sonar.host.url=http://localhost:9000" -D"sonar.login=60e65548646a3c35aa470df91656a59eca4b37c6"
+#     - cd ../RateAPI
+#     - gradle sonarqube -D"sonar.projectKey=indiapost3" -D"sonar.host.url=http://localhost:9000" -D"sonar.login=089814f5093f1382fcc0edbafc03075bb4572201"
+#     - cd ../ServerAPI
+#     - gradle sonarqube -D"sonar.projectKey=indiapost4" -D"sonar.host.url=http://localhost:9000" -D"sonar.login= ccfe0ec35ce6028a5df808b6aaeca4ca5740413c"
+#   allow_failure: true
+#   tags:
+#     - sonarqube
+    
+     
+# Dependency_check:
+#   stage: test
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#     - if: $CI_COMMIT_BRANCH == "dev"
+#   image: gradle:7.5.1-jdk17
+#   script:
+#     - cd ClientApplication/
+#     - gradle dependencyCheckAnalyze
+#     - cd ../ServerApplication
+#     - gradle dependencyCheckAnalyze
+#     - cd ../RateAPI
+#     - gradle dependencyCheckAnalyze
+#     - cd ../ServerAPI 
+#     - gradle dependencyCheckAnalyze
+#   artifacts:
+#     paths:
+#       - /builds/liberintech/India-Post/ClientApplication/build/reports/
+#       - /builds/liberintech/India-Post/ServerApplication/build/reports/
+#       - /builds/liberintech/India-Post/RateAPI/build/reports/
+#       - /builds/liberintech/India-Post/ServerAPI/build/reports/
+
+
+# # Build:
+# #   stage: build
+# #   rules:
+# #     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+# #     - if: $CI_COMMIT_BRANCH == "dev"
+# #   image: gradle:7.5.1-jdk17
+# #   script:
+# #     - cd ClientApplication/
+# #     - gradle clean build -x test
+# #     - cd ../ServerApplication
+# #     - gradle clean build -x test
+# #     - cd ../RateAPI
+# #     - gradle clean build -x test
+# #     - cd ../ServerAPI
+# #     - gradle clean build -x test
+# #   artifacts:
+# #     paths:
+# #       - /builds/liberintech/India-Post/ClientApplication/build/libs/client-0.1.1.jar
+# #       - /builds/liberintech/India-Post/ServerApplication/build/libs/server-0.1.0.jar
+# #       - /builds/liberintech/India-Post/RateAPI/build/libs/RateAPI-0.1.0.jar 
+# #       - /builds/liberintech/India-Post/ServerAPI/build/libs/ServerAPI-0.1.0.jar
+
+
+DockerBuild:
+  stage: dockerbuild 
+  image: docker:20.10.16
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "devCI"
+  services:
+    - docker:20.10.16-dind
+  # dependencies:
+  #   - Build
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p glpat-B9AijURqWWwFk8v3stdi $CI_REGISTRY
+    - apk add openjdk17 && apk add gradle 
+  script:
+  #   # - cd /builds/liberintech/India-Post/ClientApplication
+  #   # - docker build -t registry.gitlab.com/liberintech/india-post/client-application:0.1.1 -f dockerfiles/Dockerfile .
+  #   # - cd 
+  #   - cd /builds/liberintech/India-Post/RateAPI
+  #   - docker build -t registry.gitlab.com/liberintech/india-post/rate-api:0.1.0 -f dockerfiles/Dockerfile .
+  #   - cd 
+  #   - cd /builds/liberintech/India-Post/ServerAPI
+  #   - docker build -t registry.gitlab.com/liberintech/india-post/server-api:0.1.0 -f dockerfiles/Dockerfile .
+  #   - cd 
+  #   - cd /builds/liberintech/India-Post/ServerApplication
+  #   - docker build -t registry.gitlab.com/liberintech/india-post/server-application:0.1.0 -f dockerfiles/Dockerfile .
+    - cd ClientApplication/
+    - gradle bootBuildImage --imageName=registry.gitlab.com/liberintech/india-post/client-application:latest
+    - cd ../ServerApplication
+    - gradle bootBuildImage --imageName=registry.gitlab.com/liberintech/india-post/server-application:latest
+    - cd ../RateAPI
+    - gradle bootBuildImage --imageName=registry.gitlab.com/liberintech/india-post/rate-api:latest
+    - cd ../ServerAPI
+    - gradle bootBuildImage --imageName=registry.gitlab.com/liberintech/india-post/server-api:latest
+    - docker push registry.gitlab.com/liberintech/india-post/client-application:latest
+    - docker push registry.gitlab.com/liberintech/india-post/rate-api:latest
+    - docker push registry.gitlab.com/liberintech/india-post/server-api:latest
+    - docker push registry.gitlab.com/liberintech/india-post/server-application:latest
+     
+

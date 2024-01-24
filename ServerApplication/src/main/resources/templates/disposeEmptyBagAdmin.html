@@ -1,0 +1,221 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer">
+	<div class="site-wrapper market-US">
+
+		<div class="container text-center">
+			<div>
+				<b>
+					<h1 th:text="#{disposed.empty.bag.report}">Dispose Empty Bag
+						Report</h1>
+				</b>
+			</div>
+			<div>
+				<div class="container-new col-md-12">
+
+					<div class="form-group col-md-4">
+
+						<label th:text="#{select.location.dispose}">Select Location</label> <select
+							class="form-control name" id="locationType">
+							<option value="po" th:text="#{post.office}">Post Office</option>
+							<option value="rms" th:text="#{rms.page}">RMS</option>
+						</select>
+					</div>
+					<div class="form-group col-md-4">
+						<div id="poDiv">
+							<label> <span th:text="#{select.po}">Select Postoffice</span>
+							</label> <select list="browsers" name="poCode" class="form-control name chosen"
+								id="poCode" placeholder="Search by Post Office & Rms">
+							<!-- <datalist id="browsers">
+								<option id="selectPo" style="display: none"
+									th:each="poValue : ${masterAddress}"
+									th:value="${poValue.postalCode}" th:id="${poValue.postalCode}"
+									th:text="${poValue.subOffice}"></option>
+							</datalist> -->
+							<option value="">select</option>
+							<option  th:each="poValue : ${masterAddress}" th:value="${poValue.postalCode}" th:id="${poValue.postalCode}"
+                                     th:text="${poValue.subOffice + ' (' + poValue.postalCode+')'}">
+                            </option>
+                           </select>
+							<div id="POErrorContainer" class="errorForm">
+                        </div>
+						</div>
+						<div id="rmsDiv" style="display: none">
+							<label> <span th:text="#{select.rms}">Select RMS</span>
+							</label> <select list="rmsList" name="poCode" class="form-control name chosen"
+								id="rmsCode" placeholder="Search by Post Office & Rms">
+							<!-- <datalist id="rmsList">
+								<option th:each="rms : ${rms}" th:value="${rms.RmsName}"
+									th:id="${rms.RmsAddress.postalCode}" th:text="${rms.RmsName}">
+								</option>
+							</datalist> -->
+							<option value="">select</option>
+							<option  th:each="rms : ${rms}" th:value="${rms.RmsName}" th:id="${rms.RmsAddress.postalCode}"
+                                     th:text="${rms.RmsName}">
+                            </option>
+                           </select>
+						</div>
+					</div>
+
+					<div class="form-group col-md-4 spacer-top-md">
+						<button type="button" class="btn btn-primary col-md-12"
+							id="bag_parcels" th:text="#{get.report}">Get Reports</button>
+					</div>
+
+				</div>
+
+
+				<div class=" col-md-12 spacer-top-MD table-div"
+					style="display: none">
+					<h3 class="text-center" th:text="#{disposed.bag}">Disposed BAG</h3>
+					<div
+						class="col-md-3 text-right padding- spacer-top-sm col-md-offset-9">
+						<input type="text" id="searchboxDisposed"
+							class="form-control name" placeholder="Search Empty Bag">
+					</div>
+					<div class="">
+						<table id="disposedEmptyBag" class="table table-striped">
+							<thead>
+								<tr>
+									<th th:text="#{bagid}" class="text-center">Bag Id</th>
+									<th th:text="#{bag.status}" class="text-center">Bag Status</th>
+									<th th:text="#{current.status}" class="text-center">Current Status</th>
+									<th th:text="#{updated.on}" class="text-center">Updated On</th>
+									<th th:text="#{bag.description}" class="text-center">Description</th>
+								</tr>
+							</thead>
+							<tbody id="disposedBody">
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+
+				<!-- pop-up modal -->
+				<div id="bag-select" class="modal fade" tabindex="-1" role="dialog">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content text-center">
+
+							<h3 class="text-danger" th:text="#{slect.po.rms}">Please Select Postal
+								Code/RMS Id</h3>
+							<button type="button" class="btn btn-primary"
+								data-dismiss="modal" th:text="#{okay}">Okay</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$('.chosen').chosen();
+ 
+$("#bag_parcels").on('click',function() {
+	
+	$('#disposedEmptyBag').DataTable().destroy();
+    $('#disposedBody').empty();
+    
+	if($("#poCode").val()=="" && $("#rmsCode").val()==""){
+		$("#bag-select").modal('show');
+	}else{
+	
+    
+     var rmsAndPostalCode;
+     if($("#locationType").val()==="po"){
+    	 rmsAndPostalCode = $("#poCode").val();
+     }else{
+    	 rmsAndPostalCode = $("#rmsCode").val();
+     }
+     
+     $.ajax({
+         type: "get",
+         url: "/server/disposedEmptyBagReportList",
+         dataType: "json",
+         cache: false,
+         data:{
+        	 rmsAndPostalCode:rmsAndPostalCode,
+        	 location:$("#locationType").val()
+         },
+         success: function(result) {
+				
+        	 $(".table-div").show();
+             $.each(result, function(i, item) {
+            	 
+            	 var created_date = item.updatedOn;
+                 var time = new Date(created_date);
+
+                 //format date
+                 var userDate = created_date.substr(0, 10);
+                 var date = userDate.split("-");
+                 var title_date = date[2] + "/" + date[1] + "/" + date[0];
+                 
+                 var $tr = $('<tr>').append(
+                     $('<td>').text(item.bagId),
+                     $('<td>').text(item.bagDesc),
+                     $('<td>').text(item.bagStatus),
+                     $('<td>').text(title_date + " " + time.toString().substring(16, 24)),
+                     $('<td>').text(item.trackingDesc)
+                 );
+                 $('#disposedBody').append($tr);
+             });
+
+             var dTable = $('#disposedEmptyBag').dataTable({
+                 
+                "oLanguage": {
+                     "sLengthMenu": "_MENU_"
+                 },
+                 //to disble page no for 1st page
+                 "fnDrawCallback": function(oSettings) {
+                     if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                         $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                     } else {
+                         $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                     }
+                 }
+             });
+
+             $("#searchboxDisposed").keyup(function() {
+                 dTable.fnFilter(this.value);
+             });
+
+             $(".dataTables_length").css('clear', 'none');
+             $(".dataTables_length").css('margin-top', '-40px');
+             $(".dataTables_length").css('padding-right', '470px');
+
+         }
+     });
+     
+     //
+     
+	}
+     //
+  });
+ 
+
+ 
+ $("#locationType").on('change',function(){
+	 $('#disposedEmptyBag').DataTable().destroy();
+	 $('#disposedBody').empty();
+	 $('#poCode').val('');
+	 $('#rmsCode').val('');
+	 if($("#locationType").val()==="po"){
+		 $(".table-div").hide();
+		 $("#rmsDiv").hide();
+		 $("#poDiv").show();
+	 }else{
+		 $(".table-div").hide();
+		 $("#poDiv").hide();
+		 $("#rmsDiv").show();
+		 $("#rmsCode_chosen").css("width","183px");
+		 }
+ });
+ 
+</script>
+
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

@@ -1,0 +1,966 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer create-label">
+
+<div class="site-wrapper market-US">
+<div class="container" >
+  <div style="display:none">
+			<p id="postofficeUser" th:text="${postofficeUser}"></p>
+	</div>
+
+	<div style="display:none">
+			<p id="rmsUserInfo" th:text="${rmsUserInfo}"></p>
+	</div>
+
+	<div style="display:none">
+			<p id="profile" th:text="${@environment.getActiveProfiles()[0]}"></p>
+	</div>
+
+	<h1 class="text-center" th:text="#{outward.scanning}">Outward Scanning</h1>
+				<div class="col-md-12">
+
+					<div class="col-md-6">
+			            <!-- Input the bag id -->
+  						<form name="displayForwardDetailsForm" id="displayForwardDetailsForm">
+
+						<div id="radiobtn">
+						<h4><span th:text="#{select.destination.to.be.forwarded}">Select
+								the destination where the bags are to be forwarded</span></h4>
+ 								<div class="newradioinput">
+ 							<input type="radio" name="selectDestination" value="RMS"> RMS
+							<input type="radio" class="radiomarginleft" name="selectDestination" value="postoffice"> Post Office
+ 							</div>
+							<div id="radioErrorContainer" class="errorForm errorHeight">
+							<ul></ul>
+						</div>
+						</div>
+						<div  class="col-md-12 paddingleft spacer-bottom-sm">
+						<div id="rms">
+						<span> <h4 th:text="#{select.rms.to.be.forwarded}">Select
+								RMS Type and RMS where the bags are to be forwarded</h4>
+						</span>
+						<div class="col-md-4">
+						<select id="rmsTypeList" class="selectpicker form-control">
+						</select>
+
+						</div>
+						<div class="col-md-4">
+						<select id="rmsList" class="selectpicker form-control">
+						</select>
+						</div>
+						<div id="rmsErrorContainer" class="col-md-12">
+			       			<span class="errorForm errorHeight" th:text="#{no.rms}">No RMS present to forward bags</span>
+			       		</div>
+					   </div>
+						<div id="postoffice">
+							<span> <h4	th:text="#{select.post.office.to.be.forwarded}">Enter postal code where the bags are to be forwarded</h4>
+							</span>
+							<div class="col-md-4">
+							<input type='text' name='postofficeList' id='postofficeList' class='text-right form-control' th:maxlength="4" />
+							</div>
+							<div id="pincodeErrorContainer" class="col-md-12">
+			       			<span class="errorForm errorHeight" th:text="#{field.rqd}">This field is required</span>
+			       			</div>
+			       			<div id="pincodeMsgContainer" class="col-md-12 spacer-top-sm">
+			       			<span class="errorHeight" id="pincodemsg"></span>
+			       			</div>
+						</div>
+
+						</div>
+					<div id="empty_bags">
+					<span><h4 th:text="#{add.empty.bags}">Add Empty Bags</h4></span>
+					<div class="spacer-bottom-sm col-md-4">
+					<input type='text' name='empty_bag_cnt' id='empty_bag_cnt' class='text-right form-control' onkeypress='return restrictAlphabets(event)' />
+					</div>
+					<div class="spacer-bottom-sm col-md-2">
+					 <button id="EmptyBagButton" type="button"
+                        class="btn-primary btn" th:text=#{add}>Add</button>
+					</div>
+					</div>
+					</form>
+
+					<div id="emptyBagTableView" >
+
+						   <table id="emptyBagTable" class="css-serial table text-left">
+		                    <thead>
+		                    <tr>
+		                    	<th class="text-center col-sm-2" th:text="#{s.no}">S.No.</th>
+		                    	<th class="text-center col-md-8" th:text="#{bagid}">Bag Id</th>
+		                        <th class="text-center col-md-2" th:text="#{download.label}">Download Label</th>
+						    </tr>
+		                    </thead>
+		                     <tbody id='emptytbody'>
+		                    </tbody>
+		                    <tfoot id='emptytfoot'>
+		                    </tfoot>
+		                	</table>
+
+					</div>
+				</div>
+			<div class="col-md-6">
+            <form autocomplete="off" name="enterBagidForm" id="enterBagidForm">
+				<div class="col-md-12 paddingleft">
+				<h4 th:text=#{enter.bag.id}>Enter/Scan Bag ID</h4>
+                <div class="col-md-4">
+                <input id="bagId" name="bagId" type="text" th:maxlength="9" class="form-control">
+                	<div id="scanErrorContainer" class="errorForm errorHeight">
+							<ul></ul>
+					</div>
+                </div>
+                <div class="spacer-bottom-md col-md-3">
+                <button id="addButton" type="button"
+                        class="btn btn-primary" th:text=#{add.to.list}>Add to List</button>
+                 </div>
+                 </div>
+		     </form>
+
+        <!-- Input the bag id end-->
+
+			<div id="tableview">
+			<!-- <div id="no_of_entries" class="padding-left" style='margin-left: 65px; margin-bottom: -175px'>
+       			<span><bold th:text="#{no.of.bags}" style="font-size:18px; color:black">Total number of bags added</bold></span>
+       			<span style="font-size:18px; color:black">:</span>
+       			<span id="total_bag_cnt" style="font-size:18px; color:black"></span>
+   		    </div> -->
+
+			<div id="no_of_entries" class="text-right" >
+       			<span><bold th:text="#{no.of.bags}" style="color:black">Total number of bags added</bold></span>
+       			<span style="color:black">:</span>
+       			<span id="total_bag_cnt" name="total_bag_cnt" style="color:black"></span>
+   		    </div>
+
+
+           <!-- <div id="searchContainer" class="col-sm-offset-9 padding-right">
+       			<input type="text" id="searchbox" class="form-control" placeholder="search">
+   		   </div> -->
+
+            <table id="forwardTable" class="table text-left">
+                    <thead>
+                    <tr>
+						<th class="text-center col-md-2" th:text="#{bagid}">Bag Id</th>
+                        <th class="text-center col-md-2" th:text="#{parcel.count}">Parcel Count</th>
+				        <th class="text-center col-md-6" th:text="#{bag.title}">Bag Title</th>
+				        <th class="text-center col-md-2" th:text="#{remove.bag}">Remove Bag</th>
+				    </tr>
+                    </thead>
+                     <tbody id='tbody'>
+                    </tbody>
+                    <tfoot id='tfoot'>
+                    </tfoot>
+                </table>
+
+					<div class="text-center">
+						<button type="button" id="forward" class="btn btn-primary spacer-bottom-md">
+							<span th:text="#{forward}"> Forward</span>
+						</button>
+					</div>
+			</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bag Forward details Modal -->
+<div id="bagDetailsModal" class="modal fade" data-backdrop="static">
+	<div class="modal-content modal-dialog">
+			<div class="modal-header text-center">
+				<h3 th:text="#{bag.forwardng.details}"> Bag Forwarding Details</h3>
+				<button id="close_success" type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+			</div>
+
+				<div class="label-options modal-body" id="displayForwardDetails">
+
+					<form name="displayAllDetailsForm" id="displayAllDetailsForm">
+						<div class="form-group">
+							<b id="destinationModal" name="destinationModal" th:text="#{bags.forwarded.to}">Bags will be forwarded to</b><span>:</span>
+								<span id="destinationNameModal"></span>
+						</div>
+
+						<div class="form-group">
+							<b id="emptyBagModal" name="emptyBagModal" th:text="#{no.of.ampty.bags.added}">Number of empty bags added</b><span>:</span>
+								<span id="emptyBagCntModal"></span>
+						</div>
+
+						<div class="form-group">
+							<b id="totalBagModal" name="totalBagModal" th:text="#{total.no.of.bags.added}">Total number of bags added</b><span>:</span>
+								<span id="totalBagCntModal"></span>
+						</div>
+
+						<div class="form-group">
+							<b id="parcelModal" name="parcelModal" th:text="#{no.of.parcels.bags.added}">Total number of parcels in the bags</b><span>:</span>
+								<span id="parcelCntModal"></span>
+						</div>
+
+						<div class="form-group">
+							<b id="totalWgtModal" name="totalWgtModal" th:text="#{total.wgt.of.bags}">Total volumetric weight of bags added</b><span>:</span>
+								<span id="totalWgtAmtModal"></span>
+						</div>
+
+					</form>
+				</div>
+
+					<div class="text-center spacer-bottom-lg col-sm-12">
+                    <div class="col-sm-6">
+                        <button type="button" id="cancel-btn"
+                                class="btn btn-primary">
+                            <span th:text="#{cancel}"> Cancel</span>
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" id="confirm-btn"
+                                class="btn btn-primary">
+                            <span th:text="#{Confirm}"> Confirm</span>
+                        </button>
+                    </div>
+
+                </div>
+	</div>
+</div>
+<!-- Bag Forward details Modal end -->
+
+<!-- Bag Id not present Error Modal -->
+<div id="bagIdNotPresentModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+                      th:text="#{bagid.not.present.error}">Sorry this bag does
+					not exist. Please try again with correct Bag ID.</span>
+
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+                              data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Bag Id not present Error Modal -->
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+                      th:text="#{error.string}">Sorry, an error has occurred!</span>
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+                              data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Error Modal -->
+
+<!-- Success Modal -->
+<div id="successModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="text-center">
+            			<img src="/assets/images/successmark.gif">
+				</div>
+				<span class="h3 col-xs-12 text-center"><span
+                      th:text="#{forward}">Forward</span><span> - </span><span id="cnt"></span><span> </span><span th:text="#{bags}"></span></span>
+
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary" id="suucessbutton"
+                              data-dismiss="modal" th:text="#{okay}">okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Success Modal -->
+
+<!-- Bag ALready Added Error Modal -->
+<div id="bagAlreadyPresentModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+                      th:text="#{bag.already.added}">Bag has already been scanned/added!!</span>
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+                              data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Bag Alraedy Added Modal -->
+
+<!-- Wrong Destination Modal -->
+<div id="bagWrongDestinationModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+           		<span class="h3 col-xs-12 text-center"
+                      th:text="#{bag.not.present.current.location}">Bag not present at current location!!</span>
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+                              data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Wrong Destination Modal -->
+
+<!-- Wrong Destination Modal -->
+<div id="bagAlreadyOutModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+           		<span class="h3 col-xs-12 text-center"
+                      th:text="#{bag.status.out}">Bag has already been forwarded.This bag cannot be forwarded.</span>
+
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+                              data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Wrong Destination Modal -->
+
+
+</div>
+<script type="text/javascript">
+var arr = [];
+var bag_cnt=0;
+var oTable;
+var empty_bag_flag = 0;
+var cnt_total = 0;
+var total_empty_bag = 0;
+var total_parcel_wgt = 0;
+var destinationsuboffice;
+
+function getBagDetails(bagid) {
+	    $.ajax({
+    	type : "get",
+		url : "/tracking/getBagDetails",
+		data : {
+			bagId : bagid,
+			reportFor : "forward"
+		},
+		//dataType : "json",
+		cache : false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+		success : function(result) {
+			if(!jQuery.isEmptyObject(result))
+			{
+		 		$("#tableview").show();
+		 		var item = result[0];
+		 		var wgt=0;
+
+		 		if(item.trackingDesc == "wrong destination")
+		 		{
+		 			$('#bagWrongDestinationModal').modal('show');
+		 		}
+		 		else if(item.trackingDesc == "bag status is already out")
+		 		{
+		 			$('#bagAlreadyOutModal').modal('show');
+		 		}
+		 		else
+		 		{
+			 		var cnt = result.length;
+			 		if((cnt==1) && (item.objParcel == null))
+			 		{
+			 			cnt = 0;
+			 		}
+
+			 		//to remove datatble text "no data available"
+			 		if (arr.length==0 ) {
+						$('#forwardTable tbody').empty();
+					}
+				 	arr.push(item.bagId);
+					$('#total_bag_cnt').text(++bag_cnt);
+
+					if(cnt == 0)
+					{
+						wgt = 0;
+					}
+					else
+					{
+						for(var i=0; i<cnt; i++)
+						{
+							var parcel = result[i];
+							var h = parcel.objParcel.actWt;
+							wgt = parseInt(wgt) + parseInt(h);
+						}
+					}
+			 		total_parcel_wgt = total_parcel_wgt + parseInt(wgt);
+
+			 		$('#forwardTable').prepend([
+		  	         "<tr>",
+				       "<td class='text-center col-md-4'>"+item.bagId+"</td>",
+		               "<td class='text-center col-md-1'>"+cnt+"</td>",
+		               "<td class='text-center col-md-6'>"+item.bagTitle+"</td>",
+		               "<td style='display:none'>"+wgt+"</td>",
+		               "<td class='text-center col-md-1'><a  class='remove_icon'><i class='fa fa-trash-o' style='font-size:22px' aria-hidden='true'></i></a></td>",
+		            '</tr>'
+					].join(''));
+					cnt_total = cnt_total+cnt;
+					if(bag_cnt>1)
+					{
+						 $('#forwardTable tr:last').remove();
+					}
+					$('#forwardTable').append([
+				  	         "<tr>",
+						       "<td class='text-center col-md-4'>"+"Total:"+"</td>",
+				               "<td class='text-center col-md-1'>"+cnt_total+"</td>",
+				               "<td class='text-center col-md-6'></td>",
+				               "<td style='display:none'></td>",
+				               "<td class='text-center col-md-1'></td>",
+				            '</tr>'
+					].join(''));
+					$('#bagId').val("");
+				}
+			}
+		 	else
+		 	{
+				$('#bagIdNotPresentModal').modal('show');
+		 	}
+    	},
+		error : function(result) {
+			$('#errorModal').modal('show');
+		}
+	});
+}
+
+ oTable = $('#forwardTable').dataTable({
+	 "bPaginate": false,
+	  "ordering": false,
+
+    /*'lengthMenu': [50, 100, 150],
+   	'oLanguage': {
+	  		 "sLengthMenu": "_MENU_"
+	 },
+			//to disble page no for 1st page
+								"fnDrawCallback": function(oSettings) {
+							        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+							            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+							        }
+							        else
+							        {
+							            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+							        }
+							    }
+	 */
+});
+/*
+$(".dataTables_length").css('clear', 'none');
+$(".dataTables_length").css('margin-top', '-40px');
+$(".dataTables_length").css('margin-left', '0px');
+
+
+$('#searchbox').keyup(function(){
+
+      oTable.fnFilter($(this).val()).draw();
+
+})
+ */
+$('#forwardTable #tbody').on('click', '.remove_icon', function()
+{
+	// get the current row
+    var currentRow=$(this).closest("tr");
+    // get current row 3rd table cell  TD value
+    var id =currentRow.find("td:eq(0)").html();
+    var parcel_cnt = currentRow.find("td:eq(1)").html();
+    var parcel_wgt = currentRow.find("td:eq(3)").html();
+
+    $.ajax({
+		type: "get",
+		url:"/tracking/deleteEmptyBags?ajax=true",
+        data:{
+        	bagId : id
+       	},
+		success:function(result){
+			if(result == "success")
+			{
+				cnt_total -= parcel_cnt;
+				--total_empty_bag;
+
+				currentRow.remove();
+
+				$("#emptyBagTable tr:contains("+id+")").remove();
+				arr.splice( $.inArray(id, arr), 1 );
+
+				$('#total_bag_cnt').text(--bag_cnt);
+				total_parcel_wgt = total_parcel_wgt-parcel_wgt;
+
+				$('#forwardTable tr:last').remove();
+			    if(total_empty_bag == 0)
+			    	$("#emptyBagTableView").hide();
+
+				$('#forwardTable').append([
+			  	         "<tr>",
+			  	       "<td class='text-center col-md-4'>"+"Total:"+"</td>",
+			           "<td class='text-center col-md-1'>"+cnt_total+"</td>",
+			           "<td class='text-center col-md-6'></td>",
+		               "<td style='display:none'></td>",
+			           "<td class='text-center col-md-1'></td>",
+			           '</tr>'
+				].join(''));
+
+			    if (arr.length==0 ) {
+					$('#forwardTable tbody').empty();
+			 		$("#tableview").hide();
+					cnt_total = 0;
+			    }
+			}
+			else
+				$('#errorModal').modal('show');
+		},
+		error : function(result) {
+			$('#errorModal').modal('show');
+		}
+	});
+
+
+});
+
+$('#emptyBagTable #emptytbody').on('click', '.download_icon', function()
+{
+	var currentRow=$(this).closest("tr");
+    // get current row 3rd table cell  TD value
+    var id =currentRow.find("td:eq(1)").html();
+
+    $.ajax({
+        url: "/pbTracking/bagLabel?ajax=true&",
+        method: 'GET',
+        data:{
+         bagId : id
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (data) {
+            //format date
+            var date=new Date();
+			var day=date.getDate();
+			var month=date.getMonth()+1;
+			var year=date.getFullYear();
+			var h=date.getHours();
+			var m=date.getMinutes();
+			var s=date.getSeconds();
+            var finalDate = day+"-"+month+"-"+year+"-"+h+"-"+m+"-"+s;
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(data);
+			a.href = url;
+			a.download = 'Bag-Label-'+finalDate+'.pdf';
+            document.body.append(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        }
+    });
+});
+
+/*code: 48-57 Numbers
+8  - Backspace,
+35 - home key, 36 - End key
+37-40: Arrow keys, 46 - Delete key*/
+function restrictAlphabets(e){
+	var x=e.which||e.keycode;
+	if((x>=48 && x<=57) || x==8 ||
+		(x>=35 && x<=40)|| x==46)
+		return true;
+	else
+		return false;
+}
+
+function rms()
+{
+	$.ajax({
+		url:"/pbTracking/getRMSdata?ajax=true",
+		success:function(result){
+ 		  $.each(result,function(key, data){
+		  //  var rmsList = '<option id='+data.id+'>'+data.rmsName+'</option>';
+		  //  $("#rmsList").append(rmsList);
+
+		    var rmsType = '<option>'+data.rmsType+'</option>';
+		    $("#rmsTypeList").append(rmsType);
+		  });
+ 		 populateRMS();
+		},
+		error : function(result) {
+			$('#errorModal').modal('show');
+		}
+	});
+
+}
+
+function populateRMS()
+{
+	  var rms = $("#rmsTypeList").val();
+      $.ajax({
+          type: "GET",
+          url: "/pbTracking/getRMSNameByRMSType",
+          data: {
+              rmsType: rms
+          },
+          success: function (result) {
+
+        	  $("#rmsList").empty();
+
+              $.each(result,function(key, data){
+            	  if(!($("#rmsUserInfo").text() == data.rmsName))
+            	  {   var rmsList = '<option id='+data.id+'>'+data.rmsName+'</option>';
+				      $("#rmsList").append(rmsList);
+            	  }
+              });
+          },
+      });
+}
+
+$('#rmsTypeList').on('change', function () {
+	populateRMS();
+ });
+
+jQuery(document).ready(function(){
+
+	$("#rms").hide();
+	$("#postoffice").hide();
+	$("#tableview").hide();
+	$("#emptyBagTableView").hide();
+	$("#pincodeErrorContainer").hide();
+	$("#pincodeMsgContainer").hide();
+	$("#rmsErrorContainer").hide();
+
+	// Check if body height is higher than window height :)
+    if ($(document).height() > $(window).height()) {
+        $("#foot").addClass("footer-top-margin");
+    }
+
+    $("#enterBagidForm").validate({
+		rules : {
+			"bagId" : {
+				required : true,
+				minlength : 9,
+				maxlength : 9,
+				digits : true
+			}
+		},
+		errorPlacement : function(error,element) {
+			if (element.attr("name") == "bagId"){
+				$("#scanErrorContainer").html(error);
+				$("#scanErrorContainer").show();
+			}
+		}
+	});
+   $("#displayForwardDetailsForm").validate({
+		rules : {
+			"selectDestination" : {
+				required : true
+			}
+		},
+		errorPlacement : function(error,element) {
+			if (element.attr("name") == "selectDestination"){
+				$("#radioErrorContainer").html(error);
+				$("#radioErrorContainer").show();
+			}
+		}
+
+	});
+
+	$("#addButton").click(function() {
+		if($("#enterBagidForm").valid()){
+			var bagid = $('#bagId').val();
+
+		 	if ($.inArray(bagid,arr) == -1)
+		 	{
+		 		getBagDetails(bagid);
+		 	}
+			else
+	 		{
+				$('#bagAlreadyPresentModal').modal('show');
+		 	}
+		}
+	});
+
+	$("#EmptyBagButton").click(function() {
+		if($("#empty_bag_cnt").val() != ""){
+
+			var emptyBagCnt = parseInt($("#empty_bag_cnt").val());
+			total_empty_bag = total_empty_bag+emptyBagCnt ;
+
+			empty_bag_flag=1;
+			var bagids=[];
+			$.ajax({
+				type: "get",
+				url:"/tracking/generateEmptyBags?ajax=true",
+		        data:{
+		        	numberofEmptyBags: $("#empty_bag_cnt").val()
+		       	},
+				success:function(result){
+					$("#tableview").show();
+					$("#emptyBagTableView").show();
+
+					for(var k=0; k<$("#empty_bag_cnt").val(); k++)
+					{
+						if (arr.length==0 ) {
+							$('#forwardTable tbody').empty();
+						}
+
+						$('#total_bag_cnt').text(++bag_cnt);
+
+						$('#forwardTable').prepend([
+			  	         "<tr>",
+					       "<td class='text-center col-md-4'>"+result[k]+"</td>",
+			               "<td class='text-center col-md-1'>"+"0"+"</td>",
+			               "<td class='text-center col-md-6'>"+"Empty Bag"+"</td>",
+			               "<td style='display:none'>"+"0"+"</td>",
+			               "<td class='text-center col-md-1'><a href='#' class='remove_icon'><i class='fa fa-trash-o' style='font-size:22px' aria-hidden='true'></i></a></td>",
+			            '</tr>'
+						].join(''));
+						if(bag_cnt>1)
+						{
+							 $('#forwardTable tr:last').remove();
+						}
+						$('#forwardTable').append([
+					  	         "<tr>",
+							       "<td class='text-center col-md-4'>"+"Total:"+"</td>",
+					               "<td class='text-center col-md-1'>"+cnt_total+"</td>",
+					               "<td class='text-center col-md-6'></td>",
+					               "<td style='display:none'></td>",
+					               "<td class='text-center col-md-1'></td>",
+					            '</tr>'
+						].join(''));
+
+					$('#emptyBagTable').append([
+			  	         "<tr>",
+					       "<td class='text-center col-md-2'></td>",
+			               "<td class='text-center col-md-8'>"+result[k]+"</td>",
+			               "<td class='text-center col-md-2'><a  class='download_icon'><i class='fa fa-print' style='font-size:22px' aria-hidden='true'></i></a></td>",
+			            '</tr>'
+						].join(''));
+
+					arr.push(result[k]);
+
+					}
+					$("#empty_bag_cnt").val("");
+
+				},
+				error : function(result) {
+					$('#errorModal').modal('show');
+				}
+			});
+
+		}
+ 	});
+
+	$("#displayForwardDetailsForm").keydown(function(event) {
+		var keyCode = (event.keyCode ? event.keyCode : event.which);
+		//keycode for enter key is 13
+		if (keyCode == 13) {
+			// Cancel the default action, if needed
+			event.preventDefault();
+		}
+	});
+
+	$("#enterBagidForm").keydown(function(event) {
+		var keyCode = (event.keyCode ? event.keyCode : event.which);
+		//keycode for enter key is 13
+		if (keyCode == 13) {
+			// Cancel the default action, if needed
+			event.preventDefault();
+		}
+	});
+
+	$("#forward").click(function() {
+		if($("#displayForwardDetailsForm").valid()){
+			if($('input[name="selectDestination"]:checked').val() == "postoffice")
+			{
+				if(($("#pincodemsg").text() == "This postal code doesnot exist.") || ($("#pincodemsg").text() == "Please enter atleast 4 digits."))
+				{
+					 if($("#postofficeList").val()=="")
+						{
+							$("#pincodeErrorContainer").show();
+						}
+
+				}
+				else if($("#postofficeList").val()=="")
+				{
+					$("#pincodeErrorContainer").show();
+				}
+				else
+				{
+					$("#pincodeErrorContainer").hide();
+					$("#bagDetailsModal").modal('show');
+
+					if($('input[name="selectDestination"]:checked').val() == "postoffice")
+					{
+						$("#destinationNameModal").html("Post Office- "+$("#postofficeList").val()+" ("+destinationsuboffice+")");
+					}
+					if(empty_bag_flag == 0)
+						$("#emptyBagCntModal").html(0);
+					else
+						$("#emptyBagCntModal").html(total_empty_bag);
+					$("#totalBagCntModal").html($("#total_bag_cnt").text());
+					$("#parcelCntModal").html(cnt_total);
+					$("#totalWgtAmtModal").html(total_parcel_wgt);
+				}
+			}
+			else
+			{
+				if($("#rmsTypeList").val() == null)
+				{
+					$("#rmsErrorContainer").show();
+				}
+				else
+				{
+					$("#bagDetailsModal").modal('show');
+					$("#rmsErrorContainer").hide();
+					if($('input[name="selectDestination"]:checked').val() == "RMS")
+					{
+						$("#destinationNameModal").html("RMS Type- "+$("#rmsTypeList").val() +", RMS- "+ $("#rmsList").val() );
+
+					}
+					if(empty_bag_flag == 0)
+						$("#emptyBagCntModal").html(0);
+					else
+						$("#emptyBagCntModal").html(total_empty_bag);
+					$("#totalBagCntModal").html($("#total_bag_cnt").text());
+					$("#parcelCntModal").html(cnt_total);
+					$("#totalWgtAmtModal").html(total_parcel_wgt);
+				}
+			}
+		}
+	});
+
+	$("#confirm-btn").click(function() {
+		$("#bagDetailsModal").modal('hide');
+		$("#cnt").html(arr.length);
+
+		empty_bag_flag = 0;
+
+		var destination;
+		var destinationType = $('input[name="selectDestination"]:checked').val();
+
+		if($('input[name="selectDestination"]:checked').val() == "RMS")
+		{
+			destination = $("#rmsList").find('option:selected').attr('id');
+		}
+		else if($('input[name="selectDestination"]:checked').val() == "postoffice")
+		{
+			destination = $("#postofficeList").val();
+		}
+
+
+		$.ajax({
+			type: "get",
+			url:"/tracking/forwardBags?ajax=true",
+	        data:{
+	        	bagIds : arr,
+	        	destination : destination,
+	        	destinationType : destinationType
+	       	},
+			success:function(){
+				$('#successModal').modal('show');
+			},
+			error : function() {
+				$('#errorModal').modal('show');
+			}
+		});
+
+
+	});
+
+	$("#cancel-btn").click(function() {
+		$("#bagDetailsModal").modal('hide');
+	});
+
+	$("#suucessbutton").click(function() {
+		window.location.reload();
+	});
+
+	$("input[name='selectDestination']").click(function(){
+		if($('input[name="selectDestination"]:checked').val() == "RMS")
+		{
+			$("#rms").show();
+			$("#postoffice").hide();
+			if($("#rmsTypeList").val() == null)
+			{
+				$("#rmsErrorContainer").show();
+			}
+		}
+		else if($('input[name="selectDestination"]:checked').val() == "postoffice")
+		{
+			$("#postoffice").show();
+			$("#rms").hide();
+		}
+	});
+
+	$('#postofficeList').on('keyup', function() {
+		if($("#postofficeList").val() == "")
+		{
+				$("#pincodeMsgContainer").hide();
+		}
+
+		if (($(this).val().length < 4) && ($(this).val().length > 0))
+		{
+			$("#pincodeMsgContainer").show();
+
+			$("#pincodemsg").text("Please enter atleast 4 digits.");
+			$("#pincodemsg").addClass('errorForm');
+		}
+		else if ($(this).val().length == 4) {
+				$("#pincodeErrorContainer").hide();
+				$("#pincodeMsgContainer").show();
+
+				if($("#postofficeList").val() == $("#postofficeUser").text())
+				{
+					$("#pincodemsg").text("Destination Post Office can not  be same as User Post office");
+					$("#pincodemsg").addClass('errorForm');
+				}
+				else
+				{
+					 $.ajax({
+
+		                   type: "get",
+							url:"/pbTracking/getPostalCodedata?ajax=true",
+		                   data: {
+		                	   		pincode: $("#postofficeList").val()
+		                   		},
+
+	   						success:function(result){
+								if(result=="")
+								{
+									$("#pincodemsg").text("This postal code doesnot exist.");
+									$("#pincodemsg").addClass('errorForm');
+								}
+								else
+								{
+									destinationsuboffice = result.subOffice;
+									$("#pincodemsg").removeClass('errorForm');
+									$("#pincodemsg").text(result.subOffice+", "+result.thana);
+								}
+							}
+						});
+				}
+		    }
+	 });
+});
+
+$(window).on('load',function(){
+	rms();
+});
+
+</script>
+
+<th:block th:include="_footer"></th:block>
+</body>

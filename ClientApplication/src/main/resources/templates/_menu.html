@@ -1,0 +1,78 @@
+<head>
+
+<style>
+
+/* Dropdown Button */
+.dropbtn {
+  background-color: #f1f1f1;
+  color: black;
+  padding: 1px;
+  border: solid #ccc;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 140px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: #ddd;}
+</style>
+
+</head>
+
+<body>
+
+<div th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org"
+     style="border: 1px solid #ccc;padding:5px;margin-bottom:20px;">
+
+  <a th:text="#{Home}" th:href="@{/}">Home</a>
+
+     | &nbsp;
+
+   <a th:text="#{User.info}" th:href="@{/userInfo}">User Info</a>
+
+     | &nbsp;
+
+   <a th:text="#{Admin}" th:href="@{/admin}">Admin</a>
+
+     | &nbsp;
+
+   <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a>
+
+	<div class="dropdown" style="float: right;">
+	  <button th:text="#{select.language}" class="dropbtn" >Select Language</button>
+	  <div class="dropdown-content">
+	    <a th:href="@{?lang=en}">English</a>
+	    <a th:href="@{?lang=bn}">বাংলা </a>
+	  </div>
+	</div>
+
+</div>
+
+</body>

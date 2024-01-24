@@ -1,0 +1,405 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+<div class="fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+        <form name="zoneForm" id="zoneForm" class="myForm" autocomplete="off" method="post">
+<!--             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+ -->            <strong>
+				<h1 class="text-center" th:text="#{zone1}">Zone</h1>
+			</strong>
+            <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="form-group">
+                        <input name="ZoneId" id="zoneId" class="form-control name" type="hidden" data-toggle="tooltip">
+                        <label th:text="#{zone.name}">
+							Zone Name </label>
+                        <input name="Zone" id="zone" autocomplete="off" class="form-control name" th:placeholder="#{zone1}" type="text" data-toggle="tooltip" th:maxlength="50">
+                        <!--<span id="errorZone" th:if="${error!=0}" th:text="${error}" class="text-danger"
+							style="display:none"></span>-->
+                        <div id="ReceiverErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-md-offset-4">
+                <button type="button" id="submitZoneButton" class="btn btn-primary form-control" th:text="#{add.zone}">
+					Add Zone</button>
+                <button type="button" id="updateZoneButton" class="btn btn-primary form-control" th:text="#{update.zone}" style="display: none">
+					Update Zone</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="reset" class="btn btn-primary form-control rBtn" th:text="#{reset}">Reset</button>
+            </div>
+        </form>
+        <div class="col-md-12 ">
+            <div class="col-md-offset-6 col-md-2"></div>
+            <div class="col-md-2">
+                <select class="form-control name" name="dropdown" id="dropdownId" align="right">
+					<!-- <option>select</option> -->
+					<option value="ACTIVE">Active</option>
+					<option value="DISABLED">Disable</option>
+					<option value="ALL">All</option>
+				</select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="searchbox" class="form-control name" placeholder="search">
+            </div>
+        </div>
+        <!-- //MODAL -->
+        <div id="deleteModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div id="messageBeforeDelete" class="modal-header text-center">
+                        <span>
+							<h3 class="errorForm" th:text="#{zone.sure.message}" style="display: inline">Are you sure you want to delete Zone?</h3>
+							<h3 class="errorForm" style="display: inline"> "</h3>
+							<h3 class="errorForm" id="delmsg1" style="display: inline"></h3>
+							<h3 class="errorForm" style="display: inline">"?</h3>
+							<h5  class="errorForm" th:text="#{confirm.zoneRollback}">This action cannot be rollback. Zone will be deleted permanently</h5>
+						</span>
+                    </div>
+                    <div id="messageAfterDelete" class="modal-header text-center">
+                        <span>
+							<h3 style="display: inline">"</h3>
+							<h3 id="delmsg2" style="display: inline"></h3>
+							<h3 style="display: inline">" </h3>
+							<h3 th:text="#{zone.delete.message}" style="display: inline">Zone deleted successfully</h3>
+						</span>
+                    </div>
+                    <div class="label-options" id="changePassword">
+                        <form name='deleteForm' id="deleteForm" autocomplete="off" role="form" method="post">
+<!--                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+ -->                            <input type="hidden" name="deletedId" id="deletedId">
+                            <button id="submitDeleteButton" type="button" class="btn btn-primary" th:text="#{delete}">Delete</button>
+                            <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" th:text="#{cancel}">Cancel
+							</button>
+                            <button id="okButton" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">OKay</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- //End Modal -->
+        <div class="col-md-12 ">
+            <div class="col-md-offset-7 col-md-5 spacer-bootom-sm"></div>
+            <table id="zoneTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="display: none">id</th>
+                        <th th:text="#{s.no}">S.No.</th>
+                        <th th:text="#{zone.name}">Zone Name</th>
+                        <th th:text="#{status}">Status</th>
+                        <th th:text="#{updated.on}">Updated On</th>
+                        <th th:text="#{updated.by}">Updated By</th>
+                        <th th:text="#{update}">Update</th>
+                        <th th:text="#{delete}">Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="zoneTBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{sorry.some.error.occurred}">Sorry!! Some error occurred</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" id="tryagain" class="btn btn-primary btn-md"
+						  data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Error Modal -->
+
+<!-- Response success Modal -->
+<div id="responseModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+            <span>
+               <h3 style="color: green;" th:text="#{rms.registration.successfully}" id="responseMsg"></h3>
+			</span>
+            </div>
+            <div class="text-center">
+                <button id="okButton" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">okay
+				</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal end -->
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>
+<!-- /Print -->
+
+<script>
+    var msg = $('#errorZone').text();
+    if (msg != "") {
+        $('#existModal').modal('show');
+    }
+    var dtable;
+    $(document).ready(function() {
+        $('#updateZoneButton').hide();
+        $('#zoneTBody').empty();
+        $('#messageAfterDelete').hide();
+        $('#okButton').hide();
+        zonedata();
+        // for delete Zone
+        $("#submitDeleteButton").click(function() {
+            var deletesubOfficeDetails = $("#deleteForm").serialize();
+            $.ajax({
+                type: "post",
+                url: "/masterController/actionDeleteZone?ajax=true&",
+                data: deletesubOfficeDetails,
+                success: function(result) {
+
+                    $('#messageAfterDelete').show();
+                    $('#messageBeforeDelete').hide();
+                    $('#submitDeleteButton').hide();
+                    $('#cancelButton').hide();
+                    $('#okButton').show();
+                },
+                error: function() {
+                    $('#errorModal').modal('show');
+                }
+            });
+        });
+        $('#ok').on('click', function() {
+            location.reload();
+        });
+    });
+    $("#zoneForm").validate({
+        rules: {
+            "Zone": {
+                address: true,
+                digits: false,
+                required: true,
+                minlength: 2,
+                maxlength: 50
+            }
+        },
+        errorPlacement: function(error, element) {
+            if ((element.attr("name") == "Zone")) {
+                $("#ReceiverErrorContainer").html(error);
+                $("#ReceiverErrorContainer").show();
+            }
+            //displays a tooltip
+            element.attr('title', error.text());
+            $(element).tooltip({
+                position: {
+                    my: "left+5 center",
+                    at: "right center"
+                },
+                trigger: "hover"
+            });
+        },
+        //highlight the error field with red
+        highlight: function(element, error) {
+            $(element).css('background', '#FFCCCB');
+        },
+        // Called when the element is valid:
+        unhighlight: function(element) {
+            $(element).css('background', '#ffffff');
+        }
+    });
+
+    function zonedata() {
+        var status = $("#dropdownId").val();
+
+        //for zone
+        $.ajax({
+            type: "post",
+            url: "/masterController/showAllActiveStatus",
+            data:{
+            	status: status
+            },
+            // url: "/masterController/showZoneAddress?ajax=true",
+            dataType: "json",
+            cache: false,
+            success: function(result) {
+                $.each(result, function(i, item) {
+
+                    var updatedby = (item.updatedBy == null) ? "-" : item.updatedBy;
+
+                    var update_date = item.updatedOn;
+                    var uTime = new Date(update_date);
+                    var updateDate = item.updatedOn.substr(0, 10);
+                    var UpdateOndate = updateDate.split("-");
+                    var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+
+                    var activeStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-edit iBtn"></button>') : " - ";
+                    var deleteColumn = (item.status == 'ACTIVE') ? $('<button class="fa fa-trash dBtn"></button>') : "-";
+                    var $tr = $('<tr>').append(
+                        $('<td style="display: none">').text(item.id),
+                        $('<td>').text(i + 1),
+                        $('<td>').text(item.zone),
+                        $('<td>').text(item.status),
+                        $('<td>' + updatedOnDate_string + " " + uTime.toString().substring(16, 24) + '</td>'),
+                        $('<td>').text(updatedby),
+                        $('<td>').html(activeStatus),
+                        $('<td>').html(deleteColumn)
+                    );
+                    $('#zoneTBody').append($tr);
+                });
+                dtable = $('#zoneTable').DataTable({
+                    "order": ([1, "asc"]),
+                    "paging": true,
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_"
+                    },
+                    //to disble page no for 1st page
+                    "fnDrawCallback": function(oSettings) {
+                        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                        } else {
+                            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                        }
+                    },
+                    aoColumns: [{
+                        sWidth: '5%'
+                    }, {
+                        sWidth: '10%'
+                    }, {
+                        sWidth: '20%'
+                    }, {
+                        sWidth: '12%'
+                    }, {
+                        sWidth: '13%'
+                    }, {
+                        sWidth: '20%'
+                    }, {
+                        sWidth: '10%'
+                    }, {
+                        sWidth: '10%'
+                    }, ]
+                });
+                $(".dataTables_length").css('clear', 'none');
+                $(".dataTables_length").css('margin-top', '-40px');
+                $(".dataTables_length").css('margin-left', '0px');
+            },
+            error: function(response) {
+                console.log("something went wrong");
+            }
+        });
+    }
+
+    $("#submitZoneButton").click(function() {
+
+	//to remove whitespace from front & end
+    	$("#zone").val($("#zone").val().trim());
+
+       if ($("#zoneForm").valid()) {
+            var addVal = $("#zone").val();
+            var existVal = $("#zone").val();
+            var zoneDetail = $("#zoneForm").serialize();
+ 
+                        $.ajax({
+                            type: "post",
+                            url: "/masterController/actionZone?ajax=true&",
+                            data: zoneDetail,
+                            cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                            success: function(result) {     	
+                            	$("#responseMsg").text(result);
+                            	$("#responseModal").modal('show');
+                            },
+                            error: function() {
+                                $('#errorModal').modal('show');
+                            }
+                        });
+               } 
+    });
+
+    $("#updateZoneButton").click(function() {
+
+    	//to remove whitespace from ront & end
+    	$("#zone").val($("#zone").val().trim());
+
+        if ($("#zoneForm").valid()) {
+            var existVal = $("#zone").val();
+            var upVal = $("#zone").val();
+            var zoneDetail = $("#zoneForm").serialize();
+           
+                        $.ajax({
+                            type: "post",
+                            url: "/masterController/actionUpdateZone?ajax=true&",
+                            data: zoneDetail,
+                            cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                            success: function(result) {
+                            	$("#responseMsg").text(result);
+                            	$("#responseModal").modal('show');
+                            },
+                            error: function() {
+                                $('#errorModal').modal('show');
+                            }
+                        });
+        }
+    });
+
+    $("#searchbox").keyup(function() {
+        // dtable.fnFilter(this.value); .dataTable
+        dtable.search(this.value).draw();
+    });
+
+    //Check if body height is higher than window height :)
+    if ($(document).height() > $(window).height()) {
+        $("#foot").addClass("footer-top-margin");
+    }
+    $('#dropdownId').on('change', function() {
+        var table = $('#zoneTable').DataTable();
+        table.destroy();
+        $('#zoneTBody').empty();
+        zonedata();
+    });
+
+    $('#zoneTable').on('click', '.iBtn', function() {
+        $('#submitZoneButton').hide();
+        $('#updateZoneButton').show();
+        // get the current row
+        var currentRow = $(this).closest("tr");
+        var col1 = currentRow.find("td:eq(0)").text(); // get current row 2nd TD
+        var col2 = currentRow.find("td:eq(2)").text(); // get current row 1st TD value
+        $("#zone").val(col2);
+        $("#zoneId").val(col1);
+        $(window).scrollTop(0);
+        // alert(data)
+    });
+
+    $('#zoneTable').on('click', '.dBtn', function() {
+        var currentRow = $(this).closest("tr");
+        var col2 = currentRow.find("td:eq(2)").text();
+        $('#delmsg1').html(col2);
+        $('#delmsg2').html(col2);
+        $('#deleteModal').modal('show');
+        var col1 = currentRow.find("td:eq(0)").text(); //get the id from table row
+        $("#deletedId").val(col1);
+
+    });
+
+    $('#reset').on('click', function() {
+        $('#submitZoneButton').show();
+        $('#updateZoneButton').hide();
+        $('.myForm #zoneId').val('');
+        $('.myForm #zone').val('');
+    });
+    
+	$("#tryagain").on('click', function(){
+		location.reload();
+    });
+</script>

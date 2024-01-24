@@ -1,0 +1,36 @@
+<footer ui-view="footer" id="foot">
+    <div class="container">
+        <div class="contents">
+            <div class="logo-copyright">
+						<span>
+							<div class="footer-logo">
+								<a href="http://www.pb.com/"><i
+                                        class="pb-footer-logo gradient"></i></a>
+							</div>
+						</span>
+						<span>
+						<div class="copyright"><span>© </span><span id="year"></span><span> Pitney Bowes Inc. All rights
+								reserved.</span></div>
+						</span>
+            </div>
+            <div class="footer-right">
+                <div class="privacy">
+                    <a
+                            href="http://www.pitneybowes.com/us/legal/privacy-statement.html"
+                            target="_blank" id="privacy_link">Privacy</a>
+                </div>
+                <div class="terms">
+                    <a href="http://www.pitneybowes.com/us/legal/terms-of-use.html"
+                       target="_blank" id="terms_and_conditions">Terms and
+                        Conditions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+
+$(document).ready(function() {
+	$("#year").text( (new Date).getFullYear() );
+});
+</script>

@@ -1,0 +1,659 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+<div class="fixed-header container-sm-footer create-label">
+    <div class="site-wrapper market-US">
+        <div class="container container-new">
+            <h1 class="text-center" th:text="#{service.master}">Service Master</h1>
+            <form autocomplete="off" name="serviceRegisterForm" id="serviceRegisterForm" role="form">
+                <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+                <div class="form-group col-md-12">
+                    <div class="col-md-6">
+                        <label th:text="#{select.service.sub.service}">Select Service/Sub Service</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input id="service" type="radio" name="rBTNservice" value="service" checked>
+                        <label><span th:text="#{services.rbtn}">Services</span></label>
+                    </div>
+                    <div class="col-md-3">
+                        <input id="subService" type="radio" name="rBTNsubService" value="subService">
+                        <label><span th:text="#{sub.services.rbtn}">Sub Service</span></label>
+                    </div>
+                    <input id="serviceId" name="serviceId" autocomplete="off" type="hidden" class="form-control">
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="col-md-6" id="subServiceGroup">
+                        <label id="selectSubServiceName"><span th:text="#{sub.service.name}">Sub Service Name</span><span>*</span></label>
+                        <label id="selectServiceName"><span th:text="#{service.name}">Service Name</span> <span>*</span></label>
+                        <input id="serviceName" name="serviceName" autocomplete="off" type="text" class="form-control" th:maxlength="50">
+                        <div id="serviceNameErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label><span th:text="#{service.code}">Service Code</span><span>*</span></label>
+                        <input id="serviceCode" name="serviceCode" autocomplete="off" type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" th:maxlength="5">
+                        <div id="serviceCodeErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="form-group col-md-6" id="serviceGroupDd">
+                        <label><span th:text="#{service.name}">Select Service</span> <span>*</span></label>
+                        <div class="form-group services-dropdown">
+                            <select class="form-control name hide" name="serviceNameList" id="serviceNameDd" placeholder="select services" multiple>
+                                <option th:each="service : ${servicesList}" th:value="${service.id}" th:id="${service.id}" th:text="${service.serviceName}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="col-md-6 spacer-bottom-md position-static" id="saveBtn">
+                        <button id="registerButton" type="button" class="btn btn-primary btn-block" th:text="#{add.service}">Add Service</button>
+                    </div>
+                    <div class="col-md-6 spacer-bottom-md" id="updateBtn">
+                        <button id="updateButton" type="button" class="btn btn-primary btn-block">Update Service</button>
+                    </div>
+                    <div class="col-md-6 position-static" id="resetBtn">
+                        <button id="resetButton" type="button" class="btn btn-primary btn-block" th:text="#{reset}">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- dropdown and tabel -->
+        <div class="col-md-12">
+            <div class="col-md-offset-6 col-md-2"></div>
+            <div class="col-md-2">
+                <select class="form-control name" name="dropdown" id="dropdownId">
+                    <option value="ACTIVE">Active</option>
+                    <option value="DISABLED">Disable</option>
+                    <option value="ALL">All</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="searchbox" class="form-control name" placeholder="search" width="48" height="48">
+            </div>
+        </div>
+        <div class="col-md-12 ">
+            <div class="col-md-offset-7 col-md-5"></div>
+            <table id="serviceTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="display: none;">SId</th>
+                        <th style="display: none;">psId</th>
+                        <th th:text="#{s.no}">S.No.</th>
+                        <th th:text="#{service.name}">Service Name</th>
+                        <th th:text="#{sub.service.name}">Sub Service Name</th>
+                        <th th:text="#{service.code}">Service Code</th>
+                        <th th:text="#{status}">Status</th>
+                        <th th:text="#{updated.on}">Updated On</th>
+                        <th th:text="#{updated.by}">Updated By</th>
+                        <th th:text="#{update}">Update</th>
+                        <th th:text="#{delete}">Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="serviceTBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Client register success Modal -->
+<div id="detailsModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 id="serviceSuccess" th:text="#{service.add.success}"> Service Added Successfully</h3>
+                <h3 id="subServiceSuccess" th:text="#{sub.service.add.success}"> Sub Service Added Successfully</h3>
+                <button id="close_success" type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+					</button>
+            </div>
+            <div class="text-center">
+                <button id="okButton" type="submit" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay
+                    </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="detailsUpdateModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 id="serviceUpSuccess" th:text="#{service.up.success}">Service updated successfully</h3>
+                <h3 id="subServiceUpSuccess" th:text="#{sub.service.up.success}"> Sub Service updated successfully</h3>
+                <button id="close_success" type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+					</button>
+            </div>
+            <div class="text-center">
+                <button id="okButton" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay
+                    </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Modal end -->
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{sorry.some.error.occurred}">Sorry!! Some error occurred</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true"></span><span class="sr-only"
+															  th:text="#{close}">Close</span>
+					</button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" class="btn btn-primary"
+							 data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Error Modal -->
+
+<!-- User Already exist Modal -->
+<div id="errorUserExistsModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{service.service.code.already.exist}">Service/Sub Service Code Already Exists.</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true"></span><span class="sr-only"
+															  th:text="#{close}">Close</span>
+					</button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" class="btn btn-danger"
+							 data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //User Already exist Modal -->
+
+<!-- Delete modal -->
+<div id="deleteModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="messageBeforeDelete" class="modal-header text-center">
+                <span>
+					<h3 class="errorForm" style="display: inline">Are you sure you want to delete Service/Sub Service?</h3>
+					<!-- <h3 class="errorForm" style="display: inline"> "</h3>
+					<h3 class="errorForm" id="delmsg1" style="display: inline"></h3>
+                    <h3 class="errorForm" style="display: inline">"?</h3> -->
+                    <h5  class="errorForm" th:text="#{confirm.service.rollback}">This action cannot be rollback. Service/Sub Service will be deleted permanently</h5>
+				</span>
+            </div>
+            <div id="messageAfterDelete" class="modal-header text-center">
+                <span>
+					<!-- <h3 style="display: inline">"</h3>
+					<h3 id="delmsg2" style="display: inline"></h3>
+					<h3 style="display: inline">" </h3> -->
+					<h3 style="display: inline">Service/Sub Service deleted successfully</h3>
+				</span>
+            </div>
+            <div class="label-options" id="changePassword">
+                <input id="delServiceId" name="delServiceId" type="hidden">
+                <button id="submitDeleteButton" type="button" class="btn btn-primary">Delete</button>
+                <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancel
+					</button>
+                <button id="deleteOk" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Delete Modal-->
+
+<!-- Select atleast one service-->
+<div id="selectService" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 class="select-parcels" th:text="#{at.least.one.service}">Select at least one Service</h3>
+            </div>
+            <div class="text-center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var dtable;
+    var resultData;
+    //var itemData;
+    //var multipleCancelButton;
+    $(document).ready(function() {
+        $('#updateBtn').hide();
+        $('#messageAfterDelete').hide();
+        $('#deleteOk').hide();
+        servicesData();
+
+        $("#serviceRegisterForm").validate({
+            rules: {
+                "serviceName": {
+                    nowhitespaceinstartandend: true,
+                    required: true,
+                    maxlength: 50
+                },
+                "serviceCode": {
+                    nowhitespaceinstartandend: true,
+                    required: true,
+                    maxlength: 5
+                },
+            },
+            messages: {
+                serviceNameList: "Please Select your Services"
+            },
+            errorPlacement: function(error, element) {
+                if ((element.attr("name") == "serviceName")) {
+                    $("#serviceNameErrorContainer").html(error);
+                    $("#serviceNameErrorContainer").show();
+                } else if ((element.attr("name") == "serviceCode")) {
+                    $("#serviceCodeErrorContainer").html(error);
+                    $("#serviceCodeErrorContainer").show();
+                }
+                //displays a tooltip
+                element.attr('title', error.text());
+                $(element).tooltip({
+                    position: {
+                        my: "left+5 center",
+                        at: "right center"
+                    },
+                    trigger: "hover"
+                });
+            },
+            //highlight the error field with red
+            highlight: function(element, error) {
+                $(element).css('background', '#FFCCCB');
+            },
+            // Called when the element is valid:
+            unhighlight: function(element) {
+                $(element).css('background', '#ffffff');
+            }
+        });
+
+        $('#selectSubServiceName').hide();
+        $('#selectServiceName').show();
+        $('#serviceGroupDd').hide();
+
+        $("input[name$='rBTNsubService']").click(function() {
+            $("input[name='rBTNservice']").prop('checked', false);
+            $('#serviceCode').val('');
+            $('#serviceName').val('');
+            $('#serviceId').val('');
+            $('#selectSubServiceName').show();
+            $('#selectServiceName').hide();
+            $('#serviceGroup').hide();
+            $('#serviceGroupDd').show();
+            $('#saveBtn').show();
+            $('#updateBtn').hide();
+            $("#serviceNameDd").multiselect('deselectAll', false);
+            $("#serviceNameDd").multiselect('rebuild');
+        });
+
+        $("input[name$='rBTNservice']").click(function() {
+            $("input[name='rBTNsubService']").prop('checked', false);
+            $('#serviceCode').val('');
+            $('#serviceId').val('');
+            $('#serviceName').val('');
+            $('#selectServiceName').show();
+            $('#selectSubServiceName').hide();
+            $('#serviceGroup').show();
+            $('#serviceGroupDd').hide();
+            $('#saveBtn').show();
+            $('#updateBtn').hide();
+            $("#serviceNameDd").multiselect('deselectAll', false);
+            $("#serviceNameDd").multiselect('rebuild');
+        });
+
+        //Check if body height is higher window height :)
+        if ($(document).height() > $(window).height()) {
+            $("#foot").addClass("footer-top-margin");
+        }
+
+        //onclick of enter key also, button event must be triggered
+        $("#serviceRegisterForm").keydown(function(event) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);
+            //keycode for enter key is 13
+            if (keyCode == 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("registerButton").click();
+            }
+        });
+
+    });
+
+    $("#registerButton").click(function() {
+        if ($("#serviceRegisterForm").valid()) {
+            var serviceNameList = $("#serviceNameDd").val();
+            var subServiceName = $("#serviceName").val();
+            var serviceCode = $("#serviceCode").val();
+            var service = document.getElementById("service");
+            var subService = document.getElementById("subService");
+            if (service.checked) {
+                $.ajax({
+                    type: "post",
+                    url: "/masterController/checkAndSaveService?ajax=true&",
+                    cache: false,
+                    dataType: "json",
+                    data: {
+                        service: $("#serviceName").val(),
+                        serviceCode: $("#serviceCode").val()
+                    },
+                    success: function(result) {
+                        if (result == false) {
+                            $('#subServiceSuccess').hide();
+                            $('#serviceSuccess').show();
+                            $('#detailsModal').modal('show');
+                        } else {
+                            $('#errorUserExistsModal').modal('show');
+                        }
+                    },
+                    error: function() {
+                        $('#errorModal').modal('show');
+                    }
+                });
+            } else if (subService.checked) {
+                $.ajax({
+                    type: "post",
+                    url: "/masterController/checkAndSaveSubService?ajax=true&",
+                    cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                    dataType: "json",
+                    data: {
+                        serviceNameList: serviceNameList,
+                        subServiceName: subServiceName,
+                        serviceCode: serviceCode
+                    },
+                    success: function(result) {
+                        if (result) {
+                            $('#serviceSuccess').hide();
+                            $('#subServiceSuccess').show();
+                            $('#detailsModal').modal('show');
+
+                        } else {
+                            $('#errorUserExistsModal').modal('show');
+                        }
+                    },
+                    error: function(result) {
+                        if ($('#serviceNameDd').val().length == 0) {
+                            $('#selectService').modal('show');
+                        } else {
+                            $('#errorModal').modal('show');
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    /* update services */
+    $("#updateButton").click(function() {
+        if ($("#serviceRegisterForm").valid()) {
+            var serviceNameList = $("#serviceNameDd").val();
+            var subServiceName = $("#serviceName").val();
+            var serviceCode = $("#serviceCode").val();
+            var service = document.getElementById("service");
+            var subService = document.getElementById("subService");
+            if (service.checked) {
+                $.ajax({
+                    type: "post",
+                    url: "/masterController/checkAndUpdateService?ajax=true&",
+                    cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                    dataType: "json",
+                    data: {
+                        serviceId: $("#serviceId").val(),
+                        service: $("#serviceName").val(),
+                        serviceCode: $("#serviceCode").val()
+                    },
+                    success: function(result) {
+                        if (result == false) {
+                            $('#serviceUpSuccess').show();
+                            $('#subServiceUpSuccess').hide();
+                            $('#detailsUpdateModal').modal('show');
+                        } else {
+                            $('#errorUserExistsModal').modal('show');
+                        }
+                    },
+                    error: function() {
+                        $('#errorModal').modal('show');
+                    }
+                });
+            } else if (subService.checked) {
+                $.ajax({
+                    type: "post",
+                    url: "/masterController/checkAndUpdateSubService?ajax=true&",
+                    cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                    dataType: "json",
+                    data: {
+                        serviceId: $("#serviceId").val(),
+                        serviceNameList: serviceNameList,
+                        subServiceName: subServiceName,
+                        serviceCode: serviceCode
+                    },
+                    success: function(result) {
+                        if (result) {
+                            $('#subServiceUpSuccess').show();
+                            $('#serviceUpSuccess').hide();
+                            $('#detailsUpdateModal').modal('show');
+
+                        } else {
+                            $('#errorUserExistsModal').modal('show');
+                        }
+                    },
+                    error: function() {
+                        if ($('#serviceNameDd').val().length == 0) {
+                            $('#selectService').modal('show');
+                        } else {
+                            $('#errorModal').modal('show');
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    /* End update services */
+
+    function servicesData() {
+        //for service
+        var status = $("#dropdownId").val();
+        $.ajax({
+            type: "post",
+            url: "/masterController/showAllServicesActiveStatus",
+            data: {
+            	status: status
+            },
+            dataType: "json",
+            cache: false,
+            success: function(result) {
+                resultData = result;
+                $.each(result, function(i, item) {
+                    var serviceNameCol;
+                    var subServiceNameCol;
+
+                    var updatedby = (item.updatedBy == null) ? "-" : item.updatedBy;
+                    var update_date = item.updatedOn;
+                    var uTime = new Date(update_date);
+                    var updateDate = item.updatedOn.substr(0, 10);
+                    var UpdateOndate = updateDate.split("-");
+                    var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+
+                    var activeStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-edit iBtn"></button>') : " - ";
+                    var deleteStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-trash dBtn"></button>') : " - ";
+                    ``
+                    var $tr = $('<tr>').append(
+                        $('<td style="display: none;">').text(item.id),
+                        $('<td style="display: none;">').text(item.parentServiceId),
+                        $('<td>').text(i + 1),
+                        $('<td>').text(item.serviceName),
+                        $('<td>').text(item.subService),
+                        $('<td>').text(item.serviceCode),
+                        $('<td>').text(item.status),
+                        $('<td>' + updatedOnDate_string + " " + uTime.toString().substring(16, 24) + '</td>'),
+                        $('<td>').text(updatedby),
+                        $('<td>').html(activeStatus),
+                        $('<td>').html(deleteStatus)
+                    );
+                    $('#serviceTBody').append($tr);
+                });
+
+                dtable = $('#serviceTable').DataTable({
+                    "order": ([2, "asc"]),
+                    "paging": true,
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_"
+                    },
+                    aoColumns: [{
+                        sWidth: '1%'
+                    }, {
+                        sWidth: '1%'
+                    }, {
+                        sWidth: '5%'
+                    }, {
+                        sWidth: '15%'
+                    }, {
+                        sWidth: '15%'
+                    }, {
+                        sWidth: '10%'
+                    }, {
+                        sWidth: '10%'
+                    }, {
+                        sWidth: '15%'
+                    }, {
+                        sWidth: '12%'
+                    }, {
+                        sWidth: '8%'
+                    }, {
+                        sWidth: '8%'
+                    }, ]
+                });
+                $(".dataTables_length").css('clear', 'none');
+                $(".dataTables_length").css('margin-top', '-6%');
+                $(".dataTables_length").css('margin-left', '2%');
+            },
+            error: function(response) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+
+    $("#submitDeleteButton").click(function() {
+        $.ajax({
+            type: "post",
+            url: "/masterController/deleteServiceOrSubServiceDetails?ajax=true&",
+            data: {
+                serviceId: $("#delServiceId").val()
+            },
+            success: function(result) {
+                $('#messageAfterDelete').show();
+                $('#messageBeforeDelete').hide();
+                $('#submitDeleteButton').hide();
+                $('#cancelButton').hide();
+                $('#deleteOk').show();
+            },
+            error: function(result) {
+                $("#deleteModal").modal('hide');
+                $('#errorModal').modal('show');
+            }
+        });
+    });
+    $("#searchbox").keyup(function() {
+        dtable.search(this.value).draw();
+    });
+
+    $('#dropdownId').on('change', function() {
+        var table = $('#serviceTable').DataTable();
+        table.destroy();
+        $('#serviceTBody').empty();
+        servicesData();
+    });
+
+    $('#serviceTable #serviceTBody').on('click', '.iBtn', function() {
+        var data = dtable.row($(this).parents('tr')).data();
+        var service = document.getElementById("service");
+        var subService = document.getElementById("subService");
+        if (data[4] == '-') {
+            $('#serviceName').val(data[3]);
+            $("input[name='rBTNsubService']").prop('checked', false);
+            $("input[name='rBTNservice']").prop('checked', true);
+            $('#serviceGroupDd').hide();
+            $('#selectSubServiceName').hide();
+            $('#selectServiceName').show();
+            $('#serviceId').val(data[0]);
+        } else if (data[4] != '-') {
+            $('#serviceName').val(data[4]);
+            $("input[name='rBTNservice']").prop('checked', false);
+            $("input[name='rBTNsubService']").prop('checked', true);
+            $('#serviceGroupDd').show();
+            $('#selectSubServiceName').show();
+            $('#selectServiceName').hide();
+            //$('#serviceId').val(data[0]);
+            $("#serviceNameDd").multiselect('deselectAll', false);
+
+            var currentRow = $(this).closest("tr");
+            var sCode = currentRow.find("td:eq(5)").text();
+            var sId1;
+            var sId2 = [];
+            $.each(resultData, function(j, itemsData) {
+                if (sCode == itemsData.serviceCode && itemsData.status == 'ACTIVE') {
+                    sId1 = itemsData.id;
+                    sId2.push(sId1);
+                    var pserviceId = itemsData.parentServiceId;
+                    $options = $('#serviceNameDd option');
+                    $options.filter('[value="' + pserviceId + '"]').prop('selected', true);
+                    $("#serviceNameDd").multiselect('rebuild');
+                }
+            });
+            $('#serviceId').val(sId2);
+        }
+
+        $('#saveBtn').hide();
+        $('#updateBtn').show();
+        $('#serviceCode').val(data[5]);
+        $(window).scrollTop(0);
+    });
+    $('#serviceTable #serviceTBody').on('click', '.dBtn', function() {
+        var data = dtable.row($(this).parents('tr')).data();
+        $('#delServiceId').val(data[0]);
+        $("#deleteModal").modal('show');
+    });
+
+    $("#resetButton").click(function() {
+        $('#saveBtn').show();
+        $('#updateBtn').hide();
+        $('#serviceName').val('');
+        $('#serviceCode').val('');
+        $('#serviceId').val('');
+        $("#serviceNameDd").multiselect('deselectAll', false);
+        $("#serviceNameDd").multiselect('rebuild');
+    });
+    $("#close_success").click(function() {
+        window.location.reload();
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#serviceNameDd').multiselect({
+            includeSelectAllOption: true,
+            selectAllValue: 'multiselect-all',
+            numberDisplayed: 3,
+            buttonWidth: 610
+        });
+        $("#serviceNameDd").multiselect('selectAll', false);
+        $("#serviceNameDd").multiselect('rebuild');
+    });
+</script>
+<th:block th:include="_footer"></th:block>
+</body>

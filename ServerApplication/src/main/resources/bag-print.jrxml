@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bagParcelList" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="31bd5f5b-fb84-4b16-902e-3995097dac6a">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<field name="objParcel" class="com.domain.Parcel"/>
+	<field name="locationId" class="java.lang.Long"/>
+	<field name="bagId" class="java.lang.String"/>
+	<field name="bagDesc" class="java.lang.String"/>
+	<field name="bagTitle" class="java.lang.String"/>
+	<title>
+		<band height="52" splitType="Stretch">
+			<staticText>
+				<reportElement x="227" y="0" width="133" height="19" uuid="587dc554-b2a5-4272-8285-091dcf4ed758"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[India Post ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="249" y="19" width="82" height="21" uuid="0c01a263-79b1-48ae-ab38-509b38f09a49"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[( Bag Parcels )]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="57" splitType="Stretch">
+			<componentElement>
+				<reportElement x="430" y="19" width="120" height="30" uuid="10202d26-9aeb-4e8b-85fc-f22c7967c534"/>
+				<jr:Code39 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:codeExpression><![CDATA[$F{bagId}]]></jr:codeExpression>
+				</jr:Code39>
+			</componentElement>
+			<staticText>
+				<reportElement x="433" y="2" width="100" height="17" uuid="c83d2fba-45d6-485a-b9dc-c991679964f0"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Bag Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="-2" width="70" height="21" uuid="80612ef8-edaa-4a03-96e4-18d57c711adf"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Bag Title :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="19" width="100" height="20" uuid="38c74906-6151-48f5-ad4f-44d24f6af542"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Bag Description :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="71" y="0" width="175" height="20" uuid="62e5adf8-8615-410f-9322-64c03a7a13e8"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bagTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="99" y="21" width="175" height="18" uuid="502061b1-0509-4c2e-bf8c-e984dc318356"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bagDesc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="3" width="40" height="30" uuid="2f270e95-183d-49ad-aab9-69a66fca4f21"/>
+				<box padding="5">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[S.No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="3" width="80" height="30" uuid="64043956-8644-47c5-bd40-019b64a05c53"/>
+				<box padding="5">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Track Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="3" width="118" height="30" uuid="8cf77d41-486c-48b3-a192-ee43890ef391"/>
+				<box padding="5">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Barcode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="238" y="3" width="80" height="30" uuid="85bd2f80-833f-4bc5-818a-bb0a42b9d5cd"/>
+				<box padding="5">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Content]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="318" y="3" width="192" height="30" uuid="8901a389-ea4e-4e0d-b5e2-2f19efa914cf"/>
+				<box padding="5">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Receiver Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="510" y="3" width="43" height="30" uuid="bd6a5368-50cc-41c5-8e67-e813acfd664e"/>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Weight
+(gms)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="40" height="30" uuid="357ea561-b174-4541-881e-085b85f3e091"/>
+				<box padding="1">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="40" y="1" width="80" height="30" uuid="f28b3e5c-8e2e-4966-9be5-79059af9a54c"/>
+				<box padding="1">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{objParcel}.getTrackId()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="238" y="1" width="80" height="30" uuid="ffc11ee0-b232-416e-bfae-920807ee81ac"/>
+				<box padding="1">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{objParcel}.getParcelContent()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="318" y="1" width="192" height="30" uuid="ea890b84-6046-4acd-b588-4ae0c7e4a53e"/>
+				<box padding="1">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<paragraph lineSpacing="Single" leftIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Name :"+$F{objParcel}.getRecipientName() +", Mob :0"+$F{objParcel}.getRecipientMobileNumber()+","+ $F{objParcel}.getReceiverAddress().getAddressLine1()+","+$F{objParcel}.getReceiverAddress().getPostalCode()+","+$F{objParcel}.getReceiverAddress().getZone()+","+$F{objParcel}.getReceiverAddress().getDivision()+","+$F{objParcel}.getReceiverAddress().getDistrict()+","+$F{objParcel}.getReceiverAddress().getThana()+","+$F{objParcel}.getReceiverAddress().getSubOffice()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="510" y="1" width="43" height="30" uuid="283cb9a9-0bec-412e-b87e-9cbb442b75ad"/>
+				<box padding="1">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{objParcel}.getActWt()]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement stretchType="RelativeToBandHeight" x="120" y="1" width="118" height="30" uuid="c8177d36-e6a0-4030-a340-5d03ee03473b"/>
+			</rectangle>
+			<componentElement>
+				<reportElement mode="Transparent" x="126" y="6" width="109" height="21" uuid="af7e439b-e181-452d-be13-be6f9c86096f"/>
+				<jr:Code39 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="none" verticalQuietZone="7.0">
+					<jr:codeExpression><![CDATA[$F{objParcel}.getTrackId()]]></jr:codeExpression>
+				</jr:Code39>
+			</componentElement>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="90" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="30388405-e970-41b2-aad5-113a4e3eddc6"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[No of parcels :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="140" height="20" uuid="76fdfaf2-30be-4978-a357-f3222025578f"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Report Generated on :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="30" width="50" height="20" uuid="08832e63-197c-42ab-b8f2-a76388921e5d"/>
+				<text><![CDATA[Page No :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="0" width="100" height="20" uuid="735ecb7f-305e-4baf-bc90-61bbfe161639"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="140" y="30" width="170" height="20" uuid="5bcebb68-c2a4-450f-a13c-f99efdc4c062"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd-MM-yyyy hh:mm aaa").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="500" y="30" width="55" height="20" uuid="47dae9c4-e9ec-4e31-a6bc-82210fd5bee7"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

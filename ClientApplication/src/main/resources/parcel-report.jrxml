@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LandscapeReport" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="10" uuid="6f8c7653-e1ce-479f-8101-cd192e6e3454">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<field name="labelCode" class="java.lang.String"/>
+	<field name="trackId" class="java.lang.String"/>
+	<field name="senderName" class="java.lang.String"/>
+	<field name="recipientName" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="createdDate" class="java.util.Date"/>
+	<field name="parcelContent" class="java.lang.String"/>
+	<field name="service" class="java.lang.Long"/>
+	<field name="subServices" class="java.lang.Long"/>
+	<field name="senderMobileNumber" class="java.lang.Long"/>
+	<field name="recipientMobileNumber" class="java.lang.Long"/>
+	<field name="senderAddress" class="com.domain.Address"/>
+	<field name="receiverAddress" class="com.domain.Address"/>
+	<field name="invoiceBreakup" class="com.domain.InvoiceBreakup"/>
+	<field name="printCount" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="321" y="3" width="200" height="20" uuid="30fb7c84-ccb9-4203-8978-843ba6cd9059"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Parcel Report]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="378" y="20" width="370" height="15" uuid="b0fa2694-e9f2-4817-b2b6-a9b812b222e6"/>
+				<textFieldExpression><![CDATA["("+new SimpleDateFormat("dd-MM-yyyy").format($P{fromDate})+" - "+new SimpleDateFormat("dd-MM-yyyy").format($P{toDate})+")"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="10" width="30" height="20" uuid="1ff3c7bf-dfd1-42ca-9ab0-477e961297c2"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="10" width="110" height="20" uuid="292ac689-5960-445f-9e0b-3c5de769af62"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Label Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="10" width="60" height="20" uuid="6608b527-e30c-46d2-bdc8-7d2909690b76"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Track Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="10" width="130" height="20" uuid="ae54f6d3-a6f1-4de4-b68d-a6f1de779621"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sender Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="10" width="130" height="20" uuid="b3c40eaa-c64d-45f1-bc55-fe93238cad55"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Recipient Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="470" y="10" width="40" height="20" uuid="41311882-2a54-4e9b-8074-859892df87cb"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="510" y="10" width="70" height="20" uuid="ffd2b2e3-c225-440c-9a89-f210a9f40d72"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="580" y="10" width="100" height="20" uuid="9068c6fc-9fcd-4e2e-a5ae-c580ef718b3f"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Parcel Content]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="680" y="10" width="152" height="20" uuid="9ddf1067-8d74-4609-91a1-8408cbfb52d2"/>
+				<box topPadding="-3" leftPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Services]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="10" y="0" width="30" height="20" uuid="0668cb1d-203e-47df-925c-deaa201bf451"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="40" y="0" width="110" height="20" uuid="1ccad6bb-6edf-4f04-98e8-f7ee24a9f225"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{labelCode}+"-"+$F{printCount}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="150" y="0" width="60" height="20" uuid="612fe061-8c5d-4b52-a3dd-84427e748299"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trackId}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="210" y="0" width="130" height="20" uuid="abd876bc-3f3d-4aa2-8715-8ba594358342"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Name : "+$F{senderName}+", Mob : "+$F{senderMobileNumber}+","+$F{senderAddress}.getAddressLine1()+","+$F{senderAddress}.getSubOffice()+","+$F{senderAddress}.getThana()+","+$F{senderAddress}.getDistrict()+","+$F{senderAddress}.getDivision()+","+$F{senderAddress}.getZone()+"-"+$F{senderAddress}.getPostalCode()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="340" y="0" width="130" height="20" uuid="773f18e3-8ded-43ab-884c-2fd12ee6bbc4"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Name :"+$F{recipientName}+", Mob :"+$F{recipientMobileNumber}+","+$F{receiverAddress}.getAddressLine1()+","+$F{receiverAddress}.getSubOffice()+","+$F{receiverAddress}.getThana()+","+$F{receiverAddress}.getDistrict()+","+$F{receiverAddress}.getDivision()+","+$F{receiverAddress}.getZone()+"-"+$F{receiverAddress}.getPostalCode()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="470" y="0" width="40" height="20" uuid="b5199f6b-e246-4f96-9f31-071fcc5bcbee"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="510" y="0" width="70" height="20" uuid="06c15add-45ac-4fe0-bac3-2a4f5d3f7946"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd-MM-yyyy hh:mm aaa").format($F{createdDate})]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="580" y="0" width="100" height="20" uuid="89775fed-9b12-4e70-92de-26eb044b8947"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{parcelContent}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="680" y="0" width="152" height="20" uuid="c78a6eb2-ccc3-442f-90bb-e5322e79b75a"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{invoiceBreakup}.getName()==null ? (""):($F{invoiceBreakup}.getName()+" , Price :"+$F{invoiceBreakup}.getPayableAmnt())]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="15">
+			<textField pattern="MM d, yyyy h:mm:ss a z">
+				<reportElement x="20" y="0" width="200" height="15" isRemoveLineWhenBlank="true" uuid="3f452153-41b0-4296-84b9-5a78825a18dc"/>
+				<textElement verticalAlignment="Middle">
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Report Generated on: " + new SimpleDateFormat("dd-MM-yyyy hh:mm aaa").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="750" y="0" width="50" height="15" uuid="64423241-3be2-429b-afa6-dcbc31b99ed9"/>
+				<textFieldExpression><![CDATA["Page No."+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

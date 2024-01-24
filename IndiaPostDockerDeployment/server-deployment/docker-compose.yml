@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+  db:
+    container_name: serverdb
+    build:
+      context: ./server-db
+      dockerfile: Dockerfile
+    ports:
+      - '5433:5432'
+    volumes:
+      - ${PWD}/db:/var/lib/postgresql/data
+    networks:
+      - india-post-network
+  
+  serverapplication:
+    container_name: server-application
+    image: registry.gitlab.com/liberintech/india-post/server-application:0.1.0
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres 
+      DB_NAME: indiapostserver  
+    ports:
+      - "81:81"
+    depends_on:
+      - db
+    networks:
+      - india-post-network
+
+  serverapi: 
+    container_name: server-api 
+    image: registry.gitlab.com/liberintech/india-post/server-api:0.1.0
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: indiapostserver
+    ports:
+      - "82:82"
+    depends_on:
+      - db
+    networks:
+      - india-post-network
+
+networks:
+  india-post-network:
+    driver: bridge 
+    external: false
+    name: india-post-network
+
+volumes: 
+  db-data:
+    driver: local

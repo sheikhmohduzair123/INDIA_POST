@@ -1,0 +1,641 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<div class="fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+        <!-- /header -->
+      <form autocomplete="off" name="dailySummaryForm" id="dailySummaryForm"
+					role="form">
+
+        <h1 class="text-center" th:text="#{client.last.sync.report}">Counter Last Sync Report</h1>
+
+	    <div class="downloadReport">
+			<div class="col-md-12">
+			<div class="form-group col-md-4">
+				<label> <span th:text="#{zone1}">Zone</span>
+				</label> <!-- <input id="zone" name="zone" autocomplete="off" type="text"
+					list="zoneList" > -->
+			 		<select id="zoneList" class="selectpicker form-control"></select>
+
+			<!-- <datalist id="zoneList">
+				</datalist> -->
+			</div>
+
+			<div class="form-group col-md-4">
+				<label> <span th:text="#{division1}">Division</span>
+				</label> <!-- <input id="division" name="division" autocomplete="off"
+					list="divisionList" type="text" class="form-control"> -->
+					<select id="divisionList" class="selectpicker form-control"></select>
+				<!-- <datalist id="divisionList">
+				</datalist> -->
+			</div>
+
+			<div class="form-group col-md-4">
+				<label> <span th:text="#{district1}">District</span>
+				</label> <!-- <input id="district" name="district" autocomplete="off"
+					list="districtList" type="text" class="form-control">
+				<datalist id="districtList">
+				</datalist> -->
+				<select id="districtList" class="selectpicker form-control"></select>
+			</div>
+			</div>
+			<div class="col-md-12">
+			<div class="form-group col-md-4">
+				<label> <span th:text="#{thana1}">Thana</span>
+				</label> <!-- <input id="thana" name="thana" autocomplete="off" list="thanaList"
+					type="text" class="form-control">
+
+				<datalist id="thanaList">
+				</datalist> -->
+				<select id="thanaList" class="selectpicker form-control">
+				</select>
+			</div>
+
+			<div class="form-group col-md-4">
+				<label> <span th:text="#{suboffice1}">Sub Office</span>
+				</label> <!-- <input id="subOffice" name="subOffice" autocomplete="off"
+					list="subOfficeList" type="text" class="form-control"> -->
+
+				<!-- <datalist id="subOfficeList">
+				</datalist> -->
+				<select id="subOfficeList" class="selectpicker form-control">
+				</select>
+			</div>
+			
+			 <div class="form-group col-md-4 spacer-top-md">
+                <button type="button" id="getReportButton" class="btn btn-primary form-control" th:text="#{get.report}">
+                    Get Report
+                </button>
+            </div>
+
+			</div>
+			 </form>
+		<!-- <div class="col-md-12">
+			
+	    
+	
+	        </div> -->
+	        <div>
+	        <div class="col-md-offset-9 col-md-2 spacer-top-md">
+	                <input type="text" id="searchbox" class="form-control name" th:placeholder="#{search}">
+	        </div>
+	        
+	        <div id="display_result" class="col-md-12">
+	        
+	        </div>
+	        </div>
+
+		<div id="no_data" style="display:none">
+                <h3 class="tableTitle text-center">
+					<span th:text="#{no.transactions.available}"> No
+						Transactions Available </span><span>!!!</span>
+                </h3>
+         </div>
+         </div>
+   
+</div>
+</div>    
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>
+<script>
+var $tr;
+var $table;
+var $tbody ;
+
+$(document).ready(function() {
+	$('#rtable').DataTable();
+    $("#searchbox").hide();
+       
+    $("#getReportButton").click(function() {
+    	
+    	 $("#searchbox").hide();
+		 updatePage();
+	} );
+    
+    function updatePage(){
+    	//$("#searchbox").show();
+		$.ajax({
+            type: "post",
+            url: "/server/clientLastSyncReport?ajax=true&",
+            data: {
+         	   		zone: $("#zoneList").val(),
+                     division: $("#divisionList").val(),
+                     district: $("#districtList").val(),
+                     thana: $("#thanaList").val(),
+                     subOffice: $("#subOfficeList").val(),
+            },
+            dataType: "json",
+            cache: false,
+			   success: function(response) {
+				var title_area;
+
+				//set title_area
+				if($("#zoneList").val() == "All")
+				{
+					title_area="Bangladesh";
+				}
+				else if($("#divisionList").val() == "All")
+				{
+					title_area=$("#zoneList").val();
+				}
+				else if($("#districtList").val() == "All")
+				{
+					title_area=$("#divisionList").val();
+				}
+				else if($("#thanaList").val() == "All")
+				{
+					title_area=$("#districtList").val();
+				}
+				else if($("#subOfficeList").val() == "All")
+				{
+					title_area=$("#thanaList").val();
+				}
+				else
+				{
+					title_area=$("#subOfficeList").val();
+				}
+
+				
+
+				 view_flag=1;
+			     $('#display_result').html('');
+
+			     if(jQuery.isEmptyObject(response))
+	  			 {
+	  			   	$("#no_data").show();
+	  			 }
+	  			// else if(($("#list").val() == "Select Group By"))
+	   			 //{
+	  			else{	
+	  				$("#searchbox").show();
+	  			
+			  					$("#no_data").hide();
+
+					            // create table
+		          		   		$table = $('<table id="rtable" class="table">');
+
+		          		   	    // thead
+		           				$table.append('<thead>').children('thead')
+		            			.append('<tr />').children('tr').append('<th>S.No.</th><th>Counter Name</th><th>Address</th><th>Latest Update Time</th>');
+
+		        			    //tbody
+		            		    $tbody = $table.append('<tbody id="tbody" />').children('tbody');
+
+		        			    var j=1;
+
+	   						$.each(response, function(key, item) {
+	   	  						//key.length gives key length (eg if khulna result is 6)
+	   	  						//value.length gives elements in each value
+
+
+	   	                   				 var update_date = item.syncUpdatedTimestamp;
+                    					var uTime = new Date(update_date);
+					                    var updateDate = item.syncUpdatedTimestamp.substr(0, 10);
+					                    var UpdateOndate = updateDate.split("-");
+					                    var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+	   	                   		        
+
+	   	                               // add row
+	   	                   	           $tbody.append('<tr />').children('tr:last')
+	   	                                .append("<td>"+(j++)+"</td>")
+	   	                                .append("<td>"+item.clientName+"</td>")
+	   	                                
+	   	                                
+
+	   	                                .append("<td>"+
+	   	                                	item.subOffice+", "+item.thana+", "+ item.district+", "+item.division+", "+ item.zone +", "+"Bangladesh"+", "+item.postalCode+"</td>")
+	   	                                 .append("<td>"+updatedOnDate_string + " " + uTime.toString().substring(16, 24)+"</td>")
+
+	   	                  		          $table.appendTo('#display_result');
+	   	  				});
+
+		               	$table.removeAttr('width').dataTable({
+
+	   	             				"dom": '<"top"lB>rt<"bottom"ip>',
+	   	             	      		 "deferRender": true,
+
+	   	               			"oLanguage": {
+		  					  	  		 "sLengthMenu": "_MENU_"
+		  					    	 },
+		  					    	//to disble page no for 1st page
+										"fnDrawCallback": function(oSettings) {
+									        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+									            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+									        }
+									        else
+									        {
+									            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+									        }
+									    },
+	   	               			/* "createdRow": function(row, data, dataIndex) {
+	   	               			    if (data[9] == "void") {
+	   	               			   //   $(row).css("background-color", '#FFCCCB');
+	   	               			      $(row).addClass("danger");
+	   	               			    }
+	   	               			  },*/
+		   	  					    bAutoWidth: false,
+		   	  					    aoColumns : [
+		   	  						    { sWidth: '1%' },
+		   	  							{ sWidth: '10%' },
+		   	  							{ sWidth: '10%' },
+		   	  							{ sWidth: '10%' }
+		   	  							
+		   	  				  ],
+
+	   	               		 buttons: [
+
+	     	                       { extend: 'pdfHtml5',
+		 	      	                    	text: '<span class="fa fa-file-pdf-o"></span>',
+		 	      	                    	title: 'Counter Last Sync Report'+" ("+title_area+")",
+		 	      	                      	orientation: 'landscape',
+		 	      	                    	pageSize: 'A4',
+		 	      	                    	"charset": "utf-8",
+		 	      	                    	footer: true,
+		 	      	                    	exportOptions: {
+			 	      	                                modifier: { page: 'all', search: 'none' } ,
+			 	      	                    	},
+			 	      	 					customize: function (doc) {
+			 	      	 					   doc.content[1].layout = "Borders";
+			 	      	 				       doc.content[1].margin = [ 0, 0, 0, 0 ]; //left, top, right, bottom
+
+				 	      	                   	 doc.defaultStyle.fontSize = 9;
+					 	      	 				 doc.styles.tableHeader.fontSize = 9;
+					 	      	 				doc.content[1].table.widths = ["10%", "25%", "40%", "25%"];	
+					 	      	 			 doc.defaultStyle.alignment = 'center';
+		                                        doc.styles.tableHeader.alignment = 'center';
+
+		                                        var rowCount = doc.content[1].table.body.length;
+		                                        for (i = 1; i < rowCount; i++) {
+		                                            doc.content[1].table.body[i][1].alignment = 'center';
+		                                        }
+
+			 	      							//Create a date string that we use in the footer. Format is dd-mm-yyyy
+			 	      							var d1 = new Date();
+			 	      							var jsDate = d1.getDate()+'-'+(d1.getMonth()+1)+'-'+d1.getFullYear();
+
+			 	      							doc['footer']=(function(page, pages) {
+			 	      								return {
+			 	      									columns: [
+			 	      										{
+			 	      											alignment: 'left',
+			 	      											text: ['Created on: ', { text: d1.toString().substring(0, 21) }]
+			 	      										},
+			 	      										{
+			 	      											alignment: 'right',
+			 	      											text: ['page ', { text: page.toString() },	' of ',	{ text: pages.toString() }]
+			 	      										}
+			 	      									],
+			 	      									margin: 20
+			 	      								}
+			 	      							});
+			 	      	 					
+		 	      	                       },
+	     	                       },
+		 	      	                       {
+		 	         	                    	extend: 'excelHtml5',
+		 	         	                        text: '<span class="fa fa-file-excel-o"></span>',
+		 	         	                        title: 'Counter Last Sync Report'+ " ("+title_area+")",
+		 	         	                      	orientation: 'landscape',
+			 	      	                    	pageSize: 'A4',
+			 	      	                    	footer: true,
+			 	      	                    	exportOptions: {
+				 	      	                    	   modifier: { page: 'all', search: 'none' } ,
+				 	      	                    	},
+
+		 	         	                   }
+	     	                       
+		 	     					],
+		 	     					
+	  	        			});
+		               	
+	   				}
+	  			$("#searchbox").keyup(function() {
+	       			  $table.fnFilter(this.value);
+	       			});
+	  			
+
+		               $(".dataTables_length").css('clear', 'none');
+		                 $(".dataTables_length").css('margin-top', '-39px');
+		                 $(".dataTables_length").css('margin-left', '0px');
+		                 $(".dataTables_length").css('display', 'contents');
+		                 
+		                 $(".dt-buttons").css('clear', 'none');
+		               
+		                 $(".dt-buttons").css('margin-top', '-37px');
+		              
+		                
+	 		}
+			   
+    	
+    	
+		});
+		
+		}
+		
+    function zone(){
+    	//Populate Zone List on document Ready
+    		$.ajax({
+    			type: "post",
+    			url:"/parcel/getDistinctZone?ajax=true",
+    			success:function(result){
+    				$("#zoneList").append('<option>All</option>');
+    			  $.each(result,function(key, data){
+    			    var zoneList = '<option>'+data+'</option>';
+    			    $("#zoneList").append(zoneList);
+    			  //  $("#zoneList").append(zoneList);
+    			  });
+    			}
+    		});
+    	}
+
+    	function division(){
+    		//Populate Division List on document Ready
+    		$.ajax({
+    			type: "post",
+    		    url:"/parcel/getDistinctDivision?ajax=true",
+    		    success:function(result){
+    		    	$("#divisionList").append('<option>All</option>');
+    		      $.each(result,function(key, data){
+    		        var divisionList = '<option>'+data+'</option>';
+    		        $("#divisionList").append(divisionList);
+    		    //    $("#divisionList").append(divisionList);
+    		      });
+    		    }
+    		  });
+    	}
+
+    	function district(){
+    		//Populate district List on document Ready
+    		$.ajax({
+    			type: "post",
+    		    url:"/parcel/getDistinctDistrict?ajax=true",
+    		    success:function(result){
+    		    	$("#districtList").append('<option>All</option>');
+    		      $.each(result,function(key, data){
+    		        var districtList = '<option>'+data+'</option>';
+    		        $("#districtList").append(districtList);
+    		      //  $("#districtList").append(districtList);
+    		      });
+    		    }
+    		  });
+    	}
+
+    	function thana(){
+    		//Populate Thana List on document Ready
+    		$.ajax({
+    		type: "post",
+    		url:"/parcel/getDistinctThana?ajax=true",
+    		success:function(result){
+    			$("#thanaList").append('<option>All</option>');
+    		  $.each(result,function(key, data){
+    		    var thanaList = '<option>'+data+'</option>';
+    		    $("#thanaList").append(thanaList);
+    		  });
+    		}
+    		});
+    	}
+
+    	function subOffice(){
+    		//Populate Suboffice List on document Ready
+    		$.ajax({
+    			type: "post",
+    		url:"/parcel/getSubOffice?ajax=true",
+    		success:function(result){
+    		//	$("#subOfficeList").empty();
+    			$("#subOfficeList").append('<option>All</option>');
+    		  $.each(result,function(key, data){
+    		    var soList = "<option value='" + data.subOffice + "'>" + data.subOffice +' ('+data.postalCode+')'+ "</option>";
+    		    $("#subOfficeList").append(soList);
+    		  //  $("#zoneList").append(zoneList);
+    		  });
+    		}
+    		});
+    	}
+    
+
+    	
+    	$(window).on('load',function(){
+
+    	  	zone();
+    		division();
+    		district();
+    		thana();
+    		subOffice();
+    });
+
+    //Check if body height is higher than window height :)
+    if ($(document).height() > $(window).height()) {
+        $("#foot").addClass("footer-top-margin");
+    }
+    
+    
+    //On change function
+    
+    $('#subOfficeList').on('change', function() {
+		if($('#subOfficeList').val() != "All"){
+			$.ajax({
+				type: "post",
+				  url:"/parcel/getAddressBySubOffice?ajax=true",
+				  data:{
+				    subOffice: $("#subOfficeList").val()
+				  },
+				  success:function(result){
+					  $("#zoneList").val(result.zone);
+				      $("#divisionList").val(result.division);
+				      $("#districtList").val(result.district);
+				      $("#thanaList").val(result.thana);
+
+				  }
+				});
+		 }
+	});
+
+	//Populate zone, division, district fields based on thana
+	$('#thanaList').on('change', function() {
+	$.ajax({
+		type: "post",
+	  url:"/parcel/getAddressByThana?ajax=true",
+	  data:{
+	    thana: $("#thanaList").val()
+	  },
+	  success:function(result){
+	      $("#zoneList").val(result[0].zone);
+	      $("#divisionList").val(result[0].division);
+	      $("#districtList").val(result[0].district);
+
+	  }
+	});
+	});
+
+
+	//Populate zone, division fields based on district
+	$('#districtList').on('change', function() {
+		$.ajax({
+			type: "post",
+		  url:"/parcel/getAddressByDistrict?ajax=true",
+		  data:{
+		    district: $("#districtList").val()
+		  },
+		  success:function(result){
+
+		      $("#zoneList").val(result[0].zone);
+		      $("#divisionList").val(result[0].division);
+
+		  }
+		});
+	});
+
+	//Populate zone fields based on division
+	$('#divisionList').on('change', function() {
+		$.ajax({
+			type: "post",
+		  url:"/parcel/getAddressByDivision?ajax=true",
+		  data:{
+		    division: $("#divisionList").val()
+		  },
+		  success:function(result){
+		      $("#zoneList").val(result[0].zone);
+
+		  }
+		});
+	});
+
+	//Populate Division option List Based On Zone
+	$('#zoneList').on('change', function() {
+		if($("#zoneList").val() != "All"){
+			$.ajax({
+				type: "post",
+				  url:"/parcel/getDistinctDivisionByZone?ajax=true",
+				  data:{
+				    zone: $("#zoneList").val()
+				  },
+				  success:function(result){
+				   $("#divisionList").empty();
+				    $("#divisionList").append('<option>All</option>');
+				    $.each(result,function(key, data){
+				      var divisionList = '<option>'+data+'</option>';
+				      $("#divisionList").append(divisionList);
+				    });
+
+				    $("#districtList").empty();
+				    district();
+				     $("#thanaList").empty();
+				    thana();
+				    $("#subOfficeList").empty();
+				    subOffice();
+
+				  }
+				});
+		}else{
+			$("#divisionList").empty();
+			division();
+			$("#districtList").empty();
+			district();
+			$("#thanaList").empty();
+			thana();
+			$("#subOfficeList").empty();
+			subOffice();
+
+		}
+	});
+
+	//Populate District Option List Based On Division
+	$('#divisionList').on('change', function() {
+		if($("#divisionList").val() != "All"){
+			$.ajax({
+				type: "post",
+				  url:"/parcel/getDistinctDistrictByDivision?ajax=true",
+				  data:{
+				    division: $("#divisionList").val()
+				  },
+				  success:function(result){
+				   $("#districtList").empty();
+				    $("#districtList").append('<option>All</option>');
+				    $.each(result,function(key, data){
+				      var districtList = '<option>'+data+'</option>';
+				      $("#districtList").append(districtList);
+				    });
+
+				    $("#thanaList").empty();
+					   thana();
+				    $("#subOfficeList").empty();
+				    subOffice();
+				  }
+				});
+		}else{
+			$("#districtList").empty();
+			district();
+			$("#thanaList").empty();
+			thana();
+			$("#subOfficeList").empty();
+			subOffice();
+
+		}
+
+	});
+
+	//Populate Thana Option List Based On District
+	$('#districtList').on('change', function() {
+		if($("#districtList").val() != "All"){
+			$.ajax({
+				type: "post",
+				  url:"/parcel/getDistinctThanaByDistrict?ajax=true",
+				  data:{
+				    district: $("#districtList").val()
+				  },
+				  success:function(result){
+				   $("#thanaList").empty();
+				    $("#thanaList").append('<option>All</option>');
+				    $.each(result,function(key, data){
+				      var thanaList = '<option>'+data+'</option>';
+				      $("#thanaList").append(thanaList);
+				    });
+				    $("#subOfficeList").empty();
+				   subOffice();
+
+				  }
+				});
+		}
+		else{
+			$("#thanaList").empty();
+			thana();
+			$("#subOfficeList").empty();
+			subOffice();
+		}
+	});
+
+
+	//Populate subOffice Option List Based On Thana
+	$('#thanaList').on('change', function() {
+		if($("#thanaList").val() != "All"){
+			$.ajax({
+				type: "post",
+				  url:"/parcel/getSubOfficeByThana?ajax=true",
+				  data:{
+				    thana: $("#thanaList").val()
+				  },
+				  success:function(result){
+				   $("#subOfficeList").empty();
+				    $("#subOfficeList").append('<option>All</option>');
+				    $.each(result,function(key, data){
+				      var subOfficeList = "<option value='" + data.subOffice + "'>" + data.subOffice +' ('+data.postalCode+')'+ "</option>";
+				      $("#subOfficeList").append(subOfficeList);
+				    });
+
+
+				  }
+				});
+		}
+		else{
+			$("#subOfficeList").empty();
+			subOffice();
+		}
+
+	});
+
+    
+    
+    
+});
+</script>

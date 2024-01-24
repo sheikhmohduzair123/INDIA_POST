@@ -1,0 +1,629 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="container fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+
+	<div style="display:none">
+			<p id="enablePdfDownload" th:text="${enablePdfDownload}"></p>
+		</div>
+
+		<div style="display:none">
+			<p id="printer" th:text="${printer}"></p>
+		</div>
+
+        <!-- Input the tracking id -->
+        <div class="floating-unit">
+            <form autocomplete="off" name="searchParcelForm"
+                  id="searchParcelForm" role="form" value="v2">
+                <div class="form-group">
+                    <label th:text=#{tracking.id}>Enter Your Tracking ID</label> <input
+                        id="trackId" name="trackId" type="text" class="form-control">
+                </div>
+                <button id="trackButton" type="button"
+                        class="btn btn-primary btn-block btn-lg" data-toggle="modal"
+                        th:text=#{fetch.details}>Fetch Details</button>
+            </form>
+        </div>
+        <!-- Input the tracking id end-->
+
+        <!-- Recent transactions table-->
+        <div class="col-md-12">
+
+            <div th:if="${#lists.isEmpty(parcels)}">
+                <h3 class="tableTitle">
+					<span th:text="#{no.transactions.available}"> No
+						Transactions Available </span><span>!!!</span>
+                </h3>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(parcels)}">
+                <h2 class="tableTitle" th:text="#{recent.transactions}">Recent
+                    Transactions</h2>
+                <table id="parceltable" class="css-serial text-center table">
+                    <thead>
+                    <tr>
+                        <th class="col-sm-1 text-center" th:text="#{s.no}">S.No.</th>
+                        <th class="col-sm-2 text-center" th:text="#{trackid}">Track
+                            ID</th>
+                        <th class="col-sm-2 text-center" th:text="#{labelcode}">Label
+                            Code</th>
+                        <th class="col-sm-4 text-center" th:text="#{service.name}">Service
+                            Name</th>
+                        <th class="col-sm-1 text-center"><span th:text="#{price}">Price</span>
+                            (<span th:text="#{taka}"></span>) </th>
+                        <th class="col-sm-1 text-center" th:text="#{receiver.pincode}">Receiver
+                            PIN Code</th>
+                        <th class="col-sm-1 text-center" th:text="#{current.status}">Current
+                            Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="parcel : ${parcels}">
+                        <td></td>
+                        <td><a th:text="${parcel.trackId}" href="#" class="trackId"></a></td>
+                        <td><span th:text="${parcel.labelCode}"></span><span>-</span><span
+                                th:text="${parcel.printCount}"></span></td>
+                        <td th:text="${parcel.invoiceBreakup.name}"></td>
+                        <td th:text="${parcel.invoiceBreakup.payableAmnt}"></td>
+                        <td th:text="${parcel.receiverAddress.postalCode}"></td>
+                        <td><span th:if="${parcel.status} == 'booked'">Booked</span>
+                            <span th:if="${parcel.status} == 'void'">Void</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Recent transactions table end-->
+    </div>
+
+    <!-- overlay -->
+    <div class="overlay">
+
+        <div id="loading-img"></div>
+    </div>
+    <!-- overlay -->
+</div>
+<!-- End Container -->
+
+<!-- Cancel Modal -->
+<div id="confirm-cancel-modal" class="modal fade" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+				<span class="h3 col-xs-12 text-center"><span
+                        th:text="#{confirm.void.parcel}">Do you want to void this order</span><span>?</span></span>
+            </div>
+            <div class="modal-body col-sm-12">
+            <div class="col-sm-12 text-center">
+				<span><button type="button" class="btn btn-primary"
+                              id="cancelNoButton" data-dismiss="modal" th:text="#{no}">No</button></span>
+                <span><button type="button" class="btn btn-primary"
+                              data-toggle="modal" data-target="#cancelParcelSuccessModal"
+                              id="cancelYesButton" th:text="#{yes}">Yes</button></span>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Cancel Modal -->
+
+
+<!-- Cannot cancel synced parcel Error Modal -->
+<div id="parcelSyncedModal" class="modal fade" tabindex="-1" role="dialog" >
+   <div class="modal-dialog modal-md">
+      <div class="modal-content text-center">
+				<span class="h3 col-xs-12 text-center"
+                      th:text="#{not.authorized.to.void}">You are not authorized to void this parcel.</span>
+         <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
+   </div>
+</div>
+
+<!-- //Track Id not present Error Modal -->
+
+<!-- error -->
+<div id="errorModal" class="modal fade" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content modal-body">
+            <div class="modal-header text-center mb-0">
+                <div class="col-sm-3">
+                    <span class="glyphicon glyphicon-alert fa-5x"></span>
+                </div>
+                <div class="col-sm-9 text-left">
+                    <h1>Oops!</h1>
+                </div>
+                <button id="close" type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true"></span><span class="sr-only"
+                                                          th:text="#{close}">Close</span>
+                </button>
+            </div>
+            <div class="modal-body row">
+                <div class="error-actions">
+                    <h2>404</h2>
+                    <h2 th:text="#{not.found}">Not Found</h2>
+                    <p th:text="#{error.string}">Sorry, an error has occurred,
+                        Requested page not found!</p>
+                    <a href="#" class="btn btn-primary btn-lg spacer-top-lg"
+                       data-dismiss="modal"> <span th:text="#{back}">Back</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- error modal end -->
+
+<!-- Cancel Parcel Success Modal -->
+<div id="cancelParcelSuccessModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-success text-center">
+                    <span th:text="#{parcel.void.successfully}">Parcel Void successfully</span><span>!!!</span>
+                </h3>
+            </div>
+            <div class="text-center">
+                <button type="button" data-dismiss="modal"
+                        class="btn btn-primary btn-md" id="success_okay_btn"
+                        th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- // Cancel Parcel  Success Modal -->
+
+<!-- view Parcel Details -->
+<div id="viewParcelModal" class="modal" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-center" th:text=#{order.details}>
+                    <strong>Parcel Details</strong>
+                </h3>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true"></span><span class="sr-only">Close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="fetchdetail">
+                    <div class="col-sm-12 text-center spacer-bottom-md">
+                        <span class="h4" th:text=#{trackid}>Track ID</span><span
+                            class="h4"> : </span> <span class="h4" id="bdModalTrackId"></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="col-sm-6">
+                            <h5 th:text="#{recipient.details}">Recipient's Details</h5>
+                            <p id="bdModalRDetails"></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h5 th:text="#{recipient.mobile}">Recipient Mobile</h5>
+                            <p id="bdModalRMobile"></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <h5 th:text="#{recipient.address}">Recipient Address</h5>
+                            <p id="bdModalRAddress"></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h5 th:text="#{sender.details}">Sender's Details</h5>
+                            <p id="bdModalSDetails"></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h5 th:text="#{sender.mobile}">Sender's Mobile</h5>
+                            <p id="bdModalSMobile"></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <h5 th:text="#{sender.address}">Sender Address</h5>
+                            <p id="bdModalSAddress"></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <h4 class="text-center" th:text="#{parcel.details}">Parcel
+                                Details</h4>
+                        </div>
+
+                        <div>
+                            <div class="col-sm-6 parcelDetails">
+                                <h5 class="display inline" th:text="#{declared.value}">
+                                    Declared Value <span> :</span>
+                                </h5>
+                                <div>
+                                    <span th:text="#{taka}"></span> <span
+                                        id="bdModalDeclerationVal"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 parcelDetails">
+                                <h5 class="display inline" th:text="#{parcel.contents}">
+                                    Parcel Contents <span> :</span>
+                                </h5>
+                                <div>
+                                    <span id="bdModalParcelContent"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div>
+                            <h4 class="text-center" th:text="#{cost.of.services}">Cost
+                                of Services</h4>
+                            <table class="table taxtable" id="invoiceTable">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{service.name}">Service Name</th>
+                                    <th th:text="#{price}">Price</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr id="bdModalGeneralRow">
+                                    <td><span id="bdModalGeneralLabel"></span>
+                                        <p class="tax" id="bdModalGeneralLabelTaxP"></p></td>
+                                    <td><span th:text="#{taka}"></span> <span
+                                            id="bdModalGeneral"></span>
+                                        <p class="tax" id="bdModalGeneralLabelTaxC"></p></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{total.tax}">Total Tax</td>
+                                    <td><span th:text="#{taka}"></span> <span
+                                            id="bdModalTotalTax"></span></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{sub.total}">Sub Total</td>
+                                    <td><span th:text="#{taka}"></span><span
+                                            id="bdModalSubTotal"></span></td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td th:text="#{payable.amount}">Payable Amount</td>
+                                    <td><span th:text="#{taka}"></span><span
+                                            id="bdModalPayableAmnt"></span></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 spacer-top-sm text-center">
+                    <div class="col-sm-6">
+                        <button type="button" id="cancel-btn"
+                                class="btn btn-primary btn-print btn-lg" data-toggle="modal">
+                            <span th:text="#{void.parcel}"> Void Parcel</span>
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" id="reprint-btn"
+                                class="btn btn-primary btn-print btn-lg" data-toggle="modal">
+                            <span th:text="#{reprint.receipt}"> Reprint Receipt</span>
+                        </button>
+                    </div>
+                    <div id="parcel_already_cancelled">
+                        <h3 class="text-center text-danger"
+                            th:text="#{parcel.already.void}">Sorry!! Parcel Is Already Void</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<!-- view Parcel Details -->
+
+<!-- Paper size Modal -->
+<div id="selectPrintSizeModal" class="modal fade" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="col-sm-12 form-group mar-b-10">
+                    <div class="col-sm-6">
+                        <h5 th:text="#{select.print.size}">Select Paper Size</h5>
+                    </div>
+                    <div id="labelSize" class="col-sm-6">
+                        <div class="dropdown">
+                            <select class="form-control" id="printOption"
+                                    data-toggle="dropdown">
+                                <option class="default" value="A6">Roll - 4 x 6</option>
+                                <option value="A5">A5 - 8 x 6</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true"></span><span class="sr-only">Close</span>
+                </button>
+                <div class="text-center">
+					<span><button type="button" class="btn btn-primary"
+                                  data-dismiss="modal" data-target="#printSuccessModal"
+                                  id="reprint-receipt-btn" th:text="#{print.receipt}">Print
+							Receipt</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Paper size Modal -->
+
+<!-- Receipt Reprint Success Modal -->
+<div id="printSuccessModal" data-backdrop="static" class="modal fade"
+     role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-success text-center">
+					<span th:text="#{receipt.printed.successfully}">Receipt
+						Printed Successfully</span><span>!!!</span>
+                </h3>
+            </div>
+            <div class="text-center">
+                <button id="ok_print_receipt" type="button" data-dismiss="modal"
+                        class="btn btn-primary btn-lg" th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Receipt Reprint Success Modal End -->
+
+<!-- No printer available Modal -->
+<div id="noPrinterAvailableModal" data-backdrop="static" class="modal fade"
+     role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-center text-danger">
+					<span th:text="#{no.printer}">No printer available.</span>
+                </h3>
+            </div>
+            <div class="text-center">
+                <button id="ok_print_receipt" type="button" data-dismiss="modal"
+                        class="btn btn-primary btn-md" th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--No printer available End -->
+
+
+<script type="text/javascript">
+var checkSyncFlag = null;
+function ajaxCallDemo(trackid) {
+    $.ajax({
+    	type : "get",
+		url : "/parcel/getParcelDetails",
+		data : {
+			trackId : trackid
+		},
+		dataType : "json",
+		cache : false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+		success : function(result) {
+			$("#viewParcelModal").modal('show');
+
+			checkSyncFlag = result.syncFlag;
+
+			//cancel button only visible if status booked
+			if (result.status == "void") {
+				$("#cancel-btn").hide();
+				$("#reprint-btn").hide();
+				$("#parcel_already_cancelled").show();
+			} else if (result.status == "booked") {
+				$("#parcel_already_cancelled").hide();
+				$("#cancel-btn").show();
+				$("#reprint-btn").show();
+			}
+			$("#bdModalTrackId").html(result.trackId);
+			$("#bdModalRDetails").html(result.recipientName);
+			$("#bdModalRMobile").html(result.recipientMobileNumber);
+			$("#bdModalRAddress").html(result.receiverAddress.addressLine1+", "+ (result.receiverAddress.addressLine2 != "" ? result.receiverAddress.addressLine2 +", " : "")+
+			          (result.receiverAddress.landmark != "" ? result.receiverAddress.landmark +", " : "")+ result.receiverAddress.subOffice+", "+ result.receiverAddress.thana+", "+
+			          result.receiverAddress.district+", "+ result.receiverAddress.division+", "+ result.receiverAddress.zone+", Bangladesh,"+ result.receiverAddress.postalCode);
+			$("#bdModalSDetails").html(result.senderName);
+			$("#bdModalSMobile").html(result.senderMobileNumber);
+			$("#bdModalSAddress").html(result.senderAddress.addressLine1+", "+
+			          (result.senderAddress.addressLine2 != "" ? result.senderAddress.addressLine2 +"," : "")+ (result.senderAddress.landmark != "" ? result.senderAddress.landmark +"," : "")+
+			          result.senderAddress.subOffice+", "+ result.senderAddress.thana+", "+
+			          result.senderAddress.district+", "+ result.senderAddress.division+", "+
+			          result.senderAddress.zone+", Bangladesh, "+ result.senderAddress.postalCode);
+			$("#bdModalInsurance").html(result.invoiceBreakup.insurance);
+
+		var subServices = $.parseJSON(result.rateCalculationJSON);
+		$.each(subServices.invoiceBreakup.subInvoices, function(index, subService){
+            $("#subService" + index).remove();
+            var subTax;
+            if(subService.taxPercent != null){
+                subTax = " <p class='tax'>Tax @ "+subService.taxPercent+"</p>";
+            }
+            else
+                subTax = " <p class='tax'>No Tax Applicable</p>";
+            var row = "<tr id='subService" + index + "'><td>" + subService.name + subTax + "</td>"
+              + "<td>\u20B9 <span>"+ subService.price +"</span>" + "<p class='tax'>\u20B9 "+subService.totalTax+"</p></td> </tr>";
+            $("#bdModalGeneralRow").last().after(row);
+          	});
+			if(result.invoiceBreakup.taxPercent != null)
+		    	$("#bdModalGeneralLabelTaxP").html("Tax @ "+result.invoiceBreakup.taxPercent);
+			else
+		    	$("#bdModalGeneralLabelTaxP").html("No Tax Applicable");
+			$("#bdModalGeneralLabelTaxC").html("\u20B9 "+result.invoiceBreakup.totalTax);
+			$("#bdModalTotalTax").html(result.invoiceBreakup.totalTax);
+			$("#bdModalSubTotal").html(result.invoiceBreakup.subTotal);
+			$("#bdModalPayableAmnt").html(result.invoiceBreakup.payableAmnt);
+			$("#bdModalPrice").html(result.invoiceBreakup.payableAmnt);
+			$("#bdModalDeclerationVal").html(result.parcelDeclerationValue);
+			$("#bdModalParcelContent").html(result.parcelContent);
+			$("#bdModalGeneralLabel").html(result.invoiceBreakup.name);
+			$("#bdModalGeneral").html(result.invoiceBreakup.price);
+
+		},
+		error : function(result) {
+			$('#trackIdNotPresentModal').modal('show');
+		}
+	});
+}
+
+	$(document).ready(function() {
+
+		// Check if body height is higher than window height
+		if ($(document).height() > $(window).height()) {
+		      $("#foot").addClass("footer-top-margin");
+		}
+
+		//onclick of enter key also, button event must be triggered
+		$("#searchParcelForm").keydown(function(event) {
+			var keyCode = (event.keyCode ? event.keyCode : event.which);
+			//keycode for enter key is 13
+			if (keyCode == 13) {
+				// Cancel the default action, if needed
+				event.preventDefault();
+				// Trigger the button element with a click
+				document.getElementById("trackButton").click();
+			}
+		});
+
+		//validations on trackid page
+		$("#searchParcelForm").validate({
+			rules : {
+				"trackId" : {
+					required : true,
+					digits : true
+				}
+			},
+		});
+	});
+
+	//onClick of trackId column in table, populate the input field
+    $(".trackId").on('click',function(){
+    	// get the current row
+        var currentRow=$(this).closest("tr");
+
+        var trackidstr=currentRow.find("td:eq(1)").html(); // get current row 2nd table cell  TD value
+
+        var trackid = trackidstr.slice(28,trackidstr.length-4);
+
+        ajaxCallDemo(trackid);
+    });
+
+	$("#trackButton").click(function() {
+						if ($("#searchParcelForm").valid()) {
+							var trackid = $('#trackId').val();
+							ajaxCallDemo(trackid);
+				 		}
+					});
+
+	$("#cancelYesButton").click(function() {
+		$("#confirm-cancel-modal").modal('hide');
+		var trackId = $('#bdModalTrackId').text();
+
+		$.ajax({
+			type : "GET",
+			url : "/parcel/cancelParcel",
+			data : {
+				trackId : trackId
+			},
+			beforeSend : function() {
+				$(".overlay").show();
+				window.scrollTo(0, 0);
+			},
+			success : function() {
+				$("#cancelParcelSuccessModal").modal('show');
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				$("#errorModal").modal('show');
+			},
+			complete : function(data) {
+				$(".overlay").hide();
+			}
+		});
+	});
+
+	$("#cancelNoButton").click(function() {
+		$("#confirm-cancel-modal").hide();
+	});
+
+	$("#cancel-btn").click(function() {
+		$("#viewParcelModal").modal('hide');
+
+		if(checkSyncFlag)
+		{
+			$("#parcelSyncedModal").modal('show');
+		}
+		else
+		{
+			$("#confirm-cancel-modal").modal('show');
+		}
+	});
+
+	$("#reprint-btn").click(function() {
+		$("#viewParcelModal").modal('hide');
+
+		//disable printer if in appication properties "enablePdfDownload" is false
+        if($("#enablePdfDownload").text() == "false")
+		{
+        	if($("#printer").text() == "")
+        	{
+        		$("#noPrinterAvailableModal").modal('show');
+        	}
+        	else
+        	{
+        		$("#selectPrintSizeModal").modal('show');
+        	}
+		}
+        else
+        {
+    		$("#selectPrintSizeModal").modal('show');
+        }
+	});
+
+	$("#ok_print_receipt").click(function() {
+		window.location.reload();
+		$('#trackId').val("");
+	});
+
+	$("#success_okay_btn").click(function() {
+		window.location.reload();
+		$('#trackId').val("");
+	});
+
+	$("#cancelNoButton").click(function() {
+		window.location.reload();
+	});
+
+	$("#reprint-receipt-btn").click(function() {
+		var trackId = $('#bdModalTrackId').text();
+		var paperSize = $('#printOption').val();
+
+		$.ajax({
+			type : "GET",
+			url : "/parcel/saveReprintParcelDetails",
+			data : {
+				trackId : trackId,
+				paperSize: paperSize
+			},
+			beforeSend : function() {
+				$(".overlay").show();
+				window.scrollTo(0, 0);
+				$("#selectPrintSizeModal").modal('hide');
+			},
+			success : function() {
+				$("#printSuccessModal").modal('show');
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				$(".alert-danger").show();
+			},
+			complete : function(data) {
+				$(".overlay").hide();
+			}
+		});
+	});
+</script>
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

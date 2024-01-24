@@ -1,0 +1,690 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer create-label">
+
+    <div class="site-wrapper market-US">
+        <div class="container container-new">
+            <form autocomplete="off" name="clientRegisterForm" id="clientRegisterForm" role="form">
+                <h1 class="text-center" th:text="#{register.counter}">Register Counter</h1>
+
+                <div class="form-group col-md-12">
+                    <label>
+							<span th:text="#{counter.name}">Counter Name</span> <span>*</span>
+					</label>
+                    <input id="clientName" name="clientName" type="text" class="form-control">
+                    <div id="clientNameErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+							<span >License Number</span> <span>*</span>
+					</label>
+                    <input id="licenseNumber" name="licenseNumber" type="text" class="form-control" th:minlength="10" th:maxlength="28">
+                    <div id="licenseErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+							<span >NGP ID</span> <span>*</span>
+					</label>
+                    <input id="ngpId" name="ngpId" type="text" class="form-control" th:maxlength="40">
+                    <div id="ngpErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+                
+                <div class="form-group col-md-6 dropdown show">
+                    <label>
+							<span>Customer Type</span> <span>*</span>
+					</label>
+                    <span class="language-dropdown">
+                        <select id="customerTypeDropdown" class="form-control" name="customerType">
+                        </select>
+                    </span>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+							<span>Customer Code</span>
+					</label>
+                    <input id="customerCode" name="customerCode" type="text" class="form-control" th:maxlength="11">
+                    <div id="customerCodeErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <span>From AWB</span>
+                    </label>
+                    <input id="fromAWB" name="fromAWB" autocomplete="off" type="text" class="form-control">
+                    <div id="fromAWBContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <span>To AWB</span>
+                    </label>
+                    <input id="toAWB" name="toAWB" autocomplete="off" type="text" class="form-control">
+                    <div id="toAWBContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+						<span th:text="#{postal.code}">Postal Code</span>
+					</label>
+                    <input id="postalCode" name="postalCode" autocomplete="off" type="text" class="form-control" th:maxlength="6">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+						<span th:text="#{zone}">Zone</span>
+					</label>
+                    <input id="zone" name="zone" autocomplete="off" type="text" list="zoneList" class="form-control">
+                    <datalist id="zoneList">
+				    </datalist>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+						<span th:text="#{division}">Division</span>
+					</label>
+                    <input id="division" name="division" autocomplete="off" list="divisionList" type="text" class="form-control">
+                    <datalist id="divisionList">
+                    </datalist>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+									<span th:text="#{district}">District</span>
+								</label>
+                    <input id="district" name="district" autocomplete="off" list="districtList" type="text" class="form-control">
+                    <datalist id="districtList">
+                                 </datalist>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+									<span th:text="#{thana}">Thana</span>
+								</label>
+                    <input id="thana" name="thana" autocomplete="off" list="thanaList" type="text" class="form-control">
+                    <datalist id="thanaList">
+                                </datalist>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+									<span th:text="#{suboffice}">Sub Office</span>
+								</label>
+                    <input id="subOffice" name="subOffice" autocomplete="off" list="subOfficeList" type="text" class="form-control">
+                    <datalist id="subOfficeList">
+                                </datalist>
+                </div>
+
+                <div id="ErrorContainer" class="errorForm col-md-12">
+                    <ul></ul>
+                </div>
+                 <div id="errorPostal" class="errorForm">
+                        <ul></ul>
+                    </div>
+                <button id="registerButton" type="button" class="btn btn-primary btn-block btn-lg spacer-top-md" data-toggle="modal" th:text="#{register}">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client register success Modal -->
+    <div id="detailsModal" class="modal fade" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h3 th:text="#{client.registered.successfully}"> Client Registered Successfully</h3>
+                    <button id="close_success" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+                </div>
+
+                <div class="label-options" id="displayDetails">
+                    <form name="displayDetailsForm" id="displayDetailsForm">
+                        <div class="form-group">
+                            <span id="clientId" name="clientId" th:text="#{client.id}"><b>Client ID</b></span><span>:</span>
+                            <span id="clientIdModal"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <span id="clientToken" name="clientToken" th:text="#{client.token}"><b>Client Token</b></span><span>:</span>
+                            <span id="clientTokenModal"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  Modal end -->
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="h3 col-xs-12 text-center" th:text="#{sorry.some.error.occurred}">Sorry!! Some error occurred</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+                </div>
+                <div class="text-center">
+                    <span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //Error Modal -->
+
+    <!-- User Already exist Modal -->
+    <div id="errorUserExistsModal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="h3 col-xs-12 text-center" th:text="#{user.already.exists}">User Already Exists With Same Counter Name In The Given Pin Code.</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+                </div>
+                <div class="text-center">
+                    <span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //User Already exist Modal -->
+
+        <!-- User Already exist Modal -->
+    <div id="PostalCodeDoesNotExistsModal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="h3 col-xs-12 text-center" th:text="#{this.postal.code.doesnot.exist}">This postal code does not exist.</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+                </div>
+                <div class="text-center">
+                    <span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //User Already exist Modal -->
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // front end validations
+        $("#clientRegisterForm").validate({
+            rules: {
+                "clientName": {
+                    nowhitespaceinstartandend: true,
+                    required: true
+                },
+                "ngpId": {
+                    required: true,
+                    maxlength:40,
+                    nowhitespace:true,
+                },
+                "licenseNumber": {
+                    nowhitespaceinstartandend: true,
+                    required: true
+                },
+                "customerCode" : {
+                    nowhitespace : true,
+                    nospecialcharacter : true,
+                    alphanumeric : true,
+                    required: false,
+                    maxlength:11
+                },
+                "fromAWB": {
+                    nowhitespaceinstartandend: true,
+                    // regx: /^[A-Z]{2}[0-9]{9}[A-Z]{2}$/,
+                    required: true
+                },
+                "toAWB": {
+                    nowhitespaceinstartandend: true,
+                    // regx: /^[A-Z]{2}[0-9]{9}[A-Z]{2}$/,
+                    required: true
+                },
+                "postalCode": {
+                    required: true,
+                    maxlength: 6,
+                    minlength: 6,
+                    nowhitespaceinstartandend: true,
+                    digits: true
+                },
+                "zone": {
+                	required: true,
+                	address:true
+                },
+                "division": {
+                	required: true,
+                	address:true
+                },
+                "thana": {
+                	required: true,
+                	address:true
+                },
+                "district": {
+                	required: true,
+                	address:true
+                },
+                "subOffice": {
+                	required: true,
+                	address:true
+                },
+            },
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "clientName") {
+                    $("#clientNameErrorContainer").html(error);
+                    $("#clientNameErrorContainer").show();
+                } else if (element.attr("name") == "licenseNumber") {
+                    $("#ErrorContainer").html(error);
+                    $("#ErrorContainer").show();
+                }else if (element.attr("name") == "customerCode"){
+                    $("#customerCodeErrorContainer").html(error);
+                    $("#customerCodeErrorContainer").show();
+                }else if (element.attr("name") == "ngpId"){
+                    $("#ngpErrorContainer").html(error);
+                    $("#ngpErrorContainer").show();
+                }else if (element.attr("name") == "postalCode"){
+                    $("#ErrorContainer").html(error);
+                    $("#ErrorContainer").show();
+                } else if (element.attr("name") == "zone") {
+                    $("#ErrorContainer").html(error);
+                    $("#ErrorContainer").show();
+                } else if (element.attr("name") == "division") {
+                    $("#ErrorContainer").html(error);
+                    $("#ErrorContainer").show();
+                } else if (element.attr("name") == "thana") {
+                    $("#ErrorContainer").html(error);
+                    $("#ErrorContainer").show();
+                } else if (element.attr("name") == "district") {
+                    $("#ErrorContainer").html(error);
+                    $("#ErrorContainer").show();
+                } else if (element.attr("name") == "subOffice") {
+                    $("#ErrorContainer").html(error);
+                    $("#ErrorContainer").show();
+                }
+
+                //displays a tooltip
+                element.attr('title', error
+                    .text());
+                $(element).tooltip({
+                    position: {
+                        my: "left+5 center",
+                        at: "right center"
+                    },
+                    trigger: "hover"
+                });
+            },
+            //highlight the error field with red
+            highlight: function(element, error) {
+                $(element).css('background', '#FFCCCB');
+            },
+            // Called when the element is valid:
+            unhighlight: function(element) {
+                $(element).css('background', '#ffffff');
+            }
+        });
+        
+    });
+
+    var customerType = "<option id='bnpl' value='BNPL Code'>BNPL Code</option>";
+	$("#customerTypeDropdown").append(customerType);
+			
+        $("#registerButton").click(function() {
+            if ($("#clientRegisterForm").valid()) {
+
+                var clientDetail = $("#clientRegisterForm").serialize();
+
+                            $.ajax({
+                                type: "post",
+                                url: "/server/saveClientDetails?ajax=true&",
+                                data: clientDetail,
+                                cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                                success: function(result) {
+								if(result.remarks != null){
+									$('#errorUserExistsModal').modal('show');
+								}else{
+                                   //alert("success");
+
+                                   if((result.clientId != null)&&(result.clientToken != null))
+                                   {
+                                    $('#detailsModal').modal('show');
+                                    $("#clientIdModal").html(result.clientId);
+                                    $("#clientTokenModal").html(result.clientToken);
+                                   }
+                                   else
+                                       $('#PostalCodeDoesNotExistsModal').modal('show');
+
+                                }
+                                },
+                                error: function() {
+                                    //alert("error");
+                                    $('#errorModal').modal('show');
+                                    
+                                }
+                            });
+            }
+     });
+
+    //to set default locale as placeholder and update in url
+    $(document).ready(function() {
+
+        //Check if body height is higher than window height :)
+        if ($(document).height() > $(window).height()) {
+            $("#foot").addClass("footer-top-margin");
+        }
+
+        //onclick of enter key also, button event must be triggered
+        $("#clientRegisterForm").keydown(function(event) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);
+            //keycode for enter key is 13
+            if (keyCode == 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("registerButton").click();
+            }
+        });
+
+        //dropdown address autofill
+        // Trigger ajax event on sender address after 4th character typed.
+        $('#postalCode').on('keyup', function() {
+        	$("#errorPostal").hide();
+            if ($(this).val().length == 6) {
+                var pincode = $("#postalCode").val();
+                $.ajax({
+                    type: "post",
+                    url: "/parcel/getAddressByPostalcode",
+                    data: {
+                        postalCode: pincode
+                    },
+                    success: function(result) {
+                    	if(result!=""){
+                    	
+                        $("#zone").val(result.zone);
+                        $("#division").val(result.division);
+                        $("#district").val(result.district);
+                        $("#thana").val(result.thana);
+                        $("#subOffice").val(result.subOffice);
+                    //    $("#clientRegisterForm").valid();
+                    }
+                    
+                    	else{
+                    		 $("#errorPostal").text("Postal code does not exist");
+                             $("#postalCode").css('background', 'rgb(255, 204, 203)');
+                             $("#errorPostal").show();
+                             $("#postalCode").val('');
+                             $("#zone").val('');
+                             $("#division").val('');
+                             $("#district").val('');
+                             $("#thana").val('');
+                             $("#subOffice").val('');
+                    	}
+                  }
+                });
+            }
+        });
+        // End of block
+
+
+        //Populate Sender all fields based on subOffice
+        $('#subOffice').on('change', function() {
+            $.ajax({
+            	type: "post",
+                url: "/parcel/getAddressBySubOffice?ajax=true",
+                data: {
+                    subOffice: $("#subOffice").val()
+                },
+                success: function(result) {
+                    if ($("#subOffice").val().length > 3) {
+                        $("#postalCode").val(result.postalCode);
+                        $("#zone").val(result.zone);
+                        $("#division").val(result.division);
+                        $("#district").val(result.district);
+                        $("#thana").val(result.thana);
+                    }
+                }
+            });
+        });
+
+        //Populate Sender Division option List Based On Zone
+        $('#zone').on('change', function() {
+            $.ajax({
+            	type: "post",
+                url: "/parcel/getDistinctDivisionByZone?ajax=true",
+                data: {
+                    zone: $("#zone").val()
+                },
+                success: function(result) {
+                    $("#divisionList").empty();
+                    $.each(result, function(key, data) {
+                        var divisionList = '<option>' + data + '</option>';
+                        $("#divisionList").append(divisionList);
+                    });
+                    $("#division").val(result.division);
+                    $("#district").val(result.district);
+                    $("#thana").val(result.thana);
+                    $("#subOffice").val(result.subOffice);
+                }
+            });
+
+        });
+
+        //Populate Sender District Option List Based On Division
+        $('#division').on('change', function() {
+            $.ajax({
+            	type: "post",
+                url: "/parcel/getDistinctDistrictByDivision?ajax=true",
+                data: {
+                    division: $("#division").val()
+                },
+                success: function(result) {
+                    $("#districtList").empty();
+                    $.each(result, function(key, data) {
+                        var districtList = '<option>' + data + '</option>';
+                        $("#districtList").append(districtList);
+                    });
+                    $("#district").val(result.district);
+                    $("#thana").val(result.thana);
+                    $("#subOffice").val(result.subOffice);
+                }
+            });
+            $.ajax({
+            	type: "post",
+                url: "/parcel/getAddressByDivision?ajax=true",
+                data: {
+                    division: $("#division").val()
+                },
+                success: function(result) {
+                    $("#zone").val(result[1].zone);
+                    $("#district").val('');
+                    $("#thana").val('');
+                    $("#subOffice").val('');
+                }
+            });
+        });
+
+        //Populate Sender Thana Option List Based On District
+        $('#district').on('change', function() {
+            $.ajax({
+            	type: "post",
+                url: "/parcel/getDistinctThanaByDistrict?ajax=true",
+                data: {
+                    district: $("#district").val()
+                },
+                success: function(result) {
+                    $("#thanaList").empty();
+                    $.each(result, function(key, data) {
+                        var thanaList = '<option>' + data + '</option>';
+                        $("#thanaList").append(thanaList);
+                    });
+                    $("#thana").val(result.thana);
+                    $("#subOffice").val(result.subOffice);
+                }
+            });
+            $.ajax({
+            	type: "post",
+                url: "/parcel/getAddressByDistrict?ajax=true",
+                data: {
+                    district: $("#district").val()
+                },
+                success: function(result) {
+                    //console.log(result)
+                    $("#division").val(result[1].division);
+                    $("#zone").val(result[1].zone);
+                }
+            });
+        });
+
+        //Populate Senders SubOffice Option List Based On SubOffice
+        $('#thana').on('change', function() {
+            $.ajax({
+            	type: "post",
+                url: "/parcel/getDistinctSubOfficeByThana?ajax=true",
+                data: {
+                    thana: $("#thana").val()
+                },
+                success: function(result) {
+                    $("#subOfficeList").empty();
+                    $.each(result, function(key, data) {
+                        var subOfficeList = '<option>' + data + '</option>';
+                        $("#subOfficeList").append(subOfficeList);
+                    });
+                    $("#subOffice").val(result.subOffice);
+                }
+            });
+        });
+
+        //Populate Senders Zone List on document Ready
+        $.ajax({
+        	type: "post",
+            url: "/parcel/getDistinctZone?ajax=true",
+            success: function(result) {
+                $.each(result, function(key, data) {
+                    var zoneList = '<option>' + data + '</option>';
+                    $("#zoneList").append(zoneList);
+                });
+            }
+        });
+
+        //Populate Senders Division List on document Ready
+        $.ajax({
+        	type:"post",
+            url: "/parcel/getDistinctDivision?ajax=true",
+            success: function(result) {
+                $.each(result, function(key, data) {
+                    var divisionList = '<option>' + data + '</option>';
+                    $("#divisionList").append(divisionList);
+                });
+            }
+        });
+
+        //Populate Senders Division List on document Ready
+        $.ajax({
+        	type: "post",
+            url: "/parcel/getDistinctDistrict?ajax=true",
+            success: function(result) {
+                $.each(result, function(key, data) {
+                    var districtList = '<option>' + data + '</option>';
+                    $("#districtList").append(districtList);
+                });
+            }
+        });
+
+        // Trigger ajax event on sender address after 3th character typed.
+        // Populate sender's Thana list after 3 characters
+        $('#thana').on('keyup', function() {
+            if ($(this).val().length == 3) {
+                $.ajax({
+                	type: "post",
+                    url: "/parcel/getAddressByThana?ajax=true",
+                    data: {
+                        thana: $("#thana").val()
+                    },
+                    success: function(result) {
+                        $.each(result, function(key, data) {
+                            $("#thanaList").empty();
+                            var thanaList = '<option>' + data.thana + '</option>';
+                            $("#thanaList").append(thanaList);
+                        });
+                        $('#thana').change(function() {
+                            var thana = $("#thana").val();
+                            $.each(result, function(key, data) {
+
+                                if (data.thana == thana) {
+                                    $("#division").val(data.division);
+                                    $("#district").val(data.district);
+                                    $("#zone").val(data.zone);
+                                    $("#sendetsubOffice").val('');
+                                }
+                            })
+                        });
+                    }
+                });
+            }
+        });
+
+        //Trigger ajax event on sender address after 3th character typed.
+        // Populate sender's subOffice list after 3 characters
+        $('#subOffice').on('keyup', function() {
+            if ($(this).val().length == 3) {
+                $.ajax({
+                	type: "post",
+                    url: "/parcel/getAddressBySubOfficeStartsWith?ajax=true",
+                    data: {
+                        subOffice: $("#subOffice").val()
+                    },
+                    success: function(result) {
+                        $.each(result, function(key, data) {
+                            $("#subOffice").empty();
+                            var thanaList = '<option>' + data.subOffice + '</option>';
+                            $("#subOfficeList").append(thanaList);
+                        });
+                        $('#subOffice').change(function() {
+                            var subOffice = $("#subOffice").val();
+                            $.each(result, function(key, data) {
+                                if (data.subOffice == subOffice) {
+                                    $("#division").val(data.division);
+                                    $("#district").val(data.district);
+                                    $("#zone").val(data.zone);
+                                    $("#thana").val(data.thana);
+                                }
+                            })
+                        });
+                    }
+                });
+            }
+        });
+        // End of block
+    });
+
+    $("#close_success").click(function() {
+        window.location.reload();
+    });
+</script>
+
+<th:block th:include="_footer"></th:block>
+</body>

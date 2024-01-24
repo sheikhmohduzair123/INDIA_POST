@@ -1,0 +1,841 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+<div class="fixed-header container-sm-footer">
+	<div class="site-wrapper market-US">
+
+		<div class="container col-md-12">
+			<h1 class="text-center" th:text="#{rms.rebagging-title}">Rebagging</h1>
+
+
+				<div class="container col-md-6">
+					<h2 class="text-center" th:text="#{rms.bagList}">Bag List</h2>
+
+					<div
+						class="col-md-3 text-right pull-right spacer-top-sm col-md-offset-7">
+						<input type="text" id="searchbox" class="form-control name"
+							placeholder="search">
+					</div>
+					<table id="showBag" class="table table-striped">
+						<thead>
+							<tr>
+								<th width="2%"><input type="checkbox" name="select_all"
+									id="select_all" onchange="checkAll()"></th>
+								<th>Previous Bag Id</th>
+								<th>Bag Title</th>
+								<th>Bag Description</th>
+								<th>Bag Weight (gms)</th>
+
+							</tr>
+						</thead>
+						<tbody id="tbody">
+						</tbody>
+					</table>
+					<input id="count" type="hidden" name="count" value="">
+
+
+				</div>
+				<div class="container col-md-6">
+
+					<h2 class="text-center spacer-bottom-lg"  th:text="#{parcel.list}">Parcel List</h2>
+
+					 <div class="col-md-3 text-right pull-right spacer-top-xl col-md-offset-7">
+						<!-- <input type="text" id="searchbox1" class="form-control name"
+							placeholder="search"> -->
+					</div>
+					<table id="showParcel" class="table table-striped">
+						<thead>
+							<tr class="text-center">
+								<th></th>
+								<th>Previous Bag Id</th>
+								<th>TrackId</th>
+								<th>Receiver's PostalCode</th>
+							    <th>Parcel Weight (gms)</th>
+							</tr>
+						</thead>
+						<tbody id="tbody1">
+						</tbody>
+					</table>
+					<div id="emptyBagMsg" class="col-md-12 pull-right spacer-bottom-md">
+
+			       			<h3 class="text-danger text-center col-md-12" th:text="#{no.item.selected}">No Item Selected!</h3>
+
+			       			</div>
+                      <div class="text-center spacer-top-md">
+					<button type="button" class="btn btn-primary btn-md" id="add-to-bag"
+					value="Get" onclick="GetSelected()" th:text="#{add.bag}">Create New Bag</button>
+					<!-- <input type="button" value="Get Selected" id="btnGet"> -->
+				</div>
+            </div>
+		</div>
+
+		<div class="col-md-12">
+              	<div class="container col-md-6 pull-right">
+              	<h2 class="text-center spacer-bottom-sm"  th:text="#{rms.created.bags}">Created Bags</h2>
+
+				<div class="card">
+					<div class="card-body" id="card">
+
+					<h3 class="pull-left" id="o-bag" th:text="#{rms.no.bags}" >No Bags Created</h3>
+							</div>
+
+				</div>
+				<div class="text-center spacer-top-xl">
+
+				<button type="button"  onclick="GetUnbaggedParcels()" class="btn btn-primary btn-md text-right spacer-bottom-md"
+					id="save-to-bag"  th:text="#{generate.bag.id}">Generate Bag</button>
+				</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<!-- Bag Modal-->
+
+	<div id="modal-div"></div>
+
+	<!--Bag Modal  -->
+
+		<!-- success modal  -->
+		<div id="success-modal" class="modal fade bag-modal"
+			data-backdrop="static" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true" onclick="closeGeneratedBag();"></button>
+						<h5 class="modal-title" th:text="#{generated.bag}">Generated
+							Bags Details</h5>
+					</div>
+					<table id="success-modal-table"
+						class="table table-striped ">
+						<thead>
+							<tr>
+								<th>S.No</th>
+								<th>New Bag Id</th>
+								<th>Bag Title</th>
+								<th>Bag Status</th>
+								<th>Parcel List (PDF)</th>
+								<th>Bag Label (PDF)</th>
+
+							</tr>
+						</thead>
+						<tbody id="success-body"></tbody>
+					</table>
+					<div class="modal-footer">
+					<div class="text-center"><button type="button" class="btn btn-primary" onclick="pageReload();" data-dismiss="modal" aria-hidden="true">Okay</button></div>
+						<!-- footer body -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- pop-up modal -->
+
+		<!-- sync fail Modal -->
+<div id="errorModal" data-backdrop="static" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center col-md-12 spacer-bottom-md">
+
+                <h3 class="text-danger" th:text="#{rms.no.bag.created}">Please create a Bag First!</h3>
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary btn-md" id="sync_ok_btn"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+			</div>
+        </div>
+    </div>
+</div>
+<!-- sync fail Modal -->
+
+<script>
+if ($(document).height() > $(window).height()) {
+    $("#foot").addClass("footer-top-margin");
+}
+var result1;
+var cnt=0;
+var parcelBagging= [];
+var parcelUnbagging= [];
+var keyValue= 0;
+var bagmap = new Object();
+var bagDetails = new Object();
+var finalArray=[];
+
+/* var dtable; */
+$(document).ready(function(){
+
+	$("#emptyBagMsg").hide();
+
+$.ajax({
+        type: "get",
+        url: "/rms/getReceivedBags?ajax=true&",
+        //async: false,
+        cache: false,
+success: function(result){
+	result1 = result;
+	++cnt;
+	var wgt=0;
+
+  $.each(result, function(key,value) {
+	  wgt=0;
+	  for(var i=0; i<value.length; i++){
+			var parcel = value[i];
+			var h = 0;
+			if(value[i].objParcel != null)
+				h = value[i].objParcel.actWt;
+			wgt = parseInt(wgt) + parseInt(h);
+		     }
+      var $tr = $('<tr>').append(
+         $('<td><input type="checkbox" class="checkbox" name="bagId' + key + '"  id="bagId' + key + '" value="' + key + '" onclick="handleClick(this)" /></td>'),
+         $('<td>').text(key),
+         $('<td>').text(value[0].bagTitle),
+         $('<td>').text(value[0].bagDesc),
+         $('<td>').text(wgt),
+     );
+
+     $('#tbody').append($tr);
+     $('#count').val(cnt);
+
+});
+
+ var dtable = $('#showBag').dataTable({
+"oLanguage": {
+   "sLengthMenu": "_MENU_"
+},
+//to disble page no for 1st page
+"fnDrawCallback": function(oSettings) {
+    if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+        $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+    }
+    else
+    {
+        $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+    }
+}
+});
+ $(".dataTables_length").css('clear', 'none');
+ $(".dataTables_length").css('margin-top', '-40px');
+ $(".dataTables_length").css('margin-left', '20px');
+ <!--custom search box-->
+ $("#searchbox").keyup(function() {
+dtable.fnFilter(this.value);
+});
+
+
+},
+error:function(errorObj){
+}
+});
+
+ var dtableParcel = $('#showParcel').dataTable({
+/* 	 "oLanguage": {
+	   "sLengthMenu": "_MENU_"
+
+	} */
+	 "bPaginate": false,
+	  "ordering": false,
+
+	dom :'',
+	});
+$(".dataTables_length").css('clear', 'none');
+$(".dataTables_length").css('margin-top', '-55px');
+$(".dataTables_length").css('margin-left', '20px');
+
+$("#searchbox1").keyup(function() {
+	//dtableParcel.search(this.value).draw();
+	});
+
+
+});
+
+//select all checkbox
+function checkAll() {
+    if ($("#select_all").is(":checked")) {
+    	          $("#emptyBagMsg").hide();
+
+    	          $('#showParcel #tbody1').empty();
+
+  		          $.each(result1, function(key,value) {
+                        $("#bagId"+key).prop('checked', true);
+                        if($("#bagId"+key).is(":checked"))
+                        {
+ 			    		 for(var j=0;j<value.length;j++)
+ 			    		 {
+
+ 		                 var $tr1 = $('<tr class="pull-center">').append(
+ 		    	         $('<td><input type="checkbox" checked class="checkbox1" name="parcelId' + (value[j].objParcel.trackId)+ '"  id="parcelId' + value[j].objParcel.trackId+ '" value="' + value[j].objParcel.trackId+"/"+key+'"checked"/></td>'),
+ 		    	         $('<td id="bgId">').text(key),
+                         $('<td id="tkId" class="col-md-3">').text(value[j].objParcel.trackId),
+ 		    	         $('<td>').text(value[j].objParcel.receiverAddress.postalCode),
+ 		    	         $('<td>').text(value[j].objParcel.actWt),
+
+ 		    	       );
+
+ 		                 $('#tbody1').append($tr1);
+ 			 }
+           }
+ 		});
+
+
+    }
+    else if($("#select_all").is(":unchecked"))
+	{
+    	$("#emptyBagMsg").hide();
+
+        $('#showParcel #tbody1').empty();
+
+		  $.each(result1, function(key,value) {
+
+				for(var j=0;j<value.length;j++){
+            $("#bagId"+key).prop('checked', false);
+
+		  $('#tbody1').find('input:checkbox[value="' + value[j].objParcel.trackId+"/"+key+'"]').closest('tr').remove();
+
+
+		}
+
+
+	});
+
+	                  var $tr1 = $('<tr class="pull-center">').append(
+	                          $('<td colspan="5" class="dataTables_empty">No data available in table</td>'),
+	 		    	       );
+
+	 		                 $('#tbody1').append($tr1);
+
+	}
+
+    else {
+        for (var j = 0; j <= $("#count").val(); j++) {
+
+            $("#bagId" + j).prop('checked', false)
+        }
+
+    }
+}
+
+//single checkbox select and save into array--
+	function handleClick(cb) {
+		$("#emptyBagMsg").hide();
+
+
+		var checked = $(cb).is(":checked");
+		var unchecked =$(cb).is(":unchecked")
+		if(checked){
+	   	$('.dataTables_empty').hide();
+
+		 $("#select_all").attr("disabled", true);
+
+		 $.each(result1, function(key,value) {
+			    	if(key==$(cb).val()){
+
+			    		for(var j=0;j<value.length;j++){
+
+		                 var $tr1 = $('<tr class="odd">').append(
+		    	          $('<td><input type="checkbox" checked class="checkbox1" name="parcelId' + value[j].objParcel.trackId+ '"  id="parcelId' + value[j].objParcel.trackId+ '" value="' + value[j].objParcel.trackId+"/"+key+'"checked"/></td>'),
+		    	          $('<td id="bgId">').text(key),
+	                      $('<td id="tkId" class="col-md-3">').text(value[j].objParcel.trackId),
+	 		    	      $('<td>').text(value[j].objParcel.receiverAddress.postalCode),
+	 		    	      $('<td>').text(value[j].objParcel.actWt),
+
+		    	       );
+
+		                 $('#tbody1').append($tr1);
+
+
+			    }
+			 }
+		});
+
+	}
+		else if(unchecked)
+			{
+			$("#emptyBagMsg").hide();
+
+			 $("#select_all").prop('checked', false);
+
+			  $.each(result1, function(key,value) {
+				for(var j=0;j<value.length;j++){
+				if(key==$(cb).val()){
+			     $('#tbody1').find('input:checkbox[value="' +value[j].objParcel.trackId+"/"+key+'"]').closest('tr').remove();
+		    	}
+			}
+			    if (jQuery(".checkbox:checked").length == 0)
+			    {
+					 $("#select_all").attr("disabled", false);
+					 $("#select_all").prop('checked', false);
+
+			    }
+
+		});
+
+			  if (jQuery(".checkbox:checked").length == 0)
+			    {
+				  $("#select_all").attr("disabled", false);
+				  $("#select_all").prop('checked', false);
+
+                  var $tr1 = $('<tr class="pull-center odd">').append(
+                          $('<td colspan="5" class="dataTables_empty">No data available in table</td>'),
+ 		    	       );
+
+ 		                 $('#tbody1').append($tr1);
+			     }
+
+		}
+
+		else{
+			var index = singleValue.indexOf($(cb).val());
+			if (index > -1) {
+				singleValue.splice(index, 1);
+				parcelBagging.splice(index, 1)
+
+			}
+
+		}
+
+}
+			function GetSelected() {
+		           parcelBagging=[];
+		        var vals = document.getElementById("tbody1");
+                var j=0;
+		       var chks = vals.getElementsByTagName("input");
+		        for (var i = 0; i < chks.length; i++) {
+		            if (chks[i].checked) {
+		            	++j;
+		            	parcelBagging.push(chks[i].value);
+
+		            }
+		            if(chks.length==j)
+		            	{
+		            	 var $tr1 = $('<tr class="pull-center">').append(
+		                          $('<td colspan="5" class="dataTables_empty">No data available in table</td>'),
+		 		    	       );
+
+		 		                 $('#tbody1').append($tr1);
+
+		            	}
+		        }
+
+		    };
+
+
+			var x = 1;
+			$("#add-to-bag").click(function(e){
+
+
+				 if (jQuery(".checkbox1:checked").length == 0)
+				    {
+				     $("#emptyBagMsg").show();
+					 $("#select_all").prop('checked', false);
+				    }
+
+				 if (jQuery(".checkbox1:checked").length >= 1)
+					 {
+
+	             ++keyValue;
+	             bagmap["Bag"+keyValue] = parcelBagging;
+
+				 e.preventDefault();
+
+				 var item;
+				 var $bag
+			modalTable(keyValue);
+			 $("#showParcel input[type=checkbox]:checked").each(function (i) {
+				  item = $(this).closest("tr")
+			    	 .find("#tkId")
+			    	 .text();
+				  $bag =$(this).closest("tr")
+				           .find("#bgId")
+				           .text();
+			        var $row = $(this).closest("tr")[0];
+			        $('#modal-table'+keyValue).append($row);
+			        $($row).append('<td><button type="button" id="Bag'+keyValue+'" value = "'+ item+"/"+$bag+'" class="btn btn-primary fa fa-trash" onclick="removeParcel(this)"/></td>');
+			   	 $("#bagId"+$bag).prop('checked', false);
+			   	 $("#select_all").attr("disabled", false);
+				 $("#select_all").prop('checked', false);
+
+
+			 });
+
+
+
+			 $('#o-bag').hide();
+
+			 $(card).append('<div><button class="btn btn-primary col-md-2 spacer-left-md Bag'+keyValue+'" data-toggle="modal"  value="Bag'+keyValue+'" data-target="#Bag'+keyValue+'"onclick="showParcel(this)">Bag'+keyValue+'</button></div>'); //add input box
+			 $("#Bag"+keyValue).modal('show');
+			 $("#modal-table"+keyValue+" td:first-child").remove();
+
+			}
+
+
+
+			});
+
+			function modalTable(keyValue){
+			 var table_body = '<div id="Bag'+keyValue+'" class="modal fade Bag" tabindex="-1"'
+			+ 'role="dialog"  aria-hidden="true"  data-backdrop="static">'
+			+ '<div class="modal-dialog modal-lg">'
+			+ '<div class="modal-content">'
+			+ '<div class="modal-header">'
+			+ '<h5 class="modal-title" id="BAG'+keyValue+'">Bag '+keyValue+' Parcels</h5></div>'
+			+ '<table id="modal-table'+keyValue+'" class="table table-striped text-center" >'
+			+ '<thead>'
+			+ '<tr><th>Previous Bag Id</th><th class="text-center">Track Id</th><th>Receiver PostalCode</th><th>Parcel Weight</th><th>Remove Parcel</th></tr>'
+			+ '</thead>'
+			+ '<tbody></tbody>'
+			+ '</table>'
+			+ '<div class="modal-footer">'
+			+ '<div class="col-md-4" >'
+			+ '<label for="bag_title" th:text="#{bag.title.optional}">Bag Title (Optional)</label>'
+			+ '<input list="browsers" name="bag_title"  class="form-control name bag_title" id="bag-title'+keyValue+'" />'
+			+ '<datalist id="browsers">'
+			+ ' <option value="TWO-DAYS">'
+			+ ' <option value="INSURED">'
+			+ ' <option value="NON-INSURED">'
+			+ ' <option value="FRAGILE">'
+			+ '</datalist>'
+			+ '</div>'
+			+ '<div class="col-md-4">'
+			+ '<label for="bag_desc" class="bag_desc_label" th:text="#{bag.description.optional}">Bag Description (Optional)</label>'
+			+ '<textarea class="form-control bag_desc noresize" style="height: 40px;" id="bag-desc'+keyValue+'" ></textarea></div>'
+			+ '<div class="col-md-4">'
+			+'<button type="button" data-dismiss="modal" class="btn btn-primary spacer-top-md spacer-left-lg right-md" onclick="updateBag(' + keyValue + ');" th:text="#{save.bag}">Save & Close</button>'
+ 			+ '<button type="button" class="btn btn-primary remove-bag" style="margin-top: 30px" id="remove-bag" onclick="deleteBag('+keyValue+');" th:text="#{delete.bag}">Delete Bag </button>'
+     		+ '</div></div>';
+			var $container = $("#modal-div");
+			$container.append('<div id="modal-view'+keyValue+'"></div>');
+			$('#modal-view'+keyValue).html(table_body);
+			}
+			var parcelArray= new Array;
+			 function showParcel(bagKey){
+			 parcelArray = bagmap[bagKey];
+			}
+
+
+			function removeParcel(removeButton){
+				$('.dataTables_empty').hide();
+				var key = $(removeButton).attr('id');
+				parcelArray = bagmap[key];
+
+				$(removeButton).closest('tr').remove();
+				var index = parcelArray.indexOf($(removeButton).val());
+				if (index > -1) {
+					parcelArray.splice(index, 1);
+				}
+
+				parcelUnbagging.push($(removeButton).val());
+
+			    if(parcelUnbagging.length>0)
+
+				{
+
+						 $.each(result1, function(key,value) {
+					    	for(var j=0;j<value.length;j++)
+					    	{
+
+					    	if($(removeButton).val()==  value[j].objParcel.trackId+"/"+key)
+					    		{
+					    		 var $tr1 = $('<tr class="pull-center">').append(
+				 		    	         $('<td><input type="checkbox" class="checkbox1" name="parcelId' + value[j].objParcel.trackId+ '"  id="parcelId' + value[j].objParcel.trackId+ '" value="' + value[j].objParcel.trackId+"/"+key+'"/></td>'),
+				 		    	         $('<td id="bgId">').text(key),
+				                         $('<td id="tkId" class="col-md-3">').text(value[j].objParcel.trackId),
+				 		    	         $('<td>').text(value[j].objParcel.receiverAddress.postalCode),
+				 		    	         $('<td>').text(value[j].objParcel.actWt),
+
+				 		    	       );
+
+				 		                 $('#tbody1').append($tr1);
+					    	  }
+
+                          }
+
+				    });
+
+				}
+
+	            bagmap[key] = parcelArray;
+
+	            //if all the tr are deleted from modal for bags
+				if(parcelArray.length===0)
+					{
+
+				     delete bagmap[key];
+					 delete bagDetails[key];
+
+			    	$('.Bag').modal('hide');
+			    	$('.'+key).hide();
+
+			    	var res = key.substring(3);
+					if(res == keyValue)
+					{
+						delete bagmap[keyValue];
+						delete bagDetails[key];
+			    		--keyValue;
+					}
+
+			    	if((key=="Bag1") && (keyValue == 0))
+			    		{
+			    		  delete bagmap[key];
+				    	  delete bagDetails[key];
+				    		$('#card').html('<h3 id="o-bag" th:text="#{rms.no.bags}">No Bags Created</h3>');
+
+			    		}
+			    	else if(jQuery.isEmptyObject(bagmap))
+				    	{
+				    		$('#card').html('<h3 id="o-bag" th:text="#{rms.no.bags}">No Bags Created</h3>');
+				    	}
+
+					}
+
+			       }
+
+			function updateBag(key){
+
+				bagDetails["Bag"+key] =  $('#bag-title'+key).val() +","+$('#bag-desc'+key).val();
+				$("#emptyBagMsg").hide();
+				 $("#select_all").prop('checked', false);
+				    finalArray = bagmap["Bag" + key]
+					$('#Bag' + key).modal('hide');
+
+				}
+
+
+			function GetUnbaggedParcels(){
+				parcelUnbagging=[];
+
+		        var vals = document.getElementById("tbody1");
+
+		       var chks = vals.getElementsByTagName("input");
+		        for (var i = 0; i < chks.length; i++) {
+		            if (chks[i].checked) {
+		            }
+		            else{
+
+		            	parcelUnbagging.push(chks[i].value);
+
+		            	}
+
+		        }
+
+		    };
+
+		     function deleteBag(key){
+
+		    	 var deleteBagArray= [];
+		    	 deleteBagArray = bagmap["Bag"+key];
+		    	 var r = deleteBagArray[0].split("/");
+		    	 var key1=key;
+
+		    	 $('.dataTables_empty').hide();
+
+		    	 $.each(result1, function(key,value) {
+
+		    			 for(var k=0; k<value.length; k++)
+		    			{
+		    				 for(var i=0;i<deleteBagArray.length;i++)
+				    			{
+		    					 	var d = deleteBagArray[i];
+				    		    	 var r2 = d.split("/");
+				    		    	 if( value[k].objParcel.trackId == r2[0])
+				    		    	 {
+
+				    		    		 var $tr1 = $('<tr class="pull-center">').append(
+						 		    	         $('<td><input type="checkbox" class="checkbox1" name="parcelId' + value[k].objParcel.trackId+ '"  id="parcelId' + value[k].objParcel.trackId+ '" value="' + value[k].objParcel.trackId+"/"+key+'"/></td>'),
+						 		    	         $('<td id="bgId">').text(key),
+						                         $('<td id="tkId" class="col-md-3">').text(value[k].objParcel.trackId),
+						 		    	         $('<td>').text(value[k].objParcel.receiverAddress.postalCode),
+						 		    	         $('<td>').text(value[k].objParcel.actWt),
+
+						 		    	       );
+
+						 		                 $('#tbody1').append($tr1);
+
+				    		    	 }
+
+				    			      }
+		    			            }
+
+		    			 var bagvalue= $("#Bag"+key1).val();
+
+	 				    	delete bagmap['Bag'+key1];
+	 				    	delete bagDetails['Bag'+key1];
+	 				    	$('.Bag').modal('hide');
+	 				    	$('.Bag'+key1).hide();
+
+
+	 							if(key1 == keyValue){
+	 						   delete bagmap['Bag'+keyValue];
+	 						   delete bagDetails['Bag'+keyValue];
+
+	 					    		--keyValue;
+	 							}
+	 					    	if((key1=="1") && (keyValue == 0))
+	 					    	    {	delete bagmap['Bag'+key1];
+	 					    	        delete bagDetails['Bag'+key1];
+
+	 						    		$('#card').html('<h3 id="o-bag" th:text="#{rms.no.bags}">No Bags Created</h3>');
+
+	 					      	}
+	 					    	else if(jQuery.isEmptyObject(bagmap))
+	 					    	{
+	 					    		$('#card').html('<h3 id="o-bag" th:text="#{rms.no.bags}">No Bags Created</h3>');
+
+	 					    	}
+
+
+			    });
+
+
+					}
+
+
+
+	$("#save-to-bag").click(function(e){
+
+
+	var bagData= {
+		bagMap  : bagmap,
+		bagDetails : bagDetails,
+		UnbaggedParcels : parcelUnbagging
+	}
+
+	       if( !($.isEmptyObject(bagmap)))
+	      {
+	        var bagData2=JSON.stringify(bagmap);
+            var bagDataString=JSON.stringify(bagData);
+			$.ajax({
+				 type: "GET",
+		         url :  "/rms/saveRmsBag?"+bagDataString,
+                 success : function(response) {
+                	  flag  = 1;
+                      count = 1;
+                      //set bag to empty
+                      for (var data in bagmap)
+                    	  delete bagmap[data];
+                          delete bagDetails[data];
+                      //bag empty
+                      $('#card').empty();
+                      //show empty bag
+                      //$('#card').append('<button type="button" class="btn btn-primary" id="o-bag" th:text="#{no.bag}">No Bag</button>');
+
+                     $('#card').html('<h3 id="o-bag" th:text="#{rms.no.bags}">No Bags Created</h3>');
+
+
+                  var a=[];
+
+                  var flag=1;
+                  $.each(response, function(i, item) {
+
+
+                  if($.inArray(item.bagId,a)== -1){
+                  a.push(item.bagId);
+                     var $tr = $('<tr>').append(
+                    		$('<td>').text(flag),
+                            $('<td>').text(item.bagId),
+                            $('<td>').text(item.bagTitle),
+                            $('<td>').text(item.bagStatus.replace(/_/g, " ")),
+                            $('<td>').html("<button class='td-custom-margin' value='"+item.bagId+"' onclick='bagPrint(this);'><i class='fa fa-print' aria-hidden='true'></i></button>"),
+                            $('<td>').html("<button class='td-custom-margin' value='"+item.bagId+"' onclick='bagLabel(this);'><i class='fa fa-print' aria-hidden='true'></i></button>"),
+                     );
+                       $('#success-body').append($tr);
+                  }
+                  ++flag;
+                  });
+
+
+
+                      $('#success-modal').modal('show');
+		         },
+		         error : function(e) {
+		         }
+		});
+	      }
+	       else{
+
+	    	   $('#errorModal').modal('show');
+	       }
+	});
+
+	function closeGeneratedBag(){
+		location.reload(true);
+	}
+
+	function bagLabel(bag_id){
+        <!--download in pdf-->
+    $.ajax({
+     url: "/pbTracking/bagLabel?ajax=true&"+ bag_id,
+     method: 'GET',
+     data:{
+      bagId : $(bag_id).val()
+     },
+     xhrFields: {
+         responseType: 'blob'
+     },
+     success: function (data) {
+       //format date
+            var date=new Date();
+			var day=date.getDate();
+			var month=date.getMonth()+1;
+			var year=date.getFullYear();
+			var h=date.getHours();
+			var m=date.getMinutes();
+			var s=date.getSeconds();
+            var finalDate = day+"-"+month+"-"+year+"-"+h+"-"+m+"-"+s;
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(data);
+			a.href = url;
+			a.download = 'Bag-Label-'+finalDate+'.pdf';
+         document.body.append(a);
+         a.click();
+         a.remove();
+         window.URL.revokeObjectURL(url);
+     }
+ });
+ }
+
+	function bagPrint(bag_id){
+		<!--download in pdf-->
+		   $.ajax({
+		       url: "/pbTracking/bagParcelListPrint?ajax=true&" + bag_id,
+		       method: 'GET',
+		       data:{
+		        bagId : $(bag_id).val()
+		       },
+		       xhrFields: {
+		           responseType: 'blob'
+		       },
+		       success: function (data) {
+		           //format date
+            var date=new Date();
+			var day=date.getDate();
+			var month=date.getMonth()+1;
+			var year=date.getFullYear();
+			var h=date.getHours();
+			var m=date.getMinutes();
+			var s=date.getSeconds();
+            var finalDate = day+"-"+month+"-"+year+"-"+h+"-"+m+"-"+s;
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(data);
+			a.href = url;
+			a.download = 'Bag-Parcels-'+finalDate+'.pdf';
+		           document.body.append(a);
+		           a.click();
+		           a.remove();
+		           window.URL.revokeObjectURL(url);
+		       }
+		   });
+		}
+
+	//close final modal
+	function pageReload() {
+		location.reload(true);
+	}
+</script>
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>
+

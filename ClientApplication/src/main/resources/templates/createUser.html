@@ -1,0 +1,1039 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+<div class="fixed-header container-sm-footer create-label">
+   <div class="site-wrapper market-US">
+      <div class="container text-center">
+         <b>
+            <h1 th:text="#{user.registration}">User Registration</h1>
+         </b>
+      </div>
+      <div class="container registration-floating-unit">
+         <form autocomplete="off" name="userDetails" id="registrationForm" role="form" method="get">
+            <input type="hidden" th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" /> 
+            <div th:if="${param.error}">
+               <div class="alert alert-danger" th:text="#{user.pass.invld}">
+                  Invalid username or password.
+               </div>
+            </div>
+            <div class="row spacer-top-xl" id="nameEmailFields">
+               <input name="uId" id="uId" class="form-control name"
+                  type="hidden" data-toggle="tooltip" >
+               <div &amp;&amp;&amp;&amp; class="form-group col-md-6">
+               <label> <span for="name" data-translate="GENERAL.EMAIL" th:text="#{name}">Name</span>
+               <span>*</span></label> <input id="name" name="name" type="text" class="form-control" th:placeholder="#{name}">
+            </div>
+            <div class="form-group col-md-6">
+               <label> <span for="email" data-translate="GENERAL.EMAIL" th:text="#{email}">Email</span>
+               <span>*</span></label> <input id="email" name="email" type="email" class="form-control" th:placeholder="#{email}">
+            </div>
+      </div>
+      <div class="row" id="dobRoleFields">
+      <div class="form-group col-md-6">
+      <label> <span for="dob" th:text="#{dob}">dob</span> <span>*</span></label>
+      <input id="dateOfBirth" name="dateOfBirth" type="date" class="form-control">
+      </div>
+      <div class="form-group col-md-6 dropdown show">
+      <label> <span for="role" th:text="#{role}">role</span> <span>*</span></label>
+      <span class="language-dropdown">
+      <select id="roleDropdown" class="form-control" name="role">
+      </select>
+      </span>
+      </div>
+      </div>
+      <div id="dateErrorContainer" class="errorForm errorHeight text-left">
+      <p th:text="#{not.valid.date}">Please select a valid date. Date does not exist!!</p>
+      </div>
+      <div id="underagedateErrorContainer" class="errorForm errorHeight text-left">
+      <p th:text="#{date.less.tha.18}">Please select a valid date. User cannot be less than 18 years!!</p>
+      </div>
+      <div id="addressFields">
+      <div class="row">
+      <div &amp;&amp;&amp;&amp; class="form-group col-md-6">
+      <label> <span for="name" data-translate="GENERAL.EMAIL"
+         th:text="#{pin.code.rqd}">Name</span> </label> <input id="recieverPostalCode"
+         name="postalCode" type="number" class="form-control" maxlength="6"
+         th:placeholder="#{ZIPCode}">
+      </div>
+      <div class="form-group col-md-6">
+      <label> <span for="zone" th:text="#{zone}">Zone</span>
+      </label> <input id="recieverZone" name="zone" class="form-control" list="zoneList"
+         type="text" th:placeholder="#{zone}">
+      <datalist id="zoneList">
+      </datalist>
+      </div>
+      </div>
+      <div class="row">
+      <div class="form-group col-md-6">
+      <label> <span for="division" th:text="#{division}">division</span> </label>
+      <input id="recieverDivision" name="division" class="form-control" list="divisionList"
+         type="text" th:placeholder="#{division}">
+      <datalist id="divisionList">
+      </datalist>
+      </div>
+      <div class="form-group col-md-6">
+      <label> <span for="district" th:text="#{district}">district</span> </label>
+      <input id="recieverDistrict" name="district" class="form-control" list="districtList"
+         type="text" th:placeholder="#{district}">
+      <datalist id="districtList">
+      </datalist>
+      </div>
+      </div>
+      <div class="row">
+      <div class="form-group col-md-6">
+      <label> <span for="thana" th:text="#{thana}">Thana</span> </label>
+      <input id="recieverThana" name="thana" type="text" class="form-control" list="thanaList"
+         th:placeholder="#{thana}">
+      <datalist id="thanaList">
+      </datalist>
+      </div>
+      <div class="form-group col-md-6">
+      <label> <span for="subOffice" th:text="#{suboffice}">Division</span> </label>
+      <input id="recieverSubOffice" name="subOffice" type="text" list="subOfficeList"
+         class="form-control" th:placeholder="#{suboffice}">
+      <datalist id="subOfficeList">
+      </datalist>
+      </div>
+      </div>
+   </div>
+   <div class="row" id="rms">
+   <div class="form-group col-md-6 dropdown show">
+   <label for="location" th:text="#{rms.name}">RMS Name</label>
+   <span class="language-dropdown">
+   <select  class="form-control" required="required" name="rmsId"  id="rmsDropdown">
+   </select>
+   </span>
+   </div>
+   </div>
+   <div class="col-md-12 margin-bottom-1">
+   <div class="col-md-3 col-md-offset-3">
+   <div class="text-center">
+   <button id="Register" type="button"
+      class="btn-primary form-control" th:text="#{register}"
+      data-toggle="modal">Register</button>
+   </div>
+   <div class="text-center">
+   <!-- <button id="Update" type="button" class="btn-primary form-control" 
+      data-toggle="modal">Update</button> -->
+   <button id="Update" type="button" class="btn-primary form-control"
+      data-toggle="modal"  th:text="#{update.btn}" onclick="update()">Update</button> 
+   </div>
+   </div>
+   <div class="col-md-3 ">
+   <button type="button" id="reset"
+      class="btn-primary form-control"  th:text="#{reset}">Reset</button>
+   </div>
+   </div>
+   </form>
+</div>
+<div class="col-md-12" style="margin-top: 38px;">
+   <div class="col-md-offset-6 col-md-2"></div>
+   <div class="col-md-2 ">
+      <select class="form-control name" name="dropdown" id="dropdownId" align="right">
+     <!--     <option value="ACTIVE">Active</option>        -->  
+        <!--  <option  value="DISABLED">Delete</option> -->
+         <option th:text="#{activate}" value="TRUE">Activate</option>
+         <option th:text="#{deactivate}" value="FALSE">Deactivate</option>
+         <option th:text="#{all}" value="ALL">All</option>
+      </select>
+   </div>
+   <div class="col-md-2">
+      <input type="text" id="searchbox" class="form-control name"
+         th:placeholder="#{search}" align="right" width="48" height="48">
+   </div>
+</div>
+<div id="refreshDiv" class="col-md-12 ">
+   <table id="UserTable" class="table table-striped">
+      <thead>
+         <tr>
+            <th style="display:none">Id</th>
+            <th th:text="#{s.no}">S.No.</th>
+            <th  th:text="#{name}">Name</th>
+            <th th:text="#{email.username}">Email/Username</th>
+            <!--<th>Username</th> -->
+            <!--<th >Account Enabled</th>
+            <th>FirstLogin</th> -->
+            <th style="display:none">RoleID</th>
+            <th th:text="#{role}">Role</th>
+            <th th:text="#{dob}">DOB</th>
+            <th style="display:none">PostalCode</th>
+            <th style="display:none">Account Enabled</th>
+            <th style="display:none">rmsId</th>
+            <!-- <th>Status</th> -->
+            <th th:text="#{edit}">Edit</th>
+            <th th:text="#{enable.disable}">Deactivate/Activate</th>
+            <th th:text="#{re.mail}">Resend Mail</th>
+            <th th:text="#{delete.user}">Delete User</th>
+         </tr>
+      </thead>
+      <tbody id="userTBody">
+      </tbody>
+   </table>
+</div>
+</div>
+<!--footer-->
+<!--Model-->
+<div id="fpModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <img src="/assets/images/sendingMail.gif" id="sendingMail">
+            <h2><span id="msg" th:text="#{sending.mail}">Sending Mail</span><span>...</span></h2>
+         </div>
+      </div>
+   </div>
+</div>
+<!--Model End-->
+<div id="savedModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <span>
+            <h3 style="color: green;" th:text="#{user.update.successful}"> User update Successful</h3>
+         </span>
+         <form name='exist' id="exist"  autocomplete="off" method="post">                         					
+            <button id="ok" type="button" class="btn btn-primary" data-dismiss="modal"
+               aria-label="Close" th:text="#{okay}">OK</button>
+         </form>
+      </div>
+   </div>
+</div>
+<!-- //Saved Modal l-->
+<!--Model-->
+<div id="errorModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <h2 th:text="${error}" class="text-center" id="msgerror"></h2>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="modalCloseButton" class="btn btn-primary btn-md center-block"
+               th:text="#{okay}"data-dismiss="modal">Ok</button>
+         </div>
+      </div>
+   </div>
+</div>
+<!--Model End-->
+</div>
+<!--Model-->
+<div id="fpModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <img src="/assets/images/sendingMail.gif" id="sendingMail">
+            <h2><span id="msg" th:text="#{sending.mail}">Sending Mail</span><span>...</span></h2>
+         </div>
+      </div>
+   </div>
+</div>
+<!--Model End-->
+<!--Model-->
+<div id="errorModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <h2 th:text="${error}" class="text-center" id="msgerror"></h2>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="modalCloseButton" class="btn btn-primary btn-md center-block"
+               th:text="#{okay}" data-dismiss="modal">Ok</button>
+         </div>
+      </div>
+   </div>
+</div>
+<!--Model-->
+<div id="DisableModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <h2 class="text-center" id="name1"> </h2>
+            <h3 style="color:green;"><span th:text="#{disable.user}" >Successfully Disable <span></h3>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="modalCloseButton" class="btn btn-primary btn-md center-block"
+               th:text="#{okay}" data-dismiss="modal">Ok</button>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- //MODAL -->
+<div id="ConfirmEnabledModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <span>
+               <h3 class="errorForm" th:text="#{confirm.enabled.message1}">Are You Sure..!! Do You Want To Enabled User...?</h3>
+            </span>
+         </div>
+         <div class="modal-footer">
+            <div class="text-center">
+               <button id="ConfirmEnabled" type="button" class="btn btn-primary" th:text="#{Confirm}">Confirm</button>
+               <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal"
+                  aria-label="Close" th:text="#{cancel}">Cancel
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div id="ConfirmDisabledModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <span>
+               <h3 class="errorForm" th:text="#{confirm.disabled.message2}">Are You Sure..!! Do You Want To Disabled User...?</h3>
+            </span>
+         </div>
+         <div class="modal-footer">
+            <div class="text-center">
+               <button id="ConfirmDisabled" type="button" class="btn btn-primary" th:text="#{Confirm}">Confirm</button>
+               <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal"
+                  aria-label="Close" th:text="#{cancel}">Cancel
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!--When Account Enable true_Modal Start-->
+<div id="trueEnabelModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <span>
+               <h3 class="errorForm" th:text="#{mail.alert.message1}" >This action only for disable user.</h3>
+              <!--  <h6 class="errorForm" th:text="#{mail.alert.message2}" >**If you want to sent mail of user then, do first disable user.</h6> -->
+            </span>
+         </div>
+         <div class="modal-footer">
+            <div class="text-center">
+               <!-- <button id="ConfirmDisabled" type="button" class="btn btn-primary" th:text="#{Confirm}">Confirm</button> -->
+               <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal"
+                  aria-label="Close" th:text="#{okay}">Okay
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!--When Account Enable true_Modal End-->
+
+
+<!--When Same User Info update Modal End-->
+<div id="sameInfo" class="modal fade text-center" data-backdrop="static" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <span>
+               <h3 class="errorForm"  >User details already exists.</h3>
+            </span>
+         </div>
+         <div class="modal-footer">
+            <div class="text-center">
+              <button id="modalCloseButton" type="button" class="btn btn-primary" data-dismiss="modal"
+               aria-label="Close" th:text="#{okay}">OK</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!--When Same User Info update Modal End-->
+
+
+
+
+<div id="DeactivateModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <span>
+               <h3  class="errorForm" th:text="#{confirm.Deactivate.message3}">Are You Sure..!! Do You Want To Deactivate User...?</h3>
+               <h5  class="errorForm" th:text="#{confirm.rollback}">*This action cannot be rollback. User will be deleted permanently</h5>
+            </span>
+         </div>
+         <div class="modal-footer">
+            <div class="text-center">
+               <button id="ConfirmDeactivate" type="button" class="btn btn-primary" th:text="#{Confirm}">Confirm</button>
+               <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal"
+                  aria-label="Close" th:text="#{cancel}">Cancel
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div id="RemailModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <span>
+               <h3 class="errorForm"  th:text="#{confirm.remail.message4}">Are You Sure..!! Do You Want To Re-mail User...?</h3>
+            </span>
+         </div>
+         <div class="modal-footer "  >
+            <div class="text-center">
+               <button id="ConfirmReMail" type="button" class="btn btn-primary" th:text="#{Confirm}">Confirm</button>
+               <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal"
+                  aria-label="Close" th:text="#{cancel}">Cancel
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- //End Modal -->
+<!--Model-->
+<div id="EnableModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <h2 class="text-center" id="name2"> </h2>
+            <h3 style="color:green;"> <span th:text="#{enable.user}">Successfully Enable <span> </h3>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="modalCloseButton" class="btn btn-primary btn-md center-block"
+               th:text="#{okay}" data-dismiss="modal">Ok</button>
+         </div>
+      </div>
+   </div>
+</div>
+<!--Model-->
+<div id="statusModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header text-center">
+            <h2 class="text-center" id="name3"></h2>
+            <h3 style="color:green;"> <span th:text="#{deactive.user}" >Status Successfully Deactivate<span> </h3>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="modalCloseButton" class="btn btn-primary btn-md center-block"
+               th:text="#{okay}" data-dismiss="modal">Ok</button>
+         </div>
+      </div>
+   </div>
+</div>
+<!--//footer-->
+	
+	<script>
+	
+	var uTable;
+	var roleList;
+	$("#modalCloseButton").click(function() {
+		window.location.reload();
+	});
+		$(document).ready(function () {
+			getAddress();
+		    $('#dateErrorContainer').hide();
+		    $('#underagedateErrorContainer').hide();
+		    $('#Update').hide();
+			//validations on trackid page
+		$("#registrationForm").validate({
+			rules : {
+				"name" : {
+					required : true
+				},
+				"email" : {
+					required : true
+				},				
+				"subOffice" : {
+					required : true
+				},
+				"thana" : {
+					required : true
+				},
+				"district" : {
+					required : true
+				},
+				"division" : {
+					required : true
+				},
+				"zone" : {
+					required : true
+				},
+				"postalCode" : {
+					required : true
+				},
+				"dateOfBirth" : {
+					required : true
+				}
+			},
+		});
+		
+			  $.ajax({
+				url: "/user/getAllRoles",
+				success: function (result) {
+					$.each(result, function (key, data) {								 
+				 	roleList = "<option id=" + data.id + " value=" + data.id + ">" + data.displayName + "</option>";
+					$("#roleDropdown").append(roleList);						
+					});
+				}
+			}); 
+		
+			$.ajax({
+				url: "/server/getAllRms",
+				success: function (result) {
+					$.each(result, function (key, data) {
+
+						var rmsList = "<option lable=" + data.id + " value=" + data.id + ">" + data.rmsName +' ('+data.rmsType+')'+ "</option>";
+					
+						$("#rmsDropdown").append(rmsList);
+					});
+				}
+			});
+
+			 $(window).on('load',function () {
+				 var rmsdata = ("$rmsList");
+					$('#nameEmailFields').show();
+ 					$('#dobRoleFields').show();
+ 					$('#addressFields').hide();
+					$('#rms').hide();
+			});
+
+			$('#roleDropdown').change(function () {
+				if ($('#roleDropdown').val() == "1") {
+ 					$('#nameEmailFields').show();
+ 					$('#dobRoleFields').show();
+ 					$('#addressFields').hide();
+					$('#rms').hide();
+				}
+
+				else if ($('#roleDropdown').val() == "2") {
+ 					$('#nameEmailFields').show();
+ 					$('#dobRoleFields').show();
+ 					$('#addressFields').show();
+ 					//$('#rmsId').val('');
+ 					
+					$('#rms').hide();
+				}
+				else if($('#roleDropdown').val() == "3") {
+					$('#nameEmailFields').show();
+ 					$('#dobRoleFields').show();
+ 					$('#addressFields').show();
+ 					//$('#rmsId').val('');
+					$('#rms').hide();
+					
+
+				}
+				else if($('#roleDropdown').val() == "4") {
+					/* $('#recieverPostalCode').hide(); */
+
+					$('#nameEmailFields').show();
+ 					$('#dobRoleFields').show();
+ 					$('#addressFields').hide();
+					$('#rms').show();
+
+				}
+
+			});
+		});
+		
+	
+		$("#Register").click(function () {
+			register();
+			
+		});
+		function update() {
+			if ($("#registrationForm").valid()) {
+				var data=$("#registrationForm").serialize();
+				$.ajax({
+				    url: "/server/UpdateUser?ajax=true&" + data,
+	                type: "get",
+					success: function (data) {
+						if(data==true)
+						$('#savedModal').modal('show');	
+						else
+						$('#savedModal').modal('show');
+						//$('#sameInfo').modal('show');	
+						
+						$('#name').val('');
+						$('#email').val('');
+						$('#recieverPostalCode').val('');
+						$('#recieverZone').val('');
+						$('#recieverDivision').val('');
+						$('#recieverDistrict').val('');
+						$('#recieverThana').val('');
+						$('#recieverSubOffice').val('');
+						//$('#rmsDropdown').val('');
+						
+					},
+					error: function (result) {
+						console.log("something want wrong");
+						//$('#errorModal').modal('show');	
+					}
+   				});
+			}						
+		}
+		
+		$('#ok').on('click', function () {
+			location.reload();
+		});
+		
+		function register(){
+			if ($("#registrationForm").valid()) {
+				var data=$("#registrationForm").serialize();
+			$.ajax({
+				url: "/server/RegisterUser",
+				type: "GET",
+				data: $('form[name=userDetails]').serialize(),
+				beforeSend : function(){
+						$("#fpModal").modal('show');
+				},
+				success: function (data) {
+					$("#msgerror").text(data);
+					$('#name').val('');
+					$('#email').val('');
+					$('#recieverPostalCode').val('');
+					$('#recieverZone').val('');
+					$('#recieverDivision').val('');
+					$('#recieverDistrict').val('');
+					$('#recieverThana').val('');
+					$('#recieverSubOffice').val('');
+					//$('#rmsDropdown').val('');
+					
+				},
+				complete: function(){
+					$("#fpModal").modal('hide');
+					$('#errorModal').modal('show');
+				}
+
+
+			});
+			}
+
+			}
+		
+
+		
+		  $('#reset').on('click', function () {
+			   $('#Register').show();
+			   $('#Update').hide();
+			   
+			   $('#name').val('');
+			   $('#email').val('');
+			     //$('#roleDropdown').val('');
+			     $('#postalCode').val('');
+			 	 $('#dateOfBirth').val('');
+			 //	$("#roleDropdown").append(roleList);
+			 	$("#roleDropdown").val(1);
+			 	if ($('#roleDropdown').val() == "1") {
+ 					$('#nameEmailFields').show();
+ 					$('#dobRoleFields').show();
+ 					$('#addressFields').hide();
+					$('#rms').hide();
+				}
+			 	$('#email').prop('readonly',false);
+			 	$('#recieverPostalCode').val('');
+				$('#recieverZone').val('');
+				$('#recieverDivision').val('');
+				$('#recieverDistrict').val('');
+				$('#recieverThana').val('');
+				$('#recieverSubOffice').val('');
+		        });
+		
+
+		
+
+		$('#dateOfBirth').on('change', function() {
+			$('#underagedateErrorContainer').hide();
+
+			var today = new Date();
+
+			var day = ("0" + today.getDate()).slice(-2);
+			var month = ("0" + (today.getMonth() + 1)).slice(-2);
+
+		    today1 = today.getFullYear()+"-"+(month)+"-"+(day) ;
+
+		    //if date doesnot exist
+			if($('#dateOfBirth').val() > today1)
+				$('#dateErrorContainer').show();
+			else
+				$('#dateErrorContainer').hide();
+
+			//if dob is less than 18 yrs
+/* 			var dob = new Date($('#dateOfBirth').val());
+
+			if (today.getFullYear() - dob.getFullYear() < 18) {
+				$('#underagedateErrorContainer').show();
+			}
+
+            if (today.getFullYear() - dob.getFullYear() == 18)
+            {
+                if (today.getMonth() < dob.getMonth()) {
+    				$('#underagedateErrorContainer').show();
+                }
+                if (today.getMonth() == dob.getMonth()) {
+                    if (today.getDate() < dob.getDate()) {
+        				$('#underagedateErrorContainer').show();
+                    }
+                }
+            }
+
+
+
+ */		});
+
+</script>
+<script>
+
+var col1="";
+var col2="";
+var col4="";
+var dtable;
+$(document).ready(function () {
+	userData();
+	
+});
+	function userData(){
+        //use for filter
+        var status= $("#dropdownId").val();
+    //For user Table
+  $.ajax({
+        type: "get",
+
+        url: "/server/showUserTable?status="+status,
+        dataType: "json",
+        cache: false,
+        success: function (result) {
+     
+        	var sn=1;
+        	$.each(result, function (i, item) {
+        		
+        		var dob=item.dob.split("-").reverse().join("-");
+        		
+        		var Status = (item.status == 'ACTIVE') ? $('<button class="fa fa-trash status"></button>') : "-";
+
+        		var UserEnabled ;
+        		if(item.status=='ACTIVE'){
+        			UserEnabled = (item.enabled == '0') ? $('<button class="fa fa-toggle-off enable"></button>') : $('<button class="fa fa-toggle-on disable"></button>')
+        		}else
+        			{UserEnabled = "-"}
+        		 ;
+        		 var enabled=(item.enabled === true) ? "YES" : "NO";
+        		 var edit = (item.status == 'ACTIVE') ? $('<button class ="fa fa-edit iBtn"></button>') : " - ";
+        		 var resendMail = (item.status == 'ACTIVE') ? $('<button class="fa fa-envelope reMail"></button>') : "-";
+                var $tr = $('<tr>').append(
+                    
+                    $('<td style="display:none">').text(item.id),
+                    $('<td width= "3px" >').text(sn),
+                    $('<td width= "80px">').text(item.name),
+					$('<td  width= "300px" >').text(item.email),
+					//$('<td  width= "285px">').text(item.username),
+					//$('<td >').text(enabled),
+					//$('<td>').text(item.firstLogin),
+					$('<td style="display:none">').text(item.role.id),
+					$('<td >').text(item.role.displayName),
+					$('<td  width= "98px">').text(dob),
+					$('<td style="display:none">').text(item.postalCode),
+					$('<td style="display:none">').text(enabled),
+					$('<td style="display:none">').text(item.rmsId),
+					/* $('<td  width= "95px">').text(item.status), */
+					$('<td>').html(edit),
+                    $('<td>').html(UserEnabled),                   
+                   $('<td>').html(resendMail),
+                   $('<td>').html(Status)
+                 );
+
+                $('#userTBody').append($tr);
+                ++sn;
+            });
+
+        	dtable = $('#UserTable').DataTable({
+        		// "order": ([0, "asc"]),
+        		 "order": ([1, "asc"]),
+                 "paging": true,
+                 "oLanguage": {
+                     "sLengthMenu": "_MENU_"
+                 },
+                 aoColumns: [{
+                     sWidth: '1%'
+                 }, {
+                     sWidth: '2%'
+                 }, {
+                     sWidth: '13%'
+                 }, {
+                     sWidth: '15%'
+                 }, {
+                     sWidth: '1%'
+                 }, {
+                     sWidth: '13%'
+                 }, {
+                     sWidth: '11%'
+                 }, {
+                     sWidth: '1%'
+                 }, {
+                     sWidth: '1%'
+                 }, {
+                     sWidth: '1%'
+                 },{
+                     sWidth: '12%'
+                 },
+                 {
+                     sWidth: '10%'
+                 },
+                 {
+                     sWidth: '10%'
+                 },
+                 {
+                     sWidth: '10%'
+                 },]
+ 
+        });
+
+        	 $(".dataTables_length").css('clear', 'none');
+             $(".dataTables_length").css('margin-top', '-40px');
+             $(".dataTables_length").css('margin-left', '0px');
+
+        },
+        error: function (response) {
+            console.log("something went wrong");
+        }
+
+
+  });
+	}
+
+$("#searchbox").keyup(function() {
+	   dtable.search(this.value).draw();
+
+	 });
+
+//Check if body height is higher than window height :)
+if ($(document).height() > $(window).height()) {
+    $("#foot").addClass("footer-top-margin");
+}
+
+$('#dropdownId').on('change', function () {
+
+  	 var table=$('#UserTable').DataTable();
+  	table.destroy();
+  	$('#userTBody').empty();
+		userData();
+
+  });
+  
+  
+$('#UserTable').on('click', '.iBtn', function () {
+	
+	$('#zoneList option').val('');
+	$('#divisionList option').val('');
+	$('#thanaList option').val('');
+	$('#districtList option').val('');	
+	
+ 	$('#Register').hide();
+    $('#Update').show();
+ 	 	
+				 // get the current row
+				 var data = $('#UserTable').DataTable().row($(this).parents('tr')).data();
+				 $('#uId').val(data[0]);
+				 $('#name').val(data[2]);       			
+       			 $('#email').val(data[3]);
+       			 $('#email').prop('readonly',true);
+       			 $('#roleDropdown').val(data[4]);  
+       			 
+       			var date=data[6].split("-").reverse().join("-");        		
+      		     $('#dateOfBirth').val(date);
+      		     $('#recieverPostalCode').val(data[7]);
+      		     $('#rmsDropdown').val(data[9]);
+      		 var poCode=$('#recieverPostalCode').val(data[7]);
+      		 if($('#recieverPostalCode').val()!=null){
+       			getAddress();      			
+      			}      		
+      		   
+      		   if ($('#roleDropdown').val() == "1") {
+					$('#nameEmailFields').show();
+					$('#dobRoleFields').show();
+					$('#addressFields').hide();
+					$('#rms').hide();
+				}
+
+				else if ($('#roleDropdown').val() == "2") {
+					$('#nameEmailFields').show();
+					$('#dobRoleFields').show();
+					$('#addressFields').show();
+					$('#rms').hide();
+				}
+				else if($('#roleDropdown').val() == "3") {
+					$('#nameEmailFields').show();
+					$('#dobRoleFields').show();
+					$('#addressFields').show();
+					$('#rms').hide();
+
+				}
+				else if($('#roleDropdown').val() == "4") {
+					/* $('#recieverPostalCode').hide(); */
+
+					$('#nameEmailFields').show();
+					$('#dobRoleFields').show();
+					$('#addressFields').hide();
+					$('#rms').show();
+				}
+      		   
+				 $(window).scrollTop(0);
+ });
+  
+  
+		    $('#UserTable').on('click', '.status', function () {
+		
+						 // get the current row
+						 var currentRow=$(this).closest("tr");
+						  col1 = currentRow.find("td:eq(0)").text();//get the id from table row
+						  col2 = currentRow.find("td:eq(3)").text();
+						  $('#DeactivateModal').modal('show');
+		    });
+		
+		    $("#ConfirmDeactivate").click(function () {
+		
+		    	$('#DeactivateModal').modal('hide');
+						 $('#name3').text('');
+						 $.ajax({
+					  			type: "get",
+					  			url: "/server/changeStatus?ajax=true",
+					  			data:{
+					  				id:col1
+					  			},
+					  			success: function (result) {
+					  				 var table=$('#UserTable').DataTable();
+					  			  	table.destroy();
+					  			  	$('#userTBody').empty();
+						  		      	userData();
+					  			// var col2 = currentRow.find("td:eq(2)").text();
+					  				$('#name3').append(col2);
+					  				$('#statusModal').modal('show');
+		
+					  			},
+					  			error: function () {
+		
+					  				alert("No values found..!!");
+					  			}
+					  		});
+		
+		    });
+		
+		    //function userAction(id,email,enabled) {
+		    $("#ConfirmDisabled").click(function () {
+		    	$('#ConfirmDisabledModal').modal('hide');
+		       	$('#name1').text('');
+		       	  $.ajax({
+		    			type: "GET",
+		    			url: "/server/enabaleAndDisableUser?ajax=true",
+		    			data:{
+		    				id:col1
+		    			},
+		    			success: function (result) {
+		
+		    				 var table=$('#UserTable').DataTable();
+		  	  			  	table.destroy();
+		  	  			  	$('#userTBody').empty();
+		  	  			    	userData();
+		
+		  	  					if(col4 == "YES"){
+		
+		  	  					$('#name1').append(col2);
+		  	  					$('#DisableModal').modal('show');
+		  	  					}
+		    			},
+		    			error: function () {
+		
+		    				alert("No values found..!!");
+		    			}
+		    		});
+		      });
+		
+		    $("#ConfirmEnabled").click(function () {
+		    	$('#ConfirmEnabledModal').modal('hide');
+		    	$('#name2').text('');
+		    	  $.ajax({
+		    			type: "GET",
+		    			url: "/server/enabaleAndDisableUser?ajax=true",
+		    			data:{
+		    				id:col1
+		    			},
+		    			success: function (result) {
+		
+		    				 var table=$('#UserTable').DataTable();
+		  	  			  	table.destroy();
+		  	  			  	$('#userTBody').empty();
+		  	  			    	userData();
+		
+		  	  					if(col4 == "NO"){
+		  	  	  					$('#name2').append(col2);
+		  	  	  					$('#EnableModal').modal('show');
+		  	  	  					}
+		    			},
+		    			error: function () {
+		
+		    				alert("No values found..!!");
+		    			}
+		    		});
+		
+		    });
+		
+		
+		
+		    $('#UserTable').on('click', '.disable', function () {
+		
+		    		var currentRow=$(this).closest("tr");
+		  	 	 	 col1 = currentRow.find("td:eq(0)").text(); //get the id from table row
+		  	 		 col2 = currentRow.find("td:eq(3)").text();
+		  			 col4 = currentRow.find("td:eq(8)").text();
+		  			$('#ConfirmDisabledModal').modal('show');
+		  			//userAction(col1,col2,col4);
+		  	  });
+		
+		    $('#UserTable').on('click', '.enable', function () {
+		
+		    		var currentRow=$(this).closest("tr");
+		    	  	 col1 = currentRow.find("td:eq(0)").text(); //get the id from table row
+		      	 	 col2 = currentRow.find("td:eq(3)").text();
+		    	 	 col4 = currentRow.find("td:eq(8)").text();
+		    	 	$('#ConfirmEnabledModal').modal('show');
+		    	 	//userAction(col1,col2,col4);
+		    });
+		
+		        //******For Re-Mail******//
+		        $('#UserTable').on('click', '.reMail', function () {
+		
+		      	  var currentRow=$(this).closest("tr");
+		      	  col1 = currentRow.find("td:eq(0)").text(); //get the id from table row
+		      	  col2 = currentRow.find("td:eq(8)").text();
+		      	  if(col2=="YES")
+		      	  $("#trueEnabelModal").modal('show');  
+		      	  else
+		      	  $("#RemailModal").modal('show');
+		      	 });
+		
+		        $("#ConfirmReMail").click(function () {
+		        	$('#RemailModal').modal('hide');
+					$.ajax({
+						url: "/server/resendMail",
+						type: "GET",
+						data:{
+		    				id:col1
+		    			},
+						beforeSend : function() {
+		
+							$("#fpModal").modal('show');
+						},
+						success: function (data) {
+		
+							$("#msgerror").text(data);
+						     var table=$('#UserTable').DataTable();
+				  			  	table.destroy();
+				  			  	$('#userTBody').empty();
+				  				userData();
+						},
+						complete: function(){
+		
+							$("#fpModal").modal('hide');
+							$('#errorModal').modal('show');
+		
+						}
+		
+					});
+		
+				});
+		
+</script>
+<th:block th:include="_footer"></th:block>
+</body>

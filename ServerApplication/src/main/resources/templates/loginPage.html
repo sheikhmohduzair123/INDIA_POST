@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-us" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="assets/js/jquery.min.js"> </script>
+<script src="validation/jquery.validate.js"> </script>
+<script src="assets/js/jquery.cookie.js"> </script>
+<script src="validation/jquery.validate.min.js"> </script>
+<script src="validation/additional-methods.js"> </script>
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- fetch the current locale of the page to display front end validation messages in selected language -->
+<script th:src="${'validation/messages_'+#locale+'.js'}"></script>
+
+<link href="assets/css/font-awesome.min.css" rel="stylesheet">
+<link href="assets/css/bootstrapv3.3.7.css" rel="stylesheet">
+<link href="assets/css/design_system.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
+<link rel="icon" href="assets/images/favicon.ico">
+<title>India Post Login</title>
+</head>
+
+<body class="signin">
+	<div class="floating-unit">
+		<!-- /login?error=true -->
+		<!--<div th:if="${#request.getParameter('error') == 'true'}"
+			style="color: red; margin: 10px 0px;" th:text="#{login.failed}">
+			Login Failed!!! <br /> Reason : <span
+				th:if="${#session!= null and #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}"
+				th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}">
+				Static summary </span>
+
+		</div>-->
+
+		<div id="show_body" >
+			<div class="floating-unit">
+				<div class="floating-unit">
+					<a href="#" target="_blank" id="pb_logo_link"
+						class="signin-pb-logo"></a>
+					<div class="signin-box">
+						<h1 class="signin-heading">
+							<img src="assets/images/bdg.png" class="login-logo"
+								th:text="#{BDPost}">
+						</h1>
+						<h5 class="signin-subheading"></h5>
+						<form autocomplete="off" name="loginForm" id="loginForm"
+							role="form" th:action="@{/j_spring_security_check}" method='POST'>
+						 <div th:if="${blocked == null}">
+							<div th:if="${param.error}">
+			                    <div class="alert alert-danger" th:text="#{user.pass.invld}">
+			                        Invalid username or password.
+			                    </div>
+			                </div>
+						</div>
+
+			               <div th:if="${blocked != null}">
+			                    <div class="alert alert-danger" th:text="#{maximum.login.attempts.reached}">
+			                        Maximum login attempts reached. Try after 24 hours.
+			                    </div>
+			                </div>
+							 <!-- <input type="hidden" th:name="${_csrf.parameterName}"
+								th:value="${_csrf.token}" />  --><input type="hidden"> <!-- <input
+								type="hidden" name="_flow" value="v2"> -->
+							<div &amp;&amp;&amp;&amp; class="form-group spacer-top-xl">
+								<label> <span for="username" data-translate="GENERAL.EMAIL"
+									th:text="#{email}">Email</span> <span>*</span></label> <input id="username"
+									name="username" type="email" class="form-control">
+							</div>
+							<div id="emailLoginErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+
+							<div &amp;&amp; class="form-group">
+								<label><span for="password" th:text="#{pwd}">Password</span> <span>*</span></label>
+								<div class="input-group">
+									<input id="password" name="password" type="password" onselectstart="return false" onCopy="return false" onCut="return false"
+									class="form-control"><span
+										style="cursor: pointer; cursor: hand;"
+										class="input-group-addon"><i class="fa fa-lock"></i></span>
+								</div>
+								<div id="pwdErrorContainer" class="errorForm">
+                                <ul></ul>
+                                </div>
+							</div>
+							<!-- <label id="usernameErrMsg" for="password" style="display: none"
+								class="error errorForm" th:text="#{error.mail}">Please enter a
+								valid username (email address).</label> <input id="usernamePop"
+								type="hidden" name="usernamePop" value=""> <input
+								id="passwordPop" type="hidden" name="passwordPop" value="">
+							<input id="entryPointID" type="hidden" name="entryPointID"
+								value=""> <input id="submitUrl" type="hidden"
+								name="submitUrl"
+								value="https://secureqa.pb.com/EAI/PBQA1AuthEAIWeb/Login">
+							<input id="productUrl" type="hidden" name="productUrl"
+								value="sendpro"> <input id="passedUrl" type="hidden"
+								name="passedUrl" value=""> <input id="smartp"
+								type="hidden" name="smartp" value="true"> <label
+								id="passwordErrMsg" for="password" style="display: none"
+								class="error errorForm" th:text="#{valid.pwd}">Enter a valid
+								password.</label> -->
+
+							<div>
+                             <input type="hidden" th:value="${blocked}" id="blocked">
+							</div>
+
+							<button id="signinButton" type="submit"
+								class="btn btn-primary btn-block btn-lg spacer-top-md"
+								th:text="#{sign.in}">Sign In</button>
+						</form>
+						<p class="text-center spacer-top-md">
+							<a href="user/forgotPassword" th:text="#{forgot.your.password?}">Forgot
+								your password</a>?
+						</p>
+						<div class="text-center">
+							<ul class="list-unstyled list-inline spacer-top-xs">
+								<div class="language-select spacer-top-sm">
+									<span class="language-dropdown"><select
+										id="localeChangeDropdown" class="form-control">
+											<option label="English (United States)" value="?lang=en">English
+												(United States)</option>
+											<option label="Bangla (বাংলা)" value="?lang=bn"></option>
+									</select></span>
+								</div>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+<!--footer-->
+	</div>
+	<th:block th:include="_footer"></th:block>
+<!--//footer-->
+</body>
+<script>
+
+<!-- front end validations -->
+$(document).ready(function() {
+    $("#loginForm").validate({
+        rules:{
+            username:{
+                required: true,
+                minlength:2
+            },
+            password: {
+				required : true
+			},
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "username")
+            {
+              $("#emailLoginErrorContainer").html(error);
+              $("#emailLoginErrorContainer").show();
+            }
+            else if (element.attr("name") == "password")
+            {
+              $("#pwdErrorContainer").html(error);
+              $("#pwdErrorContainer").show();
+            }
+          //displays a tooltip
+            element.attr('title', error.text());
+            $(element).tooltip({
+                position: {
+                    my: "left+5 center",
+                    at: "right center"
+                },
+                trigger: "hover"
+            });
+        },
+      //highlight the error field with red
+        highlight: function(element, error) {
+            $(element).css('background', '#FFCCCB');
+        },
+
+        // Called when the element is valid:
+        unhighlight: function(element) {
+            $(element).css('background', '#ffffff');
+        }
+  });
+});
+
+/*
+//to disable submit button incase of maimum login attempts reached
+$('#loginForm').on('submit', function(e){
+	if($('#blocked').val() == "blocked"){
+		return false;
+	}
+}); */
+
+<!-- for changing selected language -->
+//when we change language from dropdown menu
+$('#localeChangeDropdown').on('change', function ()
+{ // bind change event to select
+        var url = $(this).val();// get selected value
+        if (url != '') { // require a URL
+            window.location.href = url; // redirect
+        }
+         return false;
+});
+
+//to set default locale as placeholder and update in url
+$(document).ready(function(){
+         	var loc = $(location).attr("href");
+         	if(loc.indexOf('?') == -1){			//when url is not containing ?lang string, set default to en.
+         		var userLang = $.cookie('lang1');		//get the cookie
+         		if(userLang == "?lang=en" ||  userLang==undefined)
+         		{
+         			//$.cookie('lang1', '?lang=en');		//set the cookie to en if null
+         			document.cookie = "lang1 = ?lang=en; secure; path=/; samesite=strict; httpOnly";
+
+             		$("#localeChangeDropdown").val("?lang=en");    //used to set the dropdown
+             		window.location.href = "?lang=en";			   //used to reload the page
+         		}
+         		else									//if lang is set to bn, then load the page with bn locale and set dropdown also
+				{
+         			$("#localeChangeDropdown").val(userLang);
+             		window.location.href = userLang;
+				}
+         	}
+         	else
+         	if(loc.slice(loc.indexOf('?')) == "?error=true")    //fetch the current locale stored in cookie when going for validation and load the page accordingly
+         	{
+         		var userLang = $.cookie('lang1');
+              	$("#localeChangeDropdown").val(userLang);
+          	}
+         	else
+         	{
+         		var selected_lang = loc.slice(loc.indexOf('?'));
+     			$("#localeChangeDropdown").val(selected_lang);
+     		//	$.cookie('lang1', selected_lang);
+    			document.cookie = "lang1 = "+selected_lang+"; secure; path=/; samesite=strict; httpOnly";
+
+     		 	var userLang = $.cookie('lang1');
+         	}
+});
+
+</script>
+
+</html>

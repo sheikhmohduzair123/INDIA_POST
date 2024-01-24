@@ -1,0 +1,147 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="container fixed-header container-sm-footer">
+
+    <div class="floating-unit">
+        <form autocomplete="off" name="addFundsForm" id="addFundslForm" role="form" value="v2">
+            <div class="form-group">
+                <label th:text=#{enter.refill.amount}>Enter Refill Amount</label>
+                <input type="text" id="refillAmount" name="refillAmount"  class="form-control">
+
+                <div id="errorContainer" class="errorForm">
+                    <ul></ul>
+                </div>
+            </div>
+            <button id="refillAmountButton" type="button" class="btn btn-primary btn-block btn-lg"
+                th:text=#{add.funds}>Add Funds</button>
+        </form>
+    </div>
+
+    <div class="overlay">
+        <div id="loading-img"></div>
+    </div>
+
+    <!-- Refill success Modal -->
+    <div id="refillSuccessModal" data-backdrop="static" class="modal fade" role="dialog">
+	 <div class="modal-dialog">
+		<div class="modal-content text-center">
+			<!-- <div class="modal-body ">
+				<h3 class="text-success text-center" th:text="#{refill.success}">Meter Refilled Successfully!!</h3>
+			</div> -->
+			<div class="text-center">
+                <h3 class="text-success text-center" th:text="#{refill.success}">Meter Refilled Successfully!!</h3>
+				<span><button type="button" class="btn btn-primary" id="ok_btn" data-dismiss="modal"
+						th:text="#{close}">Close</button></span>
+			</div>
+		</div>
+	 </div>
+   </div>
+
+   <div id="refillFailureModal" data-backdrop="static" class="modal fade" role="dialog">
+	 <div class="modal-dialog text-center">
+		<div class="modal-content">
+			<div class="modal-body text-center">
+				<h3 class="text-success" th:text="#{refill.failed}">Meter Refill Unsuccessful. Please try after some time</h3>
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary" id="ok_btn-fails" data-dismiss="modal"
+						th:text="#{close}">Close</button></span>
+			</div>
+		</div>
+	 </div>
+   </div>
+ 
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        $("#addFundslForm").validate({
+            rules: {
+                "refillAmount": {
+                    required: true,
+                    digits:true,
+                    range: [0, 5000],
+                },
+            },
+            errorPlacement: function(error, element){
+                if(element.attr("name")==="refillAmount"){
+                    $("#errorContainer").html(error)
+                }
+            }
+    
+        }),
+        $("#refillAmount").keyup(function(e){
+          const {value} = e.target;
+          if(value > 5000){
+            $("#refillAmount").css("background-color", "pink");
+          }else{
+            $("#refillAmount").css("background-color", "white");
+          }
+          $("lable.error").css("color", "pink");
+        })
+
+    })
+
+    // $('#refillAmount').on("change keyup", function () {
+    //     var n = $('#refillAmount').val();
+    //     if (n < 0)
+    //         $('#refillAmount').val(0);
+    //     if (n > 5000)
+    //         $('#refillAmount').val(5000);
+    // });
+
+    $("#refillAmountButton").on('click', function () {
+        $("#refillAmountButton").attr("disabled", true);
+
+        // get the refill amoount
+        var amount = $('#refillAmount').val();
+        if(amount.trim()==="")
+            alert("Please enter a amount")
+        $.ajax({
+            type: "GET",
+            url: "/client/refill?amount="+amount,
+            beforeSend: function () {
+					$(".overlay").show();
+					//window.scrollTo(0, 0);
+				},
+            success: function (response) {
+                console.log( response);
+                $("#refillAmountButton").removeAttr("disabled");
+                $("#refillSuccessModal").modal('show');
+                // $('#refillAmount').val("");
+                //$("#refillAmount").attr('value',' ');
+                
+            },
+            error: function (error) {
+                console.log("ERROR", error);
+                $("#refillFailureModal").modal('show');
+                $("#refillAmountButton").removeAttr("disabled");
+            },
+            complete: function (data) {
+					$(".overlay").hide();
+			}
+        });
+        
+    });
+
+    $("#ok_btn").on('click', function () {
+        window.location.reload();
+
+    });
+    $("#ok_btn-fails").on('click', function () {
+        window.location.reload();
+
+    });
+
+
+</script>
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

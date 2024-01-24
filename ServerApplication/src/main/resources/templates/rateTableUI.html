@@ -1,0 +1,2049 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<div class="fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+        <!-- /header -->
+        <form name="rateTableForm" id="rateTableForm" class="rateTableForm" autocomplete="off" method="post">
+            <input name="rateTableId" id="rateTableId" type="hidden">
+            <h1 class="text-center" th:text="#{rate.master}">Rate Master</h1>
+            <div class="col-md-12">
+               <div class="form-group col-md-4">
+                    <label> <span th:text="#{main.service}">Main Service</span>
+					</label> <select class="form-control name" name="rateServiceCategory.serviceId" id="mainServiceId" th:placeholder="#{select}">
+						<option value="" disabled selected th:text="#{select}">select</option>
+						<option th:each="postalService : ${pstalServiceList}"
+							th:value="${postalService.id}" th:id="${postalService.id}"
+							th:text="${postalService.serviceName}"></option>
+					</select>
+					<div id="serviceIdErrorContainer" class="errorForm">
+            			<ul></ul>
+        			</div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{sub.services}">Sub Service</span>
+					</label> <select class="form-control name" name="rateServiceCategory.parentServiceId" id="subsServiceId" th:placeholder="#{select}">
+						<option value="" disabled selected th:text="#{select}">select</option>
+						<option th:each="postalService : ${SubServiceVoList}"
+							th:value="${postalService.subServiceId}"
+							th:id="${postalService.subServiceId}"
+							th:text="${postalService.subServiceName}"></option>
+					</select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{price.type}">Price Type</span>
+					</label>
+                    <div class="form-check form-check-inline">
+                        <label class="radio-inline"> <input type="radio"
+							name="rateServiceCategory.priceType" value="FLAT" id="fixed" checked th:text="#{fixed.price}">
+						</label> <label class="radio-inline"> <input type="radio"
+							name="rateServiceCategory.priceType" id="change" value="VARIABLE" th:text="#{variable.price}">
+						</label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12">
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{maximum.weight.allowed.for.this.service}">Maximum weight allowed for this
+							service (gms)</span>
+					</label> <input type="text" id="weightMaxLimit" name="rateServiceCategory.weightMaxLimit" class="selectpicker form-control" th:placeholder="#{maximum.weight.allowed.for.this.service}">
+                	<div id="maxWeightErrorContainer" class="errorForm">
+            			<ul></ul>
+        			</div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{maximum.value.parcel.allowed}">Maximum value of parcel allowed for
+							this service (₹)</span>
+					</label> <input type="text" id="valueMaxLimit" name="rateServiceCategory.valueMaxLimit" class="selectpicker form-control" th:placeholder="#{maximum.value.parcel.allowed}">
+	                <div id="maxValueErrorContainer" class="errorForm">
+	            		<ul></ul>
+	        		</div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{expected.delivery}">Expected Delivery (Days)</span>
+					</label> <input type="text" id="expectedDelivery" name="rateServiceCategory.expectedDelivery" class="selectpicker form-control" th:placeholder="#{expected.delivery}">
+                	<div id="expectedErrorContainer" class="errorForm">
+	            		<ul></ul>
+	        		</div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12">
+                <div class="form-group col-md-4" id="dependencyDropDown" style="display: none">
+
+                    <label> <span th:text="#{dependency}">Dependency</span>
+					</label> <select class="form-control name" id="selectDependency" name="select_Dependency" style="display: none" th:placeholder="#{dependency}">
+						<option value="" th:text="#{select}">select</option>
+						<option value="Weight" th:text="#{weight.dependency}">Weight Dependency</option>
+						<option value="Value" th:text="#{value.dependency}">Value Dependency</option>
+						<option value="Location" th:text="#{location.dependency}">Location Dependency</option>
+						<option value="Weight and Location" th:text="#{weight.location.dependency}">Weight and Location Dependency</option>
+					</select>
+					<div id="selectDependencyErrorContainer" class="errorForm">
+            			<ul></ul>
+        			</div>
+                </div>
+
+                <div class="form-group col-md-4" id="fixPriceTextBox">
+                    <label> <span th:text="#{price.or.rate.exclusive.taxes}">Price/Rate (Exclusive of taxes)(₹)</span>
+					</label> <input type="text" name="rateServiceCategory.price" id="price" class="selectpicker form-control" th:placeholder="#{price.or.rate.exclusive.taxes}">
+					<div id="priceErrorContainer" class="errorForm">
+            			<ul></ul>
+        			</div>
+                </div>
+
+                <div class="form-group col-md-4" style = "display:none" id="tax_applicable">
+                <input type="hidden" th:value="${configVo}" id="tax_configData"> 
+                    <label> <span th:text="#{tax.applicable}">Tax Applicable</span>
+					</label>
+                    <div class="form-check form-check-inline">
+                        <label class="radio-inline"> <input type="radio"
+							name="taxRate" value="true" checked th:text="#{yes}">
+						</label> <label class="radio-inline"> <input type="radio"
+							name="taxRate" value="false" th:text="#{no}" disabled>
+						</label>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2" id="taxDiv1" style="display:none">
+                	<label> <span id="tax_rate1">Tax Rate 1</span>
+					</label> <input type="text" id="taxRate1" name="rateServiceCategory.taxRate1" class="selectpicker form-control" th:placeholder="#{tax.rate1}">
+                <div id="taxRate1ErrorContainer" class="errorForm">
+            		<ul></ul>
+        		</div>
+                </div>
+
+                <div class="form-group col-md-2" id="taxDiv2" style="display:none">
+                	<label> <span id="tax_rate2">Tax Rate 2</span>
+					</label> <input type="text" id="taxRate2" name="rateServiceCategory.taxRate2" class="selectpicker form-control" th:placeholder="#{tax.rate2}">
+                <div id="taxRate2ErrorContainer" class="errorForm">
+            		<ul></ul>
+        		</div>
+                </div>
+
+            </div>
+            
+			<div id="copyLocationAndWeightDiv" class="location_weight_in">
+			<div id="locationDependencyDiv" style="display: none" class="location_in">
+
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <!-- <h6 class="text-uppercase">Location Dependency</h6> -->
+                        <hr class="solid">
+                    </div>
+                </div>
+                    <div class="col-md-12">
+                        <div class="form-group col-md-4">
+                            <label> <span th:text="#{select.location.dependency}">Select Location Dependency</span>
+							</label> <select class="form-control name" name="rateServiceCategory.locationDependency" id="locationWiseRate" onchange='change_location(this)' th:placeholder="#{select.location.dependency}">
+								<option value="NOT_APPLICABLE" th:text="#{select}">select</option>
+								<option value="LOCAL" th:text="#{local}">LOCAL</option>
+								<option value="INTERCITY" th:text="#{intercity}">INTERCITY</option>
+								<option value="PINCODE" th:text="#{pincode}">PINCODE</option>
+								<option value="SUB_OFFICE" th:text="#{suboffice1}">SUB_OFFICE</option>
+								<option value="DIVISIONAL" th:text="#{division1}">DIVISION</option>
+								<option value="ZONAL" th:text="#{zone1}">ZONAL</option>
+								<option value="DISTRICT" th:text="#{district1}">DISTRICT</option>
+								<option value="THANA" th:text="#{thana1}">THANA</option>
+							</select>
+							<div id="locationDependencyErrorContainer" class="errorForm">
+            					<ul></ul>
+        					</div>
+                        </div>
+
+                        <div class="form-group col-md-4" id="locationPriceDiv">
+                            <label> <span th:text="#{price.or.rate.exclusive.taxes}">Price/Rate (Exclusive of taxes)(₹)</span> </label>
+                            <input type="text" id="locationPrice" name="locationWiseRate.price" class="selectpicker form-control" th:placeholder="#{price.or.rate.exclusive.taxes}">
+	                        <div id="locationPriceErrorContainer" class="errorForm">
+	            				<ul></ul>
+	        				</div>
+                        </div>
+
+                        <div class="form-group col-md-2" id="fromDiv">
+
+                            <label>
+                            	<span id="fSubOffice" th:text="#{from.postal.code.or.suboffice}">From Postal Code/Sub Office</span>
+                            	<span id="fThana" style="display: none" th:text="#{from.thana}">From Thana</span>
+                            	<span id="fDistrict" style="display: none" th:text="#{from.district}">From District</span>
+                            	<span id="fDivision" style="display: none" th:text="#{from.division}">From Division</span>
+                            	<span id="fZone" style="display: none" th:text="#{from.zone}">From Zone</span>
+                            </label>
+                            <select name="locationWiseRate.fromId" class="form-control name chosen" id="fromId1" th:placeholder="#{pocode.soname}" onchange='change_fromId(this)'>
+                              	<option value="" selected th:text="#{select.postal.code.sub.office}">Select Postal Code/Sub Office</option>
+	  						 	<option  th:each="poValue : ${pOList}" th:value="${poValue.id}" th:id="${poValue.id}"
+	                                   th:text="${poValue.subOffice + ' (' + poValue.postalCode+')'}">
+	                          	</option>
+                           	 </select>
+							 <div id="locationFromIdErrorContainer" class="errorForm">
+	            				<ul></ul>
+	        				</div>
+                        </div>
+
+                        <div class="form-group col-md-2" id="toDiv">
+                            <label> 
+                            	<span id="tSubOffice" th:text="#{to.postal.code.or.suboffice}">To Postal Code/Sub Office</span>
+                            	<span id="tThana" style="display: none" th:text="#{to.thana}">To Thana</span>
+                            	<span id="tDistrict" style="display: none" th:text="#{to.district}">To District</span>
+                            	<span id="tDivision" style="display: none" th:text="#{to.division}">To Division</span>
+                            	<span id="tZone" style="display: none" th:text="#{to.zone}">From Zone</span>
+                            </label>
+                            <select name="locationWiseRate.toId" class="form-control name chosen" id="toId1" th:placeholder="#{pocode.soname}" onchange='change_toId(this)'>
+                              	<option value="" selected th:text="#{select.postal.code.sub.office}">Select Postal Code/Sub Office</option>
+	  						 	<option  th:each="poValue : ${pOList}" th:value="${poValue.id}" th:id="${poValue.id}"
+	                                   th:text="${poValue.subOffice + ' (' + poValue.postalCode+')'}">
+	                          	</option>
+								
+                           	 </select>
+                           	 <div id="locationToIdErrorContainer" class="errorForm">
+	            				<ul></ul>
+	        				</div>
+                        </div>
+
+                    </div>
+            </div>
+            
+			<div class='target_location_clone'></div>
+			
+           <!-- <div class="col-md-12" id="locationPlus" style="display: none">
+				<div class="form-group col-md-4">
+					<i class="fa fa-plus-circle fa-3x" aria-hidden="true"
+						id="addMoreLocationButton"></i>
+				</div>
+			</div> -->
+			
+            <div id="weightDependencyDiv" style="display: none" class="weight_in">
+
+                <div class="col-md-12">
+
+                    <div class="col-md-12">
+                        <!-- <h6 class="text-uppercase" id="rmvtag">Weight Dependency</h6> -->
+                        <hr class="solid">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                     <div class="form-group col-md-4">
+                          <label>
+	                      	<span th:text="#{define.slabs.based.weight}">Define slabs based on weight</span>
+							</label>
+                            <select class="form-control name" name="rateServiceCategory.weightDependency" id="weightDependency" onchange='change_weight(this)' th:placeholder="#{define.slabs.based.weight}">
+								<option value="NOT_APPLICABLE" th:text="#{select}">select</option>
+								<option value="SLAB_WISE" th:text="#{slab.type}">Slab Type</option>
+							  	<option value="MULTIPLIER" th:text="#{multiple.type}">Multiple Type</option>
+							</select>
+							<div id="selectWeightDependencyErrorContainer" class="errorForm">
+            			<ul></ul>
+        			</div>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label> <span th:text="#{price.or.rate.exclusive.taxes}">Price/Rate (Exclusive of taxes)(₹)</span></label>
+                            <input type="text" id="weightPrice" name="weightWiseRate.price" class="selectpicker form-control" th:placeholder="#{price.or.rate.exclusive.taxes}">
+							<div id="weightPriceErrorContainer" class="errorForm">
+	            				<ul></ul>
+	        				</div>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label> 
+	                        	<span th:text="#{weight.start.range}">Weight Start Range (gms)</span>
+							</label>
+                            <input type="text" id="weightStartRange" name="weightWiseRate.weightStartRange" class="selectpicker form-control" th:placeholder="#{weight.start.range}">
+                        	<div id="weightWStartErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="form-group col-md-4">
+                            <label> 
+	                        	<span th:text="#{weight.end.range}">Weight End Range (gms)</span>
+							</label>
+                            <input type="text" id="weightEndRange" name="weightWiseRate.weightEndRange" class="selectpicker form-control" th:placeholder="#{weight.end.range}">
+                        	<div id="weightWEndErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4 module" id="weightFractionFactorDiv">
+                            <label> 
+	                        	<span th:text="#{weight.fraction.factor}">Weight Fraction Factor (gms)</span>
+							</label>
+                            <input type="text" id="weightFractionFactor" name="weightWiseRate.weightFractionFactor" class="selectpicker form-control" th:placeholder="#{weight.fraction.factor}">
+                        	<div id="weightWFractionErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4" id="weightBasePriceDiv">
+                            <label> 
+	                        	<span th:text="#{base.price}">Base Price (₹)</span>
+							</label>
+                            <input type="text" id="weightBasePrice" name="weightWiseRate.basePrice" class="selectpicker form-control" th:placeholder="#{base.price}">
+                        	<div id="weightWBasePriceErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+                        </div>
+
+                    </div>
+            	</div>
+            	<div class='target_weight_clone'></div>
+			</div>
+			<div class='target_location_weight_clone'></div>
+			
+			 <!-- <div class="col-md-12" id="weightAndLocationPlus" style="display: none">
+				<div class="form-group col-md-4">
+					<i class="fa fa-plus-circle fa-3x" aria-hidden="true"
+						id="addMoreWeightAndLocationButton"></i>
+				</div>
+			</div> -->
+			
+            <!-- <div class="col-md-12" id="weightPlus" style="display: none">
+				<div class="form-group col-md-4">
+					<i class="fa fa-plus-circle fa-3x" aria-hidden="true"
+						id="addMoreWeightButton"></i>
+				</div>
+			</div> -->
+
+            <div id="valueDependencyDiv" style="display: none" class="value_in">
+
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <!-- <h6 class="text-uppercase">Value Dependency</h6> -->
+                        <hr class="solid">
+                    </div>
+                </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group col-md-4">
+                            <label> <span th:text="#{select.value.dependency}">Select Value Dependency</span>
+							</label> <select class="form-control name" name="rateServiceCategory.valueDependency" id="parcelValueDependency" onchange='change_value(this)' th:placeholder="#{select.value.dependency}">
+								<option value="NOT_APPLICABLE" th:text="#{select}">select</option>
+								<option value="SLAB_WISE" th:text="#{slab.type}">Slab Type</option>
+							  	<option value="MULTIPLIER" th:text="#{multiple.type}">Multiple Type</option>
+							</select>
+							<div id="selectValueDependencyErrorContainer" class="errorForm">
+            					<ul></ul>
+        					</div>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label> <span th:text="#{price.or.rate.exclusive.taxes}">Price/Rate (Exclusive of taxes)(₹)</span>
+							</label> <input type="text" id="valuePrice" name="parcelValueWiseRate.price" class="selectpicker form-control" th:placeholder="#{price.or.rate.exclusive.taxes}">
+                       		<div id="valuePriceErrorContainer" class="errorForm">
+	            				<ul></ul>
+	        				</div>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label> <span th:text="#{value.start.range}">Value Start Range (₹)</span>
+							</label> <input type="text" id="valueStartRange" name="parcelValueWiseRate.valueStartRange" class="selectpicker form-control" th:placeholder="#{value.start.range}">
+	                        <div id="valueVStartErrorContainer" class="errorForm">
+		            			<ul></ul>
+	        				</div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="form-group col-md-4">
+                            <label> <span th:text="#{value.upto.range}">Value Up To Range (₹)</span>
+							</label> <input type="text" id="valueUpToRange" name="parcelValueWiseRate.valueUpToRange" class="selectpicker form-control" th:placeholder="#{value.upto.range}">
+                        	<div id="valueVUpToErrorContainer" class="errorForm">
+		            			<ul></ul>
+	        				</div>
+                        </div>
+
+                        <div class="form-group col-md-4" id="valueFractionDiv">
+                            <label> <span th:text="#{value.fraction}">Value Fraction (₹)</span>
+							</label> <input type="text" id="valueFraction" name="parcelValueWiseRate.valueFraction" class="selectpicker form-control" th:placeholder="#{value.fraction}">
+                        	<div id="valueVFractionErrorContainer" class="errorForm">
+		            			<ul></ul>
+	        				</div>
+                        </div>
+
+                        <div class="form-group col-md-4" id="valueBasePriceDiv">
+                            <label> <span th:text="#{base.price}">Base Price (₹)</span>
+							</label> <input type="text" id="valueBasePrice" name="parcelValueWiseRate.basePrice" class="selectpicker form-control" th:placeholder="#{base.price}">
+                        	<div id="valueVBasePriceErrorContainer" class="errorForm">
+		            			<ul></ul>
+	        				</div>
+                        </div>
+
+                    </div>
+            </div>
+
+			<div class='target_value_clone' id="value_clone"></div>
+			
+            <!-- <div class="col-md-12" id="valuePlus" style="display: none">
+				<div class="form-group col-md-4">
+					<i class="fa fa-plus-circle fa-3x" aria-hidden="true"
+						id="addMoreValueButton"></i>
+				</div>
+			</div> -->
+
+            <div class="col-md-12">
+
+                <div class="form-group col-md-4"></div>
+                <div class="form-group col-md-2" id="saveButton">
+                    <button type="button" id="addRate" class="btn btn-primary btn-md col-md-12" th:text="#{save.data}">Save Data</button>
+                </div>
+                <div class="form-group col-md-2" id="updateButton">
+                    <button type="button" id="updateRate" class="btn btn-primary btn-md col-md-12" th:text="#{update}">Update</button>
+                </div>
+                <div class="form-group col-md-2" id="resetButton">
+                    <button type="button" id="resetRate" class="btn btn-primary btn-md col-md-12" th:text="#{reset}">Reset</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="col-md-12">
+            <div class="col-md-offset-6 col-md-2"></div>
+            <div class="col-md-2">
+                <select class="form-control name" name="dropdown" id="dropdownId">
+					<option value="ACTIVE" th:text="#{active}">Active</option>
+					<option value="DISABLED" th:text="#{disabled}">Disable</option>
+					<option value="ALL" th:text="#{all}">All</option>
+				</select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="searchbox" class="form-control name" placeholder="search" width="48" height="48">
+            </div>
+        </div>
+
+
+        <div class="col-md-12 ">
+            <div class="col-md-offset-7 col-md-5"></div>
+            <table id="serviceTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="display: none;">rateId</th>
+                        <th style="display: none;">mainServiceId</th>
+                        <th style="display: none;">subServiceId</th>
+                        <th th:text="#{s.no}">S.No.</th>
+                        <th th:text="#{service.name}">Service Name</th>
+                        <th th:text="#{sub.service.name}">Sub Service Name</th>
+                        <th th:text="#{price.type}">Price Type</th>
+                        <th th:text="#{price.in.Rs}">Price (₹)</th>
+                        <th th:text="#{maximum.weight}">Maximum Weight (in gms)</th>
+                        <th th:text="#{maximum.value}">Maximum Value (in Rs)</th>
+                        <th th:text="#{weight.dependency}">Weight Dependency</th>
+                        <th th:text="#{weight.price}">Weight Price</th>
+                        <th th:text="#{weight.base.price}">Weight Base Price (in Rs)</th>
+                        <th th:text="#{weight.start.range}">Weight Start Range (in gms)</th>
+                        <th th:text="#{weight.end.range}">Weight End Range (in gms)</th>
+                        <th th:text="#{weight.fraction.factor}">Weight Fraction Factor (in gms)</th>
+                        <th th:text="#{location.dependency}">Location Dependency</th>
+                        <th th:text="#{location.price}">Location Price</th>
+                        <th th:text="#{location.base.price}">Location Base Price (int Rs)</th>
+                        <th th:text="#{from.location}">From Location</th>
+                        <th th:text="#{to.location}">To Location</th>
+                        <th th:text="#{value.dependency}">Value Dependency</th>
+                        <th th:text="#{value.price}">Value Price (in Rs)</th>
+                        <th th:text="#{value.base.price}">Value Base Price (in Rs)</th>
+                        <th th:text="#{value.start.range}">Value Start Range (in Rs)</th>
+                        <th th:text="#{value.upto.range}">Value Up To Range (in Rs)</th>
+                        <th th:text="#{value.fraction}">Value Fraction (in Rs)</th>
+                        <th th:text="#{tax.rate1}">Tax Rate 1 (%)</th>
+                        <th th:text="#{tax.rate2}">Tax Rate 2 (%)</th>
+                        <th th:text="#{expected.delivery}">Expected Delivery (Days)</th>
+                        <th th:text="#{status}">Status</th>
+                        <th th:text="#{updated.on}">Updated On</th>
+                        <th th:text="#{updated.by}">Updated By</th>
+                        <th th:text="#{update}">Update</th>
+                        <th th:text="#{delete}">Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="serviceTBody">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{sorry.some.error.occurred}">Sorry!! Some error
+					occurred</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" id="tryagain"
+						class="btn btn-primary btn-md" data-dismiss="modal"
+						th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Error Modal -->
+
+<!-- Add rate table data success Modal -->
+<div id="detailsModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 id="rateAddSuccess" th:text="#{rate.added}">Rate added successfully</h3>
+                <h3 id="rateUpdateSuccess" th:text="#{rate.updated}">Rate updated successfully</h3>
+                <!-- <button id="close_success" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button> -->
+            </div>
+            <div class="text-center">
+                <button id="okButton" type="submit" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete modal -->
+<div id="deleteModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="messageBeforeDelete" class="modal-header text-center">
+                <span>
+					<h3 class="errorForm" style="display: inline" th:text="#{delete.rate}">Are you sure you
+						want to delete Rate Service?</h3>
+					<h5 class="errorForm" th:text="#{rate.warning}">This action cannot be rollback. Rate
+						will be deleted permanently</h5>
+				</span>
+            </div>
+            <div id="messageAfterDelete" class="modal-header text-center">
+                <span>
+					<h3 style="display: inline" th:text="#{rate.deleted.sucess}">Rate deleted successfully</h3>
+				</span>
+            </div>
+            <div class="label-options" id="changePassword">
+                <input id="delServiceId" name="delServiceId" type="hidden">
+                <button id="submitDeleteButton" type="button" class="btn btn-primary">Delete</button>
+                <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button id="deleteOk" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Delete Modal-->
+
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>
+
+<script>
+    $(document).ready(function() {
+        $('#messageAfterDelete').hide();
+        $('#deleteOk').hide();
+        $("#updateButton").hide();
+        servicesData();
+        $('.chosen').chosen();
+        $('.chosen-container').css("width", "183px");
+    });
+
+    function weightEmptyfields() {
+        // empty weight
+        $("#weightDependency").val('NOT_APPLICABLE');
+        $("#weightPrice").val('');
+        $("#weightStartRange").val('');
+        $("#weightEndRange").val('');
+        $("#weightFractionFactor").val('');
+        $("#weightBasePrice").val('');
+    }
+
+    function locationEmptyFields() {
+        //Empty location
+        $("#locationWiseRate").val('NOT_APPLICABLE');
+        $("#locationPrice").val('');
+        $("#fromId1").val('').trigger('chosen:updated');
+        $("#toId1").val('').trigger('chosen:updated');
+    }
+
+     function valueEmptyFields() {
+
+        $("#parcelValuWiseRate").val('NOT_APPLICABLE');
+        $("#valuePrice").val('');
+        $("#valueStartRange").val('');
+        $("#valueUpToRange").val('');
+        $("#valueFraction").val('');
+        $("#valueBasePrice").val('');
+    }
+    
+    function clickFlatRateType(){
+    	$("#dependencyDropDown").hide();
+        $("#fixPriceTextBox").show();
+        $("#selectDependency").hide();
+        $("#weightDependencyDiv").hide();
+        $("#weightPlus").hide();
+        $("#locationDependencyDiv").hide();
+        $("#locationPlus").hide();
+        $("#valueDependencyDiv").hide();
+        $("#valuePlus").hide();
+        /* $(".target_location_clone").remove();
+        $(".target_value_clone").remove();
+        $(".target_weight_clone").remove(); */
+    }
+    
+    function locationWiseRateChange(){
+    	$('#locationWiseRate').change(function() {
+            weightEmptyfields();
+            valueEmptyFields();
+            $("#fromDiv").hide();
+            $("#toDiv").hide();
+            $('#fSubOffice').hide();
+            $('#tSubOffice').hide();
+            $('#fThana').hide();
+            $('#tThana').hide();
+            $('#fDistrict').hide();
+            $('#tDistrict').hide();
+            $('#fDivision').hide();
+            $('#tDivision').hide();
+            $('#fZone').hide();
+            $('#tZone').hide();
+            $("#fromId1").val('').trigger('chosen:updated');
+            $("#toId1").val('').trigger('chosen:updated');
+            if ($(this).val() == 'LOCAL' || $(this).val() == 'INTERCITY') {
+                
+            } else if ($(this).val() === 'PINCODE' || $(this).val() == 'SUB_OFFICE') {
+            	$("#fromDiv").show();
+                $("#toDiv").show();
+                $('#fSubOffice').show();
+                $('#tSubOffice').show();
+                subOfficeData();
+            } else if ($(this).val() === 'DIVISIONAL') {
+            	$("#fromDiv").show();
+                $("#toDiv").show();
+            	$('#fDivision').show();
+            	$('#tDivision').show();
+                divisionData();
+            } else if ($(this).val() === 'DISTRICT') {
+            	$("#fromDiv").show();
+                $("#toDiv").show();
+            	$('#fDistrict').show();
+            	$('#tDistrict').show();
+                districtData();
+            } else if ($(this).val() === 'THANA') {
+            	$("#fromDiv").show();
+                $("#toDiv").show(); 
+            	$('#fThana').show();
+            	$('#tThana').show();
+                thanaData();
+            }
+        });
+    }
+
+    var change_location = function(obj) {
+    	
+    	$(obj).closest('.location_in').find('div[id=fromDiv]').hide();
+    	$(obj).closest('.location_in').find('div[id=toDiv]').hide();
+    	$(obj).closest('.location_in').find('span[id=fSubOffice]').hide();
+    	$(obj).closest('.location_in').find('span[id=tSubOffice]').hide();
+    	$(obj).closest('.location_in').find('span[id=fThana]').hide();
+    	$(obj).closest('.location_in').find('span[id=tThana]').hide();
+    	$(obj).closest('.location_in').find('span[id=fDistrict]').hide();
+    	$(obj).closest('.location_in').find('span[id=tDistrict]').hide();
+    	$(obj).closest('.location_in').find('span[id=fDivision]').hide();
+    	$(obj).closest('.location_in').find('span[id=tDivision]').hide();
+    	$(obj).closest('.location_in').find('span[id=fZone]').hide();
+    	$(obj).closest('.location_in').find('span[id=tZone]').hide();
+    	
+    	//$(obj).closest('.location_in').find('option[id=fromId1]').val('').trigger('chosen:updated');
+    	//$(obj).closest('.location_in').find('option[id=toId1]').val('').trigger('chosen:updated');
+    	
+    	if ($(obj).val() == 'LOCAL' || $(obj).val() == 'INTERCITY') {
+    		
+        	
+        } else if ($(obj).val() == 'PINCODE' || $(obj).val() == 'SUB_OFFICE') {
+        	$(obj).closest('.location_in').find('div[id=fromDiv]').show();
+        	$(obj).closest('.location_in').find('div[id=toDiv]').show();
+        	$(obj).closest('.location_in').find('span[id=fSubOffice]').show();
+        	$(obj).closest('.location_in').find('span[id=tSubOffice]').show();
+        	subOfficeData();
+    		
+        } else if($(obj).val() == 'DIVISIONAL'){
+        	$(obj).closest('.location_in').find('div[id=fromDiv]').show();
+        	$(obj).closest('.location_in').find('div[id=toDiv]').show();
+        	$(obj).closest('.location_in').find('span[id=fDivision]').show();
+        	$(obj).closest('.location_in').find('span[id=tDivision]').show();
+        	divisionData();
+            
+        } else if($(obj).val() == 'ZONAL'){
+        	$(obj).closest('.location_in').find('div[id=fromDiv]').show();
+        	$(obj).closest('.location_in').find('div[id=toDiv]').show();
+        	$(obj).closest('.location_in').find('span[id=fZone]').show();
+        	$(obj).closest('.location_in').find('span[id=tZone]').show();
+        	zoneData();
+        	
+        } else if($(obj).val() == 'DISTRICT'){
+        	$(obj).closest('.location_in').find('div[id=fromDiv]').show();
+        	$(obj).closest('.location_in').find('div[id=toDiv]').show();
+        	$(obj).closest('.location_in').find('span[id=fDistrict]').show();
+        	$(obj).closest('.location_in').find('span[id=tDistrict]').show();
+        	districtData();
+            
+		} else if($(obj).val() == 'THANA'){
+			$(obj).closest('.location_in').find('div[id=fromDiv]').show();
+        	$(obj).closest('.location_in').find('div[id=toDiv]').show();
+        	$(obj).closest('.location_in').find('span[id=fThana]').show();
+        	$(obj).closest('.location_in').find('span[id=tThana]').show();
+        	thanaData();
+        }
+    }
+    var change_fromId = function(obj) {
+    	$(obj).closest('.location_in').find('option[id=fromId1]').trigger('chosen:updated');
+    }
+    var change_toId = function(obj) {
+    }
+    var change_weight = function(obj) {
+    	if ($(obj).val() == 'SLAB_WISE') {
+    		$(obj).closest('.weight_in').find('div[id=weightFractionFactorDiv]').hide();
+    		$(obj).closest('.weight_in').find('div[id=weightBasePriceDiv]').hide();
+    		$(obj).closest('.weight_in').find('div[id=weightFractionFactor]').val('');
+    		$(obj).closest('.weight_in').find('div[id=weightBasePrice]').val('');
+    		
+        } else if ($(obj).val() == 'MULTIPLIER') {
+        	$(obj).closest('.weight_in').find('div[id=weightFractionFactorDiv]').show();
+    		$(obj).closest('.weight_in').find('div[id=weightBasePriceDiv]').show();
+        }
+    }
+    
+    var change_value = function(obj) {
+    	if ($(obj).val() == 'SLAB_WISE') {
+    		$(obj).closest('.value_in').find('div[id=valueFractionDiv]').hide();
+    		$(obj).closest('.value_in').find('div[id=valueBasePriceDiv]').hide();
+    		$(obj).closest('.value_in').find('div[id=valueFraction]').val('');
+    		$(obj).closest('.value_in').find('div[id=valueBasePrice]').val('');
+    		
+        } else if ($(obj).val() == 'MULTIPLIER') {
+        	$(obj).closest('.value_in').find('div[id=valueFractionDiv]').show();
+    		$(obj).closest('.value_in').find('div[id=valueBasePriceDiv]').show();
+        }
+    }
+        
+    $("input[name$='rateServiceCategory.priceType']").click(function() {
+
+        var priceTypeRadio = $("input[name$='rateServiceCategory.priceType']:checked").val();
+        var dependencyDropdown = $('#selectDependency').find(":selected").text();
+
+        if (priceTypeRadio == 'FLAT') {
+        	clickFlatRateType();
+            weightEmptyfields();
+            locationEmptyFields();
+            valueEmptyFields();
+            /* $(".target_location_clone").remove();
+            $(".target_value_clone").remove();
+            $(".target_weight_clone").remove(); */
+        } else if (priceTypeRadio == 'VARIABLE') {
+            $("#selectDependency").val('');
+            $("#dependencyDropDown").show();
+            $("#fixPriceTextBox").hide();
+            $("#selectDependency").show();
+            $("#price").val('');
+        }
+    });
+
+    $('#selectDependency').change(function() {
+        if ($(this).val() === '') {
+            $("#weightDependencyDiv").hide();
+            $("#weightPlus").hide();
+            $("#locationDependencyDiv").hide();
+            $("#locationPlus").hide();
+            $("#valueDependencyDiv").hide();
+            $("#valuePlus").hide();
+            weightEmptyfields();
+            locationEmptyFields();
+            /* $(".target_location_clone").remove();
+            $(".target_value_clone").remove();
+            $(".target_weight_clone").remove(); */
+        }
+        if ($(this).val() === 'Weight') {
+            $("#weightDependencyDiv").show();
+            $("#weightPlus").show();
+            $("#locationDependencyDiv").hide();
+            $("#locationPlus").hide();
+            $("#valueDependencyDiv").hide();
+            $("#valuePlus").hide();
+            $("#value_clone").hide();
+            locationEmptyFields();
+            valueEmptyFields();
+            
+          /*   $(".target_location_clone").remove();
+            $(".target_value_clone").remove();
+            $(".target_weight_clone").remove(); */
+            
+        } else if ($(this).val() === 'Location') {
+            $("#weightDependencyDiv").hide();
+            $("#weightPlus").hide();
+            $("#locationDependencyDiv").show();
+            $("#locationPlus").show();
+            $("#valueDependencyDiv").hide();
+            $("#valuePlus").hide();
+            
+            /* $(".target_location_clone").remove();
+            $(".target_value_clone").remove();
+            $(".target_weight_clone").remove(); */
+            
+        } else if ($(this).val() === 'Value') {
+            $("#weightDependencyDiv").hide();
+            $("#weightPlus").hide();
+            $("#locationDependencyDiv").hide();
+            $("#locationPlus").hide();
+            $("#valueDependencyDiv").show();
+            $("#valuePlus").show();
+            weightEmptyfields();
+            
+           /*  $(".target_location_clone").remove();
+            $(".target_value_clone").remove();
+            $(".target_weight_clone").remove(); */
+            
+            /*  $('#parcelValueDependency').change(function() {
+                if ($(this).val() == 'SLAB_WISE') {
+                    $("#valueFractionDiv").hide();
+                    $("#valueBasePriceDiv").hide();
+                    $('#valueFraction').val('');
+                    $('#valueBasePrice').val('');
+                } else if ($(this).val() == 'MULTIPLIER') {
+                    $("#valueFractionDiv").show();
+                    $("#valueBasePriceDiv").show();
+                }
+            });*/
+        } else if ($(this).val() === 'Weight and Location') {
+            $("#weightDependencyDiv").show();
+            $("#weightAndlocationPlus").show();
+            $("#weightPlus").hide();
+            $("#weightAndLocationPlus").show();
+            $("#locationDependencyDiv").show();
+            $("#locationPlus").hide();
+            $('#locationPriceDiv').hide();
+            $("#valueDependencyDiv").hide();
+            $("#valuePlus").hide();
+            //locationWiseRateChange();
+            //weightDependencyChange();
+        }
+    });
+
+    $("#addMoreLocationButton").click(function() {
+    	var new_location = $("#locationDependencyDiv").clone(true).addClass("location_in");
+    	$(".target_location_clone").append(new_location);
+    });
+    
+    $("#addMoreWeightButton").click(function() {
+    	var new_weight = $("#weightDependencyDiv").clone(true).addClass("weight_in");
+    	$(".target_weight_clone").append(new_weight);
+    });
+   
+    $("#addMoreValueButton").click(function() {
+    	var new_value = $("#valueDependencyDiv").clone(true).addClass("value_in");
+    	$(".target_value_clone").append(new_value);
+    });
+    
+    $("#addMoreWeightAndLocationButton").click(function() {
+    	var new_location_weight = $("#copyLocationAndWeightDiv").clone(true).addClass("location_weight_in");
+    	$(".target_location_weight_clone").append(new_location_weight);
+    });
+    
+    function servicesData() {
+        var status = $("#dropdownId").val();
+        $.ajax({
+            type: "post",
+            url: "/masterController/showAllRateTableDataActiveStatus",
+            data: {
+                status: status
+            },
+            dataType: "json",
+            cache: false,
+            success: function(result) {
+                resultData = result;
+                $.each(result, function(i, item) {
+
+                    var serviceNameCol;
+                    var subServiceNameCol;
+
+                    var updatedby = (item.updatedBy == null) ? "-" : item.updatedBy;
+                    var update_date = item.updatedOn;
+                    var uTime = new Date(update_date);
+                    var updateDate = item.updatedOn.substr(0, 10);
+                    var UpdateOndate = updateDate.split("-");
+                    var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+
+                    var activeStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-edit iBtn"></button>') : " - ";
+                    var deleteStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-trash dBtn"></button>') : " - ";
+                    
+                    var $tr = $('<tr>').append(
+                        $('<td style="display: none;">').text(item.id),
+                        $('<td style="display: none;">').text(item.mainServiceId),
+                        $('<td style="display: none;">').text(item.subServiceId),
+                        $('<td>').text(i + 1),
+                        $('<td>').text(item.serviceName),
+                        $('<td>').text(item.subService),
+                        $('<td>').text(item.priceType),
+                        $('<td>').text(item.price),
+                        $('<td>').text(item.weightMaxLimit),
+                        $('<td>').text(item.valueMaxLimit),
+
+                        $('<td>').text(item.weightDependency),
+                        $('<td>').text(item.weightPrice),
+                        $('<td>').text(item.weightBasePrice),
+                        $('<td>').text(item.weightStartRange),
+                        $('<td>').text(item.weightEndRange),
+                        $('<td>').text(item.weightFractionFactor),
+
+                        $('<td>').text(item.locationDependency),
+                        $('<td>').text(item.locationPrice),
+                        $('<td>').text(item.locationBasePrice),
+                        $('<td>').text(item.fromId),
+                        $('<td>').text(item.toId),
+
+                        $('<td>').text(item.valueDependency),
+                        $('<td>').text(item.valuePrice),
+                        $('<td>').text(item.valueBasePrice),
+                        $('<td>').text(item.valueStartRange),
+                        $('<td>').text(item.valueUpToRange),
+                        $('<td>').text(item.valueFraction),
+
+                        $('<td>').text(item.taxRate1),
+                        $('<td>').text(item.taxRate2),
+                        $('<td>').text(item.expectedDelivery),
+                        $('<td>').text(item.status),
+                        $('<td>' + updatedOnDate_string + " " + uTime.toString().substring(16, 24) + '</td>'),
+                        $('<td>').text(updatedby),
+                        $('<td>').html(activeStatus),
+                        $('<td>').html(deleteStatus)
+                    );
+                    $('#serviceTBody').append($tr);
+                });
+
+                dtable = $('#serviceTable').DataTable({
+                    "order": ([3, "asc"]),
+                    "paging": true,
+                    /* "scrollX": true, */
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_"
+                    },
+                    "sScrollX": "100%",
+                });
+                $(".dataTables_length").css('clear', 'none');
+                $(".dataTables_length").css('margin-top', '-6%');
+                $(".dataTables_length").css('margin-left', '2%');
+            },
+            error: function(response) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+
+
+    $("#searchbox").keyup(function() {
+        dtable.search(this.value).draw();
+    });
+
+    $('#dropdownId').on('change', function() {
+        var table = $('#serviceTable').DataTable();
+        table.destroy();
+        $('#serviceTBody').empty();
+        servicesData();
+    });
+    $("#saveButton").click(function() {
+		$("#rateTableForm").valid();
+	    var priceTypeRadio = $("input[name$='rateServiceCategory.priceType']:checked").val();
+	    var dependencyDropdown = $('#selectDependency').val();
+	    if(priceTypeRadio === 'FLAT'){
+	    	saveRateTableData();
+	    }
+	    else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Weight and Location'){
+	   		var weight = $('#weightDependency').val();
+	   		var location = $('#locationWiseRate').val();
+	   		var count = 0;
+	   		if(weight === 'NOT_APPLICABLE'){
+	           		$("#selectWeightDependencyErrorContainer").html("This field is required");
+	            	$("#selectWeightDependencyErrorContainer").show();
+	            	count = 0;
+	        }
+	   		else{
+	   			count++;
+	   		}
+	   		
+	       	if(location === 'NOT_APPLICABLE'){
+	        	$("#locationDependencyErrorContainer").html("This field is required");
+	            $("#locationDependencyErrorContainer").show();
+	            count = 0;
+	        }
+	       	else{
+	       		count++;
+	       	}
+	       	if(count == 2){
+	       		saveRateTableData();
+	       	}
+	   	}
+	    else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Weight'){
+	    	var weight = $('#weightDependency').val();
+	    	if(weight === 'NOT_APPLICABLE'){
+	       		$("#selectWeightDependencyErrorContainer").html("This field is required");
+	        	$("#selectWeightDependencyErrorContainer").show();
+	       	}
+	    	else{
+	    		saveRateTableData();
+	    	}
+	    	
+	   	}
+	   	else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Location'){
+	   		var location = $('#locationWiseRate').val();
+	   		if(location === 'NOT_APPLICABLE'){
+	       		$("#locationDependencyErrorContainer").html("This field is required");
+	        	$("#locationDependencyErrorContainer").show();
+	       	}
+	   		else{
+	    		saveRateTableData();
+	    	}
+	   	}
+	    	
+	   	else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Value'){
+	   		var value = $('#parcelValueDependency').val();
+	   		if(value === 'NOT_APPLICABLE'){
+	       		$("#selectValueDependencyErrorContainer").html("This field is required");
+	        	$("#selectValueDependencyErrorContainer").show();
+	       	}
+	   		else{
+	    		saveRateTableData();
+	    	}
+	   	}
+    });
+
+    function saveRateTableData() {
+    	if ($("#rateTableForm").valid()) {
+    		
+    		var rateTableId = $('#rateTableId').val();
+        	var serviceId = $("#mainServiceId").val();
+    		var priceType = $("input[name='rateServiceCategory.priceType']:checked"). val();
+    		var parentServiceId = $("#subsServiceId").val();
+    		var weightMaxLimit = $("#weightMaxLimit").val();
+    		var valueMaxLimit = $("#valueMaxLimit").val();
+    		var price = $("#price").val();
+    		var taxRate1 = $("#taxRate1").val();
+    		var taxRate2 = $("#taxRate2").val();
+    		var expectedDelivery = $("#expectedDelivery").val();
+    		
+    		//WeighWiseRate
+    		var weightDependencyArr = document.getElementsByName('rateServiceCategory.weightDependency');
+    		var weightDependency = [];
+
+    		weightDependencyArr.forEach(function(element) {
+    	        weightDependency.push(element.value);
+    	    });
+
+    		var weightStartRangeArr = document.getElementsByName('weightWiseRate.weightStartRange');
+    		var weightStartRange = [];
+
+    		weightStartRangeArr.forEach(function(element) {
+    	        weightStartRange.push(element.value);
+    	    });
+    		
+    		var weightEndRangeArr = document.getElementsByName('weightWiseRate.weightEndRange');
+    		var weightEndRange = [];
+
+    		weightEndRangeArr.forEach(function(element) {
+    	        weightEndRange.push(element.value);
+    	    });
+    		
+    		var weightFractionFactorArr = document.getElementsByName('weightWiseRate.weightFractionFactor');
+    		var weightFractionFactor = [];
+
+    		weightFractionFactorArr.forEach(function(element) {
+    	        weightFractionFactor.push(element.value);
+    	    });
+    		
+    		var weightBasePriceArr = document.getElementsByName('weightWiseRate.basePrice');
+    		var weightBasePrice = [];
+
+    		weightBasePriceArr.forEach(function(element) {
+    	        weightBasePrice.push(element.value);
+    	    });
+    		
+    		var weightPriceArr = document.getElementsByName('weightWiseRate.price');
+    		var weightPrice = [];
+
+    		weightPriceArr.forEach(function(element) {
+    	        weightPrice.push(element.value);
+    	    });
+    		
+    		//LocationWise Rate
+    		var locationDependencyArr = document.getElementsByName('rateServiceCategory.locationDependency');
+    		var locationDependency = [];
+
+    		locationDependencyArr.forEach(function(element) {
+    			locationDependency.push(element.value);
+    	    });
+    		
+    		var fromIdArr = document.getElementsByName('locationWiseRate.fromId');
+    		var fromId = [];
+
+    		fromIdArr.forEach(function(element) {
+    			fromId.push(element.value);
+    	    });
+    		
+    		var toIdArr = document.getElementsByName('locationWiseRate.toId');
+    		var toId = [];
+
+    		toIdArr.forEach(function(element) {
+    			toId.push(element.value);
+    	    });
+    		//var basePrice = $("#locationBasePrice").val();
+    		var locationPriceArr = document.getElementsByName('locationWiseRate.price');
+    		var locationPrice = [];
+
+    		locationPriceArr.forEach(function(element) {
+    			locationPrice.push(element.value);
+    	    });
+    		
+    		//Value wise Rate
+    		var valueDependencyArr = document.getElementsByName('rateServiceCategory.valueDependency');
+    		var valueDependency = [];
+
+    		valueDependencyArr.forEach(function(element) {
+    			valueDependency.push(element.value);
+    	    });
+    		
+    		var valueStartRangeArr = document.getElementsByName('parcelValueWiseRate.valueStartRange');
+    		var valueStartRange = [];
+
+    		valueStartRangeArr.forEach(function(element) {
+    			valueStartRange.push(element.value);
+    	    });
+    		
+    		var valueUpToRangeArr = document.getElementsByName('parcelValueWiseRate.valueUpToRange');
+    		var valueUpToRange = [];
+
+    		valueUpToRangeArr.forEach(function(element) {
+    			valueUpToRange.push(element.value);
+    	    });
+    		
+    		var valueFractionArr = document.getElementsByName('parcelValueWiseRate.valueFraction');
+    		var valueFraction = [];
+
+    		valueFractionArr.forEach(function(element) {
+    			valueFraction.push(element.value);
+    	    });
+    		
+    		var valueBasePriceArr = document.getElementsByName('parcelValueWiseRate.basePrice');
+    		var valueBasePrice = [];
+
+    		valueBasePriceArr.forEach(function(element) {
+    			valueBasePrice.push(element.value);
+    	    });
+    		
+    		var valuePriceArr = document.getElementsByName('parcelValueWiseRate.price');
+    		var valuePrice = [];
+
+    		valuePriceArr.forEach(function(element) {
+    			valuePrice.push(element.value);
+    	    });
+    		
+            rateTableJson = {
+            		"serviceId": serviceId,
+            		"priceType": priceType,
+            		"locationDependency": locationDependency,
+            		"weightDependency": weightDependency,
+            		"valueDependency": valueDependency,
+            		"parentServiceId": parentServiceId,
+            		"weightMaxLimit": weightMaxLimit,
+            		"valueMaxLimit": valueMaxLimit,
+            		"price": price,
+            		"taxRate1": taxRate1,
+            		"taxRate2": taxRate2,
+            		"expectedDelivery": expectedDelivery,
+            		
+            		"weightStartRange": weightStartRange,
+            		"weightEndRange": weightEndRange,
+            		"weightFractionFactor": weightFractionFactor,
+            		"weightBasePrice": weightBasePrice,
+            		"weightPrice": weightPrice,
+            		
+            		"fromId": fromId,
+        			"toId": toId,
+        			//var basePrice = $("#locationBasePrice").val();
+        			"locationPrice": locationPrice,
+        			
+        			"valueStartRange": valueStartRange,
+        			"valueUpToRange": valueUpToRange,
+        			"valueFraction": valueFraction,
+        			"valueBasePrice": valueBasePrice,
+        			"valuePrice": valuePrice
+            };
+            
+    		//var fixRateTable = $("#rateTableForm").serialize();
+            $.ajax({
+            	type: "post",
+            	url:"/masterController/saveRateTableDetails",
+            	//dataType: "json",
+            	cache: false,
+            	contentType: "application/json",
+            	dataType: "text",
+            	data: JSON.stringify(rateTableJson),
+                success: function(result) {
+                    $('#rateUpdateSuccess').hide();
+                    $('#rateAddSuccess').show();
+                    $('#detailsModal').modal('show');
+                },
+                error: function() {
+                    $('#errorModal').modal('show');
+                }
+            });
+    	}
+    }
+    
+    
+    $("#updateButton").click(function() {
+    	$("#rateTableForm").valid();
+	    var priceTypeRadio = $("input[name$='rateServiceCategory.priceType']:checked").val();
+	    var dependencyDropdown = $('#selectDependency').val();
+	    
+	    if(priceTypeRadio === 'FLAT'){
+	    	updateRateTableData();
+	    }
+	    else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Weight and Location'){
+	   		var weight = $('#weightDependency').val();
+	   		var location = $('#locationWiseRate').val();
+	   		var count = 0;
+	   		if(weight === 'NOT_APPLICABLE'){
+	           		$("#selectWeightDependencyErrorContainer").html("This field is required");
+	            	$("#selectWeightDependencyErrorContainer").show();
+	            	count = 0;
+	        }
+	   		else{
+	   			count++;
+	   		}
+	   		
+	       	if(location === 'NOT_APPLICABLE'){
+	        	$("#locationDependencyErrorContainer").html("This field is required");
+	            $("#locationDependencyErrorContainer").show();
+	            count = 0;
+	        }
+	       	else{
+	       		count++;
+	       	}
+	       	if(count == 2){
+	       		updateRateTableData();
+	       	}
+	   	}
+	    else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Weight'){
+	    	var weight = $('#weightDependency').val();
+	    	if(weight === 'NOT_APPLICABLE'){
+	       		$("#selectWeightDependencyErrorContainer").html("This field is required");
+	        	$("#selectWeightDependencyErrorContainer").show();
+	       	}
+	    	else{
+	    		updateRateTableData();
+	    	}
+	    	
+	   	}
+	   	else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Location'){
+	   		var location = $('#locationWiseRate').val();
+	   		if(location === 'NOT_APPLICABLE'){
+	       		$("#locationDependencyErrorContainer").html("This field is required");
+	        	$("#locationDependencyErrorContainer").show();
+	       	}
+	   		else{
+	   			updateRateTableData();
+	    	}
+	   	}
+	    	
+	   	else if(priceTypeRadio === 'VARIABLE' && dependencyDropdown === 'Value'){
+	   		var value = $('#parcelValueDependency').val();
+	   		if(value === 'NOT_APPLICABLE'){
+	       		$("#selectValueDependencyErrorContainer").html("This field is required");
+	        	$("#selectValueDependencyErrorContainer").show();
+	       	}
+	   		else{
+	   			updateRateTableData();
+	    	}
+	   	}
+    });
+    
+    function updateRateTableData() {
+    	
+		if ($("#rateTableForm").valid()) {
+    		
+	    	var rateTableId = $('#rateTableId').val();
+	    	var serviceId = $("#mainServiceId").val();
+			var priceType = $("input[name='rateServiceCategory.priceType']:checked"). val();
+			var locationDependency = $("#locationWiseRate").val();
+			var weightDependency = $("#weightDependency").val();
+			var valueDependency = $("#parcelValueDependency").val();
+			var parentServiceId = $("#subsServiceId").val();
+			var weightMaxLimit = $("#weightMaxLimit").val();
+			var valueMaxLimit = $("#valueMaxLimit").val();
+			var price = $("#price").val();
+			var taxRate1 = $("#taxRate1").val();
+			var taxRate2 = $("#taxRate2").val();
+			var expectedDelivery = $("#expectedDelivery").val();
+			
+			//WeighWiseRate
+			var weightStartRange = $("#weightStartRange").val();
+			var weightEndRange = $("#weightEndRange").val();
+			var weightFractionFactor = $("#weightFractionFactor").val();
+			var weightBasePrice = $("#weightBasePrice").val();
+			var weightPrice = $("#weightPrice").val();
+	        
+			//LocationWise Rate
+			var fromId = $("#fromId1").val();
+			var toId = $("#toId1").val();
+			//var basePrice = $("#locationBasePrice").val();
+			var locationPrice = $("#locationPrice").val();
+	
+			//Value wise Rate
+			var valueStartRange = $("#valueStartRange").val();
+	        var valueUpToRange = $("#valueUpToRange").val();
+	        var valueFraction = $("#valueFraction").val();
+	        var valueBasePrice = $("#valueBasePrice").val();
+	        var valuePrice = $("#valuePrice").val();
+	        
+	        rateTableJson = {
+	        		"rateTableId": rateTableId,
+	        		"serviceId": serviceId,
+	        		"priceType": priceType,
+	        		"locationDependency": locationDependency,
+	        		"weightDependency": weightDependency,
+	        		"valueDependency": valueDependency,
+	        		"parentServiceId": parentServiceId,
+	        		"weightMaxLimit": weightMaxLimit,
+	        		"valueMaxLimit": valueMaxLimit,
+	        		"price": price,
+	        		"taxRate1": taxRate1,
+	        		"taxRate2": taxRate2,
+	        		"expectedDelivery": expectedDelivery,
+	        		
+	        		"weightStartRange": weightStartRange,
+	        		"weightEndRange": weightEndRange,
+	        		"weightFractionFactor": weightFractionFactor,
+	        		"weightBasePrice": weightBasePrice,
+	        		"weightPrice": weightPrice,
+	        		
+	        		"fromId": fromId,
+	    			"toId": toId,
+	    			//var basePrice = $("#locationBasePrice").val();
+	    			"locationPrice": locationPrice,
+	    			
+	    			"valueStartRange": valueStartRange,
+	    			"valueUpToRange": valueUpToRange,
+	    			"valueFraction": valueFraction,
+	    			"valueBasePrice": valueBasePrice,
+	    			"valuePrice": valuePrice
+	        };
+	
+	    	//var fixRateTable = $("#rateTableForm").serialize();
+	        $.ajax({
+	        	type: "post",
+	        	url:"/masterController/updateRateTable",
+	        	//dataType: "json",
+	        	cache: false,
+	        	contentType: "application/json",
+	        	dataType: "text",
+	        	data: JSON.stringify(rateTableJson),
+	            success: function(result) {
+	                $('#rateAddSuccess').hide();
+	                $('#rateUpdateSuccess').show();
+	                $('#detailsModal').modal('show');
+	            },
+	            error: function() {
+	                $('#errorModal').modal('show');
+	            }
+	        });
+    	}
+    }
+    	
+    //for get subservices
+    $('#mainServiceId').on('change', function() {
+        var id = $(this).val();
+        if ($("#mainServiceId").val() != "select") {
+            $.ajax({
+                type: 'post',
+                url: "/masterController/getSubServicesByService",
+                data: {
+                    id: id
+                },
+
+                cache: false,
+                success: function(result) {
+                    $("#subsServiceId").empty();
+                    $("#subsServiceId").append('<option value="" disabled selected>select</option>');
+                    $.each(result, function(key, data) {
+                        var subServicesList = "<option id=" + data.subServiceId + " value=" + data.subServiceId + ">" + data.subServiceName + "</option>";
+                        $("#subsServiceId").append(subServicesList);
+                    });
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+            });
+
+        } else {
+            $("#subsServiceId").empty();
+        }
+    });
+
+    //for get Service By SubService
+    $('#subsServiceId').on('change', function() {
+        var id = $(this).val();
+        if ($("#subsServiceId").val() != "select") {
+            $.ajax({
+                type: 'post',
+                url: "/masterController/getServiceBySubServices",
+                data: {
+                    id: id
+                },
+                cache: false,
+                success: function(result) {
+
+                    $("#" + result).prop("selected", true);
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+            });
+        } else {
+            $("#mainServiceId").empty();
+        }
+    });
+
+
+    $("#submitDeleteButton").click(function() {
+        $.ajax({
+            type: "post",
+            url: "/masterController/deleteRateData?ajax=true&",
+            data: {
+                rateTableId: $("#rateTableId").val()
+            },
+            success: function(result) {
+                $('#messageAfterDelete').show();
+                $('#messageBeforeDelete').hide();
+                $('#submitDeleteButton').hide();
+                $('#cancelButton').hide();
+                $('#deleteOk').show();
+            },
+            error: function(result) {
+                $("#deleteModal").modal('hide');
+                $('#errorModal').modal('show');
+            }
+        });
+    });
+
+    function zoneData() {
+        $.ajax({
+            type: 'post',
+            url: "/masterController/getAllZone",
+            cache: false,
+            async: false,
+            success: function(result) {
+                $("#toId1").empty().trigger('chosen:updated');
+                $("#toId1").append('<option value="" selected th:text="#{select.zone}">Select Zone</option>').trigger('chosen:updated');
+                $("#fromId1").empty().trigger('chosen:updated');
+                $("#fromId1").append('<option value="" selected th:text="#{select.zone}">Select Zone</option>').trigger('chosen:updated');
+                $.each(result, function(key, data) {
+                    var toId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.zone + "</option>";
+                    $("#toId1").append(toId1).trigger('chosen:updated');
+                    var fromId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.zone + "</option>";
+                    $("#fromId1").append(fromId1).trigger('chosen:updated');
+                });
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+    
+    function divisionData() {
+        $.ajax({
+            type: 'post',
+            url: "/masterController/getAllDivision",
+            cache: false,
+            async: false,
+            success: function(result) {
+                $("#toId1").empty().trigger('chosen:updated');
+                $("#toId1").append('<option value="" th:text="#{select.division}" selected>Select Division</option>').trigger('chosen:updated');
+                $("#fromId1").empty().trigger('chosen:updated');
+                $("#fromId1").append('<option value="" selected th:text="#{select.division}">Select Division</option>').trigger('chosen:updated');
+                $.each(result, function(key, data) {
+                    var toId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.division + "</option>";
+                    $("#toId1").append(toId1).trigger('chosen:updated');
+                    var fromId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.division + "</option>";
+                    $("#fromId1").append(fromId1).trigger('chosen:updated');
+                });
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+
+    function districtData() {
+        $.ajax({
+            type: 'post',
+            url: "/masterController/getAllDistrict",
+            cache: false,
+            async: false,
+            success: function(result) {
+                $("#toId1").empty().trigger('chosen:updated');
+                $("#toId1").append('<option value="" selected>Select District</option>').trigger('chosen:updated');
+                $("#fromId1").empty().trigger('chosen:updated');
+                $("#fromId1").append('<option value="" selected>Select District</option>').trigger('chosen:updated');
+                $.each(result, function(key, data) {
+                    var toId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.district + "</option>";
+                    $("#toId1").append(toId1).trigger('chosen:updated');
+                    var fromId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.district + "</option>";
+                    $("#fromId1").append(fromId1).trigger('chosen:updated');
+                });
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+
+    function thanaData() {
+        $.ajax({
+            type: 'post',
+            url: "/masterController/getAllThana",
+            cache: false,
+            async: false,
+            success: function(result) {
+                $("#toId1").empty().trigger('chosen:updated');
+                $("#toId1").append('<option value="" selected>Select Thana</option>').trigger('chosen:updated');
+                $("#fromId1").empty().trigger('chosen:updated');
+                $("#fromId1").append('<option value="" selected>Select Thana</option>').trigger('chosen:updated');
+                $.each(result, function(key, data) {
+                    var toId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.thana + "</option>";
+                    $("#toId1").append(toId1).trigger('chosen:updated');
+                    var fromId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.thana + "</option>";
+                    $("#fromId1").append(fromId1).trigger('chosen:updated');
+                });
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+
+    function subOfficeData() {
+        $.ajax({
+            type: 'post',
+            url: "/masterController/getAllSubOffice",
+            cache: false,
+            async: false,
+            success: function(result) {
+                $("#toId1").empty().trigger('chosen:updated');
+                $("#toId1").append('<option value="" selected>Select Postal Code/Sub Office</option>').trigger('chosen:updated');
+                $("#fromId1").empty().trigger('chosen:updated');
+                $("#fromId1").append('<option value="" selected>Select Postal Code/Sub Office</option>').trigger('chosen:updated');
+                $.each(result, function(key, data) {
+                    var toId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.subOffice + " (" + data.postalCode + ") " + "</option>";
+                    $("#toId1").append(toId1).trigger('chosen:updated');
+                    var fromId1 = "<option id=" + data.id + " value=" + data.id + ">" + data.subOffice + " (" + data.postalCode + ") " + "</option>";
+                    $("#fromId1").append(fromId1).trigger('chosen:updated');
+                });
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+
+    //for update service
+    $('#serviceTBody').on('click', '.iBtn', function() {
+
+        var data = dtable.row($(this).parents('tr')).data();
+        var priceTypeRadio = $("input[name$='rateServiceCategory.priceType']:checked").val();
+
+        $('#rateTableId').val(data[0]);
+        $('#mainServiceId').val(data[1]);
+        $('#subsServiceId').val(data[2]);
+        
+        $('#price').val(data[7]);
+        $('#weightMaxLimit').val(data[8]);
+        $('#valueMaxLimit').val(data[9]);
+        
+        $('#weightDependency').val(data[10]);
+        $('#weightPrice').val(data[11]);
+        $('#weightBasePrice').val(data[12]);
+        $('#weightStartRange').val(data[13]);
+        $('#weightEndRange').val(data[14]);
+        $('#weightFractionFactor').val(data[15]);
+        
+        
+        $('#locationWiseRate').val(data[16]),
+        $('#locationPrice').val(data[17]);
+        
+        $('#parcelValueDependency').val(data[21]);
+        $('#valuePrice').val(data[22]),
+        $('#valueBasePrice').val(data[23]);
+        $('#valueStartRange').val(data[24]),
+        $('#valueUpToRange').val(data[25]),
+        $('#valueFraction').val(data[26]);
+        
+        $('#taxRate1').val(data[27]);
+        $('#taxRate2').val(data[28]);
+        $('#expectedDelivery').val(data[29]);
+        $('#saveButton').hide();
+        $('#updateButton').show();
+        
+        if(data[6] === 'FLAT'){
+        	$("input[id='change']").prop('checked', false);
+        	$("input[id='fixed']").prop('checked', true);
+        	
+            $("#dependencyDropDown").hide();
+            $("#fixPriceTextBox").show();
+            $("#selectDependency").hide();
+            $("#weightDependencyDiv").hide();
+            $("#weightPlus").hide();
+            $("#locationDependencyDiv").hide();
+            $("#locationPlus").hide();
+            $("#valueDependencyDiv").hide();
+            $("#valuePlus").hide();
+            weightEmptyfields();
+            locationEmptyFields();
+            valueEmptyFields();
+        }
+        
+        if(data[6] === 'VARIABLE'){
+        	$("input[id='fixed']").prop('checked', false);
+        	$("input[id='change']").prop('checked', true);
+        	$("#fixPriceTextBox").hide();
+        	$("#dependencyDropDown").show();
+        	$("#selectDependency").show();
+        	
+             $("#weightDependencyDiv").hide();
+             $("#locationDependencyDiv").hide();
+             $("#valueDependencyDiv").hide();
+        	
+        	if(data[10] != 'NOT_APPLICABLE' && data[16] != 'NOT_APPLICABLE' ){
+        		$('#selectDependency').val('Weight and Location');
+        		$("#weightDependencyDiv").show();
+                $("#weightPlus").hide();
+                $("#locationDependencyDiv").show();
+                $("#locationPlus").hide();
+                $('#locationPriceDiv').hide();
+                
+                $("#fromDiv").show();
+                $("#toDiv").show();
+                
+                $('#fSubOffice').hide();
+                $('#tSubOffice').hide();
+                $('#fThana').hide();
+                $('#tThana').hide();
+                $('#fDistrict').hide();
+                $('#tDistrict').hide();
+                $('#fDivision').hide();
+                $('#tDivision').hide();
+                $('#fZone').hide();
+                $('#tZone').hide();
+                locationWiseRateChange();
+                if(data[16] === 'LOCAL' || data[16] === 'INTERCITY'){
+        	    	$("#fromDiv").hide();
+                    $("#toDiv").hide();
+	            }
+        	    else if(data[16] === 'SUB_OFFICE' || data[16] === 'PINCODE'){
+        	    	subOfficeData();
+        	    	$('#fSubOffice').show();
+                    $('#tSubOffice').show();
+        	    }
+        	    else if(data[16] === 'DIVISIONAL'){
+        	    	divisionData();
+        	    	$('#fDivision').show();
+                    $('#tDivision').show();
+        	    }
+        	    else if(data[16] === 'ZONAL'){
+        	    	zoneData();
+        	    	$('#fZone').show();
+                    $('#tZone').show();
+        	    }
+        	    else if(data[16] === 'DISTRICT'){
+        	    	 districtData();
+        	    	$('#fDistrict').show();
+                    $('#tDistrict').show();
+        	    }
+        	    else if(data[16] === 'THANA'){
+        	    	thanaData();
+        	    	$('#fThana').show();
+                    $('#tThana').show();
+        	    }
+                if(data[10] === 'SLAB_WISE'){
+	            	$('#weightFractionFactorDiv').hide();
+	            	$('#weightBasePriceDiv').hide();
+	            }
+	            else if(data[10] === 'MULTIPLIER'){
+	            	$('#weightFractionFactorDiv').show();
+	            	$('#weightBasePriceDiv').show();
+	            }
+                $('#fromId1').val(data[19]).trigger('chosen:updated');
+                $('#toId1').val(data[20]).trigger('chosen:updated');
+        	}
+        	
+        	else if(data[10] != 'NOT_APPLICABLE'){
+        		$('#selectDependency').val('Weight');
+        
+        		$("#weightDependencyDiv").show();
+                $("#weightPlus").hide();
+                $("#locationDependencyDiv").hide();
+                $("#locationPlus").hide();
+                $("#valueDependencyDiv").hide();
+                $("#valuePlus").hide();
+                
+	            if(data[10] === 'SLAB_WISE'){
+	            	$('#weightFractionFactorDiv').hide();
+	            	$('#weightBasePriceDiv').hide();
+	            	
+	            }
+	            else if(data[10] === 'MULTIPLIER'){
+	            	$('#weightFractionFactorDiv').show();
+	            	$('#weightBasePriceDiv').show();
+	            }
+	            
+        	}
+        	else if(data[21] != 'NOT_APPLICABLE'){
+        		$('#selectDependency').val('Value');
+        		$("#weightDependencyDiv").hide();
+                $("#weightPlus").hide();
+                $("#locationDependencyDiv").hide();
+                $("#locationPlus").hide();
+                $("#valueDependencyDiv").show();
+                $("#valuePlus").hide();
+        	    if(data[21] === 'SLAB_WISE'){
+	            	$('#valueFractionDiv').hide();
+	            	$('#valueBasePriceDiv').hide();
+	            }
+        	    else if(data[21] === 'MULTIPLIER'){
+        	    	$('#valueFractionDiv').show();
+	            	$('#valueBasePriceDiv').show();
+        	    }
+            }
+        	else if(data[16] != 'NOT_APPLICABLE'){
+        		$('#selectDependency').val('Location');
+        		$("#weightDependencyDiv").hide();
+                $("#weightPlus").hide();
+                $("#locationDependencyDiv").show();
+                $("#locationPlus").hide();
+                $("#valueDependencyDiv").hide();
+                $("#valuePlus").hide();
+                $("#fromDiv").show();
+                $("#toDiv").show();
+                
+                $('#fSubOffice').hide();
+                $('#tSubOffice').hide();
+                $('#fThana').hide();
+                $('#tThana').hide();
+                $('#fDistrict').hide();
+                $('#tDistrict').hide();
+                $('#fDivision').hide();
+                $('#tDivision').hide();
+                $('#fZone').hide();
+                $('#tZone').hide();
+                locationWiseRateChange();
+        	    if(data[16] === 'LOCAL' || data[16] === 'INTERCITY'){
+        	    	$("#fromDiv").hide();
+                    $("#toDiv").hide();
+                    
+	            }
+        	    else if(data[16] === 'SUB_OFFICE' || data[16] === 'PINCODE'){
+        	    	subOfficeData();
+        	    	$('#fSubOffice').show();
+                    $('#tSubOffice').show();
+        	    }
+        	    else if(data[16] === 'ZONAL'){
+        	    	zoneData();
+        	    	$('#fZone').show();
+                    $('#tZone').show();
+        	    }
+        	    else if(data[16] === 'DIVISIONAL'){
+        	    	divisionData();
+        	    	$('#fDivision').show();
+                    $('#tDivision').show();
+        	    }
+        	    else if(data[16] === 'DISTRICT'){
+        	    	districtData();
+        	    	$('#fDistrict').show();
+                    $('#tDistrict').show();
+        	    }
+        	    else if(data[16] === 'THANA'){
+        	    	thanaData();
+        	    	$('#fThana').show();
+                    $('#tThana').show();
+        	    }
+        	    $('#fromId1').val(data[19]).trigger('chosen:updated');
+                $('#toId1').val(data[20]).trigger('chosen:updated');
+            }
+        }
+        
+        $(window).scrollTop(0);
+    });
+
+    $('#serviceTable #serviceTBody').on('click', '.dBtn', function() {
+        var data = dtable.row($(this).parents('tr')).data();
+        $('#rateTableId').val(data[0]);
+        $("#deleteModal").modal('show');
+    });
+    //Check if body height is higher than window height :)
+    if ($(document).height() > $(window).height()) {
+        $("#foot").addClass("footer-top-margin");
+    }
+    
+    $('#resetRate').click(function(){
+    	$("input[id='change']").prop('checked', false);
+    	$("input[id='fixed']").prop('checked', true);
+    	$('#updateButton').hide();
+    	$('#saveButton').show();
+        $("#dependencyDropDown").hide();
+        $("#fixPriceTextBox").show();
+        $("#selectDependency").hide();
+        $("#weightDependencyDiv").hide();
+        $("#weightPlus").hide();
+        $("#locationDependencyDiv").hide();
+        $("#locationPlus").hide();
+        $("#valueDependencyDiv").hide();
+        $("#valuePlus").hide();
+        weightEmptyfields();
+        locationEmptyFields();
+        valueEmptyFields();
+    	$("#rateTableForm").trigger("reset");
+    })
+    
+    
+    var config_data = JSON.parse( $("#tax_configData").val());
+	var i;
+    for(i=0;i<config_data.length;i++){
+    	if(config_data[i].configValue === 'YES'){
+    		$('#tax_applicable').show();
+    		tax2isApplicable();
+    		tax1isApplicable();
+    	}
+    } 
+    function tax1isApplicable(){
+    	var j;
+    	for(j=0;j<config_data.length;j++){
+        	if(config_data[j].configType === 'tax1'){
+        		var tax_label1 = config_data[j].configValue;
+        		$('#tax_rate1').text(tax_label1+' %');
+        		$('#taxDiv1').show();
+    		}
+        }
+    }
+    
+    function tax2isApplicable(){
+    	var k;
+    	for(k=0;k<config_data.length;k++){
+       		if(config_data[k].configType === 'tax2'){
+        		var tax_label2 = config_data[k].configValue;
+        		$('#tax_rate2').text(tax_label2+' %');
+        		$('#taxDiv2').show();
+    		}
+        } 
+    }
+    
+   $("#rateTableForm").validate({
+    	rules: {
+        	"rateServiceCategory.serviceId": {
+            	required: true
+        	},
+        	"select_Dependency": {
+            	required: true
+            },
+            "rateServiceCategory.locationDependency": {
+            	required: true
+            },
+            "rateServiceCategory.price": {
+            	required: true,
+            	decimalwithThreePlacesIncludeZero: true
+        	},
+            "rateServiceCategory.taxRate1": {
+            	required: true,
+            	decimalwithTwoPlaces: true
+        	},
+        	"rateServiceCategory.taxRate2": {
+            	required: true,
+            	decimalwithTwoPlaces: true
+        	},
+        	"locationWiseRate.price": {
+            	required: true,
+            	decimalwithThreePlacesIncludeZero: true
+        	},
+        	"weightWiseRate.price": {
+            	required: true,
+            	decimalwithThreePlacesIncludeZero: true
+        	},
+        	"parcelValueWiseRate.price": {
+            	required: true,
+            	decimalwithThreePlacesIncludeZero: true
+        	},
+        	"locationWiseRate.fromId": {
+            	required: true
+        	},
+        	"locationWiseRate.toId": {
+            	required: true
+        	},
+        	"rateServiceCategory.weightMaxLimit": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"rateServiceCategory.valueMaxLimit": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"rateServiceCategory.expectedDelivery": {
+        		digits: true
+        	},
+        	"weightWiseRate.weightStartRange": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"weightWiseRate.weightEndRange": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"weightWiseRate.weightFractionFactor": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"weightWiseRate.basePrice": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"parcelValueWiseRate.valueStartRange": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"parcelValueWiseRate.valueUpToRange": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"parcelValueWiseRate.valueFraction": {
+        		decimalwithThreePlacesIncludeZero: true
+        	},
+        	"parcelValueWiseRate.basePrice": {
+        		decimalwithThreePlacesIncludeZero: true
+        	}
+    	},
+        errorPlacement: function(error, element) {
+            if ((element.attr("name") == "rateServiceCategory.serviceId")) {
+            	$("#serviceIdErrorContainer").html(error);
+                $("#serviceIdErrorContainer").show();
+            }
+            else if ((element.attr("name") == "select_Dependency")) {
+            	$("#selectDependencyErrorContainer").html(error);
+            	$("#selectDependencyErrorContainer").show();
+            }
+            else if ((element.attr("name") == "rateServiceCategory.locationDependency")) {
+            	$("#locationDependencyErrorContainer").html(error);
+            	$("#locationDependencyErrorContainer").show();
+            }
+            else if ((element.attr("name") == "rateServiceCategory.price")) {
+            	$("#priceErrorContainer").html(error);
+            	$("#priceErrorContainer").show();
+            }
+            else if ((element.attr("name") == "rateServiceCategory.taxRate1")) {
+            	$("#taxRate1ErrorContainer").html(error);
+            	$("#taxRate1ErrorContainer").show();
+            }
+            else if ((element.attr("name") == "rateServiceCategory.taxRate2")) {
+            	$("#taxRate2ErrorContainer").html(error);
+            	$("#taxRate2ErrorContainer").show();
+            }
+            else if ((element.attr("name") == "locationWiseRate.price")) {
+            	$("#locationPriceErrorContainer").html(error);
+            	$("#locationPriceErrorContainer").show();
+            }
+            else if ((element.attr("name") == "weightWiseRate.price")) {
+            	$("#weightPriceErrorContainer").html(error);
+            	$("#weightPriceErrorContainer").show();
+            }
+            else if ((element.attr("name") == "parcelValueWiseRate.price")) {
+            	$("#valuePriceErrorContainer").html(error);
+            	$("#valuePriceErrorContainer").show();
+            }
+            else if ((element.attr("name") == "locationWiseRate.fromId")) {
+            	$("#locationFromIdErrorContainer").html(error);
+            	$("#locationFromIdErrorContainer").show();
+            }
+            else if ((element.attr("name") == "locationWiseRate.toId")) {
+            	$("#locationToIdErrorContainer").html(error);
+            	$("#locationToIdErrorContainer").show();
+            }
+            else if ((element.attr("name") == "rateServiceCategory.weightMaxLimit")) {
+            	$("#maxWeightErrorContainer").html(error);
+            	$("#maxWeightErrorContainer").show();
+            }
+            else if ((element.attr("name") == "rateServiceCategory.valueMaxLimit")) {
+            	$("#maxValueErrorContainer").html(error);
+            	$("#maxValueErrorContainer").show();
+            } 
+            else if ((element.attr("name") == "rateServiceCategory.expectedDelivery")) {
+            	$("#expectedErrorContainer").html(error);
+            	$("#expectedErrorContainer").show();
+            }
+            else if ((element.attr("name") == "weightWiseRate.weightStartRange")) {
+            	$("#weightWStartErrorContainer").html(error);
+            	$("#weightWStartErrorContainer").show();
+            }
+            else if ((element.attr("name") == "weightWiseRate.weightEndRange")) {
+            	$("#weightWEndErrorContainer").html(error);
+            	$("#weightWEndErrorContainer").show();
+            }
+            else if ((element.attr("name") == "weightWiseRate.weightFractionFactor")) {
+            	$("#weightWFractionErrorContainer").html(error);
+            	$("#weightWFractionErrorContainer").show();
+            }
+            else if ((element.attr("name") == "weightWiseRate.basePrice")) {
+            	$("#weightWBasePriceErrorContainer").html(error);
+            	$("#weightWBasePriceErrorContainer").show();
+            }
+            else if ((element.attr("name") == "parcelValueWiseRate.valueStartRange")) {
+            	$("#valueVStartErrorContainer").html(error);
+            	$("#valueVStartErrorContainer").show();
+            }
+            else if ((element.attr("name") == "parcelValueWiseRate.valueUpToRange")) {
+            	$("#valueVUpToErrorContainer").html(error);
+            	$("#valueVUpToErrorContainer").show();
+            }
+            else if ((element.attr("name") == "parcelValueWiseRate.valueFraction")) {
+            	$("#valueVFractionErrorContainer").html(error);
+            	$("#valueVFractionErrorContainer").show();
+            }
+            else if ((element.attr("name") == "parcelValueWiseRate.basePrice")) {
+            	$("#valueVBasePriceErrorContainer").html(error);
+            	$("#valueVBasePriceErrorContainer").show();
+            }
+            //displays a tooltip
+            element.attr('title', error.text());
+            $(element).tooltip({
+	            position: {
+	            	my: "left+5 center",
+	                at: "right center"
+	            },
+	            trigger: "hover"
+         	});
+     	 },
+	     //highlight the error field with red
+	     highlight: function(element, error) {
+	     	$(element).css('background', '#FFCCCB');
+	     },
+	     // Called when the element is valid:
+	     unhighlight: function(element) {
+	     	$(element).css('background', '#ffffff');
+	     }
+     });
+   $('#weightDependency').change(function() {
+	   $("#selectWeightDependencyErrorContainer").hide();
+   });
+   $('#locationWiseRate').change(function() {
+	   $("#locationDependencyErrorContainer").hide();
+   });
+   $('#parcelValueDependency').change(function() {
+	   $("#selectValueDependencyErrorContainer").hide();
+   });
+		
+</script>

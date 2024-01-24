@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="locale.language" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<link rel="icon" href="/assets/images/favicon.ico">
+	<title>India Post</title>
+
+	<script src="/assets/js/jquery.min.js"> </script>
+<!-- 	<script src="/assets/js/global.js"> </script>
+ -->	<script src="/assets/js/bootstrap.min.js"></script>
+	<script src="/assets/js/jquery.cookie.js"></script>
+	<script src="/assets/js/popper.min.js"></script>
+	<script src="/assets/js/address.js"></script>
+	<script src="/assets/js/jquery.dataTables.min.js"></script>
+	<script src="/assets/js/dataTables.bootstrap4.min.js"></script>
+	<script src="/validation/jquery.validate.min.js"> </script>
+	<script src="/validation/additional-methods.js"> </script>
+	<script th:src="${'/validation/messages_'+#locale+'.js'}"></script>
+	<link rel="stylesheet" href="/assets/css/bootstrapv3.3.7.css">
+	<link rel="stylesheet" href="/assets/css/angular-loading-bar.css">
+	<link rel="stylesheet" href="/assets/css/ui-select.css">
+	<link rel="stylesheet" href="/assets/css/yamm3.css">
+	<link rel="stylesheet" href="/assets/css/main.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/dataTables.material.min.css"/>
+	<script type="text/javascript" src="/assets/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="/assets/js/dataTables.bootstrap4.min.js"></script>
+</head>
+<body class="create-label">
+<div id="header" class="header">
+    <div class="navbar yamm navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsed-navbar">
+                    <span class="sr-only" th:text="#{toggle.navigation}">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+                </button>
+                <span><img src="/assets/images/bdw.png" class="logo"></span><a class="navbar-brand brand-text"><span th:text="#{BDPost}">BD
+						Post</span></a>
+			</div>
+			<!-- Menu -->
+
+			<!-- Menu -->
+		</div>
+	</div>
+</div>
+<div class="fixed-header container-sm-footer">
+<div class="site-wrapper market-US">
+
+	<div class="container">
+		<div id="success" th:if="${message == 'success'}">
+		        <h2 class="text-center"> <span th:text="#{email.activaion.string}">Your Email has been activated successfully!! Please proceed to login.</span><span>!</span></h2>
+        </div>
+
+        <div id="error" th:if="${message != 'success'}">
+		        <h2 class="text-center text-danger"> <span th:text="#{email.activaion.fail.string}">Sorry, some error occurred. Your Email has not been activated. Please try Again.</span><span>!</span></h2>
+        </div>
+	</div>
+
+
+</div>
+</div>
+	<th:block th:include="_footer"></th:block>
+</body>

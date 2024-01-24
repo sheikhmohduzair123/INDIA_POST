@@ -1,0 +1,39 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer">
+	<div class="site-wrapper market-US">
+		<div class="container text-center">
+			<b>
+				<h1>Bag Print Page</h1>
+			</b>
+		</div>
+		
+		<div class="container col-md-12 spacer-top-MD">
+				<h3 class="text-center" th:text="#{parcel.list}">Parcel List</h3>
+				<table id="showParcel" class="table table-striped">
+					<thead>
+						<tr>
+							<th width="2%"><input type="checkbox" name="select_all"
+								id="select_all" onchange="checkAll()"></th>
+							<th>Bag ID</th>
+							<th>Bag Title</th>
+							<th>Print Bag Parcel</th>
+							<th>Print Label</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+					</tbody>
+				</table>
+				<input id="count" type="hidden" name="count" value="">
+			</div>
+	</div>
+
+</div>
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>
+ 

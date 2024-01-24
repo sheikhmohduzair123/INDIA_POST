@@ -1,0 +1,777 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<div class="fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+        <!-- /header -->
+        <form autocomplete="off" name="subOfficeForm" id="subOfficeForm" role="form" th:object="${objZone}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <h1 class="text-center" th:text="#{suboffice.masteraddress}">Sub Office (Post Office) </h1>
+
+            <div class="col-md-12">
+
+                <div class="form-group col-md-4">
+                    <label th:text="#{postal.code1}">Postal Code </label>
+                    <div>
+                        <input name="postalCode" id="postalCode" autocomplete="off" class="form-control name" type="text" th:placeholder="#{pin.code.rqd}" th:maxlength="6">
+                    </div>
+                    <div id="errorPostal" class="errorForm">
+                        <ul></ul>
+                    </div>
+                    <div id="ReceiverErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{zone1}">Zone</span>
+					</label>
+                    <select class="form-control name" name="Zone" id="zoneId" th:placeholder="#{zone}">
+						<option value="">select</option>
+						<option th:each="zone : ${zoneList}" th:value="${zone.id}" th:id="${zone.id}"
+							th:text="${zone.zone}">
+						</option>
+					</select>
+                    <div id="ZoneErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{division1}">Division</span>
+					</label>
+                    <select class="form-control name" name="Division" id="divisionId" th:placeholder="#{division}">
+						<option value="">select</option>
+						<option th:each="division : ${divisionList}" th:value="${division.id}" th:id="${division.id}"
+							th:text="${division.division}">
+						</option>
+					</select>
+                    <div id="DivisionErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-12">
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{district1}">District</span>
+					</label>
+                    <select class="form-control name" name="District" id="districtId" th:placeholder="#{district}">
+						<option value="">select</option>
+						<option th:each="district : ${districtList}" th:value="${district.id}" th:id="${district.id}"
+							th:text="${district.district}">
+						</option>
+					</select>
+                    <div id="DistrictErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label> <span th:text="#{thana1}">Thana</span>
+					</label>
+                    <select class="form-control name" name="Thana" id="thanaId" th:placeholder="#{thana}">
+						<option value="">select</option>
+						<option th:each="thana : ${thanaList}" th:value="${thana.id}" th:id="${thana.id}"
+							th:text="${thana.thana}" th:placeholder="#{thana}">
+						</option>
+					</select>
+                    <div id="ThanaErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label th:text="#{insert.suboffice}">Insert SubOffice </label>
+                    <input name="subOfficeId" id="subOfficeId" type="hidden">
+                    <input name="SubOffice" id="subOfficeName" autocomplete="off" class="form-control" type="text" data-toggle="tooltip" th:placeholder="#{suboffice}" th:maxlength="50">
+                    <div id="SubOffcErrorContainer" class="errorForm">
+                        <ul></ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2 col-md-offset-4">
+                    <button type="button" id="submitSubOfficeButton" class="btn btn-primary form-control">
+						<span th:text="#{add.suboffice}">Add SubOffice</span>
+					</button>
+                    <button type="button" id="updateSubOfficeButton" class="btn btn-primary form-control">
+						<span th:text="#{update.suboffice}">Update SubOffice</span>
+					</button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" id="reset" class="btn btn-primary form-control rBtn">
+						<span th:text="#{reset}">Reset</span>
+					</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="col-md-12 ">
+            <div class="col-md-offset-6 col-md-2"></div>
+            <div class="col-md-2">
+                <select class="form-control name" name="dropdown" id="dropdownId" align="right">
+					<!-- <option>select</option> -->
+					<option value="ACTIVE">Active</option>
+					<option value="DISABLED">Disable</option>
+					<option value="ALL">All</option>
+				</select>
+            </div>
+
+            <div class="col-md-2 ">
+                <input type="text" id="searchbox" class="form-control name" placeholder="search">
+            </div>
+        </div>
+        <div class="col-md-12 ">
+            <div class="col-md-offset-7 col-md-5 spacer-bootom-sm"></div>
+            <table id="masterAddressTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="display: none;">Sid</th>
+                        <th style="display: none;">Tid</th>
+                        <th style="display: none;">Dsid</th>
+                        <th style="display: none;">Dvid</th>
+                        <th style="display: none;">Zid</th>
+                        <th th:text="#{s.no}">S.No.</th>
+                        <th th:text="#{postal.code1}">Postal Code</th>
+                        <th th:text="#{suboffice1}">Sub Office Name</th>
+                        <th th:text="#{thana.name}">Thana Name</th>
+                        <th th:text="#{district.name}">District Name</th>
+                        <th th:text="#{division.name}">Division Name</th>
+                        <th th:text="#{zone.name}">Zone Name</th>
+                        <th th:text="#{status}">Status</th>
+                        <th th:text="#{updated.on}">Updated On</th>
+                        <th th:text="#{updated.by}">Updated By</th>
+                        <th th:text="#{update}">Update</th>
+                        <th th:text="#{delete}">Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="masterAddressTBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Postal Code Already exist Modal -->
+<div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{postal.code.already.exists}">Postal Code
+							Already Exists.</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" class="btn btn-primary btn-md" data-dismiss="modal"
+									  th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //PostalCode Already exist Modal -->
+
+<!-- Delete modal -->
+<div id="deleteModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="messageBeforeDelete" class="modal-header text-center">
+                <span>
+					<h3 class="errorForm" th:text="#{sub.office.sure.message}" style="display: inline">Are You Sure You Want To Delete
+								SubOffice....?</h3>
+					<h3 class="errorForm" style="display: inline"> "</h3>
+					<h3 class="errorForm" id="delmsg1" style="display: inline"></h3>
+					<h3 class="errorForm" style="display: inline">"?</h3>
+					<h5  class="errorForm" th:text="#{confirm.subOfficeRollback}">This action cannot be rollback. SubOffice will be deleted permanently</h5>
+				</span>
+            </div>
+            <div id="messageAfterDelete" class="modal-header text-center">
+                <span>
+					<h3 style="display: inline">"</h3>
+					<h3 id="delmsg2" style="display: inline"></h3>
+					<h3 style="display: inline">" </h3>
+					<h3 th:text="#{sub.office.delete.message}" style="display: inline">SubOffice Deleted Successfully</h3>
+				</span>
+            </div>
+            <div class="label-options" id="changePassword">
+                <form name='deleteForm' id="deleteForm" autocomplete="off" role="form" method="post">
+                    <input id="deleteSubOfficeId" name="deleteSubOfficeId" type="hidden">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button id="submitDeleteButton" type="button" class="btn btn-primary">Delete</button>
+                    <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancel
+					</button>
+                    <button id="okButton" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- //Delete Modal-->
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{sorry.some.error.occurred}">Sorry!! Some error occurred</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" class="btn btn-primary btn-md"
+						  data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Error Modal -->
+
+<!-- Zone Already exist Modal -->
+<div id="errorUserExistsModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 style="display: inline">"</h3>
+                <h3 id="existVal" style="display: inline"></h3>
+                <h3 style="display: inline">" </h3>
+                <h3 th:text="#{subOffice.already.exsits}" style="display: inline">Sub Office Already Exists.</h3>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+			</button>
+            <div class="text-center">
+                <button type="button" class="btn btn-primary btn-md" data-dismiss="modal" th:text="#{okay}">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Zone Already exist Modal -->
+
+<!-- //User Already exist Modal -->
+
+<!-- Added success Modal -->
+<div id="saveModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 style="display: inline">"</h3>
+                <h3 id="addVal" style="display: inline"></h3>
+                <h3 style="display: inline">" </h3>
+                <h3 th:text="#{subOffice.add.success}" style="display: inline">Sub Office ddadded successfully</h3>
+            </div>
+            <div class="text-center">
+                <button id="okButton" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay
+				</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal end -->
+
+<!-- updated success Modal -->
+<div id="updateModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 style="display: inline">"</h3>
+                <h3 id="upVal" style="display: inline"></h3>
+                <h3 style="display: inline">" </h3>
+                <h3 th:text="#{subOffice.up.success}" style="display: inline">Sub Office updated successfully</h3>
+            </div>
+            <div class="text-center">
+                <button id="okButton" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary btn-md" data-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay
+				</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal end -->
+
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>
+
+<script>
+    var msg = $('#errorSubOffice').text();
+    if (msg != "") {
+        $('#existModal').modal('show');
+    }
+
+    var dtable;
+    $(document).ready(function() {
+        masterAddressData();
+    });
+
+    $(document).ready(function() {
+        var flag;
+        $('#submitSubOfficeButton').show();
+        $('#updateSubOfficeButton').hide();
+        $('#deleteSucess').hide();
+        $('#messageAfterDelete').hide();
+        $('#okButton').hide();
+        $('#reset').on('click', function() {
+            $('#submitSubOfficeButton').show();
+            $('#updateSubOfficeButton').hide();
+            $('#subOfficeForm #subOfficeId').val('');
+            $('#subOfficeForm #postalCode').val('');
+            $('#subOfficeForm #subOfficeName').val('');
+            $("#errorPostal").hide();
+        });
+
+        // Trigger ajax event on sender address after 4th character typed.
+        $('#postalCode').on('keyup', function() {
+            $("#errorPostal").hide();
+            if ($(this).val().length == 6) {
+                type: "get",
+                $.ajax({
+                    url: "/masterController/checkPostalcode?ajax=true",
+                    data: {
+                        postalCode: $("#postalCode").val()
+                    },
+                    success: function(result) {
+                        if (result == true) {
+                            $("#errorPostal").text("Postal code already exist");
+                            $("#postalCode").css('background', 'rgb(255, 204, 203)');
+                            $("#errorPostal").show();
+                            $("#postalCode").val('');
+                        } else {
+                            $('#ErrorContainer').hide();
+                        }
+                    }
+                });
+            }
+        });
+
+    });
+
+    // for delete suboffice
+    $("#submitDeleteButton").click(function() {
+        var deletesubOfficeDetails = $("#deleteForm").serialize();
+        $.ajax({
+            type: "post",
+            url: "/masterController/actionDeleteSubOfficeOrMasterAddress?ajax=true&" + deletesubOfficeDetails,
+            success: function(result) {
+                $('#messageAfterDelete').show();
+                $('#messageBeforeDelete').hide();
+                $('#submitDeleteButton').hide();
+                $('#cancelButton').hide();
+                $('#okButton').show();
+            },
+            error: function() {
+                $('#errorModal').modal('show');
+            }
+        });
+    });
+    //close delete modal
+    $('#ok').on('click', function() {
+        location.reload();
+    });
+
+    $("#subOfficeForm").validate({
+        rules: {
+            "postalCode": {
+                required: true,
+                minlength: 6,
+                maxlength: 6,
+                digits: true
+            },
+            "SubOffice": {
+                nowhitespaceinstartandend: true,
+                required: true,
+                minlength: 2,
+                maxlength: 50
+            },
+            "Zone": {
+                required: true
+            },
+            "Division": {
+                required: true
+            },
+            "District": {
+                required: true
+            },
+            "Thana": {
+                required: true
+            }
+        },
+        errorPlacement: function(error, element) {
+            if ((element.attr("name") == "postalCode")) {
+                $("#ReceiverErrorContainer").html(error);
+                $("#ReceiverErrorContainer").show();
+            } else if ((element.attr("name") == "SubOffice")) {
+                $("#SubOffcErrorContainer").html(error);
+                $("#SubOffcErrorContainer").show();
+            } else if ((element.attr("name") == "Zone")) {
+                $("#ZoneErrorContainer").html(error);
+                $("#ZoneErrorContainer").show();
+            } else if ((element.attr("name") == "Division")) {
+                $("#DivisionErrorContainer").html(error);
+                $("#DivisionErrorContainer").show();
+            } else if ((element.attr("name") == "District")) {
+                $("#DistrictErrorContainer").html(error);
+                $("#DistrictErrorContainer").show();
+            } else if ((element.attr("name") == "Thana")) {
+                $("#ThanaErrorContainer").html(error);
+                $("#ThanaErrorContainer").show();
+            }
+            //displays a tooltip
+            element.attr('title', error.text());
+
+            $(".error").tooltip({
+                position: {
+                    my: "left+5 center",
+                    at: "right center"
+                },
+                trigger: "hover"
+            });
+        },
+        //highlight the error field with red
+        highlight: function(element, error) {
+            $(element).css('background', '#FFCCCB');
+        },
+        // Called when the element is valid:
+        unhighlight: function(element) {
+            $(element).css('background', '#ffffff');
+        }
+    });
+
+    $('#masterAddressTBody').empty();
+    $('#submitSubOfficeButton').show();
+    $('#updateSubOfficeButton').hide();
+
+    $('#reset').on('click', function() {
+        $('#submitSubOfficeButton').show();
+        $('#updateSubOfficeButton').hide();
+        $('#subOfficeForm #subOfficeId').val('');
+        $('#subOfficeForm #postalCode').val('');
+        $('#subOfficeForm #zoneId').val('');
+        $('#subOfficeForm #divisionId').val('');
+        $('#subOfficeForm #districtId').val('');
+        $('#subOfficeForm #thanaId').val('');
+
+    });
+
+    function masterAddressData() {
+        var status = $("#dropdownId").val();
+        //for division
+        $.ajax({
+            type: "get",
+            url: "/masterController/showAllSubOfcActiveStatus?status=" + status,
+            dataType: "json",
+            cache: false,
+            success: function(result) {
+
+                $.each(result, function(i, item) {
+                    var updatedby = (item.updatedBy == null) ? "-" : item.updatedBy.name;
+
+                    var update_date = item.updatedOn;
+                    var uTime = new Date(update_date);
+                    var updateDate = item.updatedOn.substr(0, 10);
+                    var UpdateOndate = updateDate.split("-");
+                    var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+
+                    var activeStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-edit iBtn"></button>') : " - ";
+                    var deleteStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-trash dBtn"></button>') : " - ";
+                    var $tr = $('<tr>').append(
+                        $('<td style="display: none;">').text(item.id),
+                        $('<td style="display: none;">').text(item.thanaId),
+                        $('<td style="display: none;">').text(item.districtId),
+                        $('<td style="display: none;">').text(item.divisionId),
+                        $('<td style="display: none;">').text(item.zoneId),
+                        $('<td>').text(i + 1),
+                        $('<td>').text(item.postalCode),
+                        $('<td>').text(item.subOffice),
+                        $('<td>').text(item.thana),
+                        $('<td>').text(item.district),
+                        $('<td>').text(item.division),
+                        $('<td>').text(item.zone),
+                        $('<td>').text(item.status),
+                        $('<td>' + updatedOnDate_string + " " + uTime.toString().substring(16, 24) + '</td>'),
+                        $('<td>').text(updatedby),
+                        $('<td>').html(activeStatus),
+                        $('<td>').html(deleteStatus)
+                    );
+                    $('#masterAddressTBody').append($tr);
+                });
+
+                dtable = $('#masterAddressTable').DataTable({
+                    "order": ([5, "asc"]),
+                    //"scrollX": true,
+                    "paging": true,
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_"
+                    },
+                  //to disble page no for 1st page
+					"fnDrawCallback": function(oSettings) {
+				        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+				            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+				        }
+				        else
+				        {
+				            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+				        }
+				    },
+                    aoColumns: [{
+                        sWidth: '1%'
+                    }, {
+                        sWidth: '1%'
+                    }, {
+                        sWidth: '1%'
+                    }, {
+                        sWidth: '1%'
+                    }, {
+                        sWidth: '1%'
+                    }, {
+                        sWidth: '5%'
+                    }, {
+                        sWidth: '8%'
+                    }, {
+                        sWidth: '11%'
+                    }, {
+                        sWidth: '8%'
+                    }, {
+                        sWidth: '8%'
+                    }, {
+                        sWidth: '8%'
+                    }, {
+                        sWidth: '8%'
+                    }, {
+                        sWidth: '9%'
+                    }, {
+                        sWidth: '12%'
+                    }, {
+                        sWidth: '8%'
+                    }, {
+                        sWidth: '5%'
+                    }, {
+                        sWidth: '5%'
+                    }, ]
+                });
+
+                $(".dataTables_length").css('clear', 'none');
+                $(".dataTables_length").css('margin-top', '-40px');
+                $(".dataTables_length").css('margin-left', '0px');
+
+            },
+            error: function(response) {
+                $('#errorModal').modal('show');
+            }
+        });
+
+    }
+    $("#searchbox").keyup(function() {
+        dtable.search(this.value).draw();
+    });
+
+    $('#dropdownId').on('change', function() {
+        var table = $('#masterAddressTable').DataTable();
+        table.destroy();
+        $('#masterAddressTBody').empty();
+        masterAddressData();
+
+    });
+
+    //for Zone option
+    $('#zoneId').on('change', function() {
+        var status = $(this).val();
+        if ($("#zoneId").val() != "select") {
+            $.ajax({
+                type: 'GET',
+                url: "/masterController/getDivisionByZone?status=" + status,
+                // dataType: "json",
+                cache: false,
+                success: function(result) {
+                    $("#divisionId").empty();
+                    $("#districtId").empty();
+                    $("#thanaId").empty();
+                    $("#subOfficeName").empty();
+                    $("#divisionId").append('<option value="">select</option>');
+                    $.each(result, function(key, data) {
+                        var divisionList = "<option id=" + data.id + " value=" + data.id + ">" + data.division + "</option>";
+                        $("#divisionId").append(divisionList);
+                    });
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+            });
+
+        } else {
+            $("#divisionId").empty();
+            $("#districtId").empty();
+            $("#thanaId").empty();
+            $("#subOfficeName").val('');
+        }
+    });
+
+    //For Division option
+    $('#divisionId').on('change', function() {
+        var status = $(this).val();
+        if ($("#divisionId").val() != "select") {
+            $.ajax({
+                type: 'GET',
+                url: "/masterController/getDistrictByDivision?status=" + status,
+                // dataType: "json",
+                cache: false,
+                success: function(result) {
+                    $("#districtId").empty();
+                    $("#thanaId").empty();
+                    $("#subOfficeName").empty();
+                    $("#districtId").append('<option value="">select</option>');
+                    $.each(result, function(key, data) {
+                        var districtList = "<option id=" + data.id + " value=" + data.id + ">" + data.district + "</option>";
+                        $("#districtId").append(districtList);
+
+                    });
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+            });
+
+        } else {
+            $("#districtId").empty();
+            $("#thanaId").empty();
+            $("#subOfficeName").val('');
+        }
+    });
+
+    //select District option and get Thana
+    $('#districtId').on('change', function() {
+        var status = $(this).val();
+        if ($("#districtId").val() != "select") {
+            $.ajax({
+                type: 'GET',
+                url: "/masterController/getThanaByDistrict?status=" + status,
+                // dataType: "json",
+                cache: false,
+                success: function(result) {
+                    $("#thanaId").empty();
+                    $("#subOfficeName").empty();
+                    $("#thanaId").append('<option value="">select</option>');
+                    $.each(result, function(key, data) {
+                        var thanaList = "<option id=" + data.id + " value=" + data.id + ">" + data.thana + "</option>";
+                        $("#thanaId").append(thanaList);
+
+                    });
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+            });
+
+        } else {
+            $("#thanaId").empty();
+            $("#subOfficeName").val('');
+        }
+    });
+
+    $("#submitSubOfficeButton").click(function() {
+        $("#errorPostal").hide();
+        if ($("#subOfficeForm").valid()) {
+            var addVal = $("#subOfficeName").val();
+            var existVal = $("#subOfficeName").val();
+            var subOfficeDetail = $("#subOfficeForm").serialize();
+            $.ajax({
+                type: "get",
+                url: "/masterController/checkExistingSubOfficeNameOnAdd?ajax=true&" + subOfficeDetail,
+                cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                success: function(result) {
+                    if (!result) {
+
+                        $.ajax({
+                            type: "post",
+                            url: "/masterController/actionSubOfficeOrMasterAddress?ajax=true&" + subOfficeDetail,
+                            cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                            success: function(result) {
+                                $('#addVal').text(addVal);
+                                $('#saveModal').modal('show');
+                            },
+                            error: function() {
+                                $('#errorModal').modal('show');
+                            }
+
+                        });
+                    } else {
+                        $('#existVal').text(existVal);
+                        $('#errorUserExistsModal').modal('show');
+                    }
+                },
+                error: function() {
+                    $('#errorModal').modal('show');
+                }
+            });
+
+        }
+    });
+
+    $("#updateSubOfficeButton").click(function() {
+        $("#errorPostal").hide();
+        if ($("#subOfficeForm").valid()) {
+            var existVal = $("#subOfficeName").val();
+            var upVal = $("#subOfficeName").val();
+            var subOfficeDetail = $("#subOfficeForm").serialize();
+            $.ajax({
+                type: "get",
+                url: "/masterController/checkExistingSubOfficeNameOnAdd?ajax=true&" + subOfficeDetail,
+                cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                success: function(result) {
+                    if (!result) {
+                        $.ajax({
+                            type: "post",
+                            url: "/masterController/updateSubOfficeOrMasterAddress?ajax=true&" + subOfficeDetail,
+                            cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                            success: function(result) {
+                                $('#upVal').text(upVal);
+                                $('#updateModal').modal('show');
+                            },
+                            error: function() {
+                                $('#errorModal').modal('show');
+                            }
+                        });
+                    } else {
+                        $('#existVal').text(existVal);
+                        $('#errorUserExistsModal').modal('show');
+                    }
+                },
+                error: function() {
+                    $('#errorModal').modal('show');
+                }
+            });
+
+        }
+    });
+
+    $('#masterAddressTable #masterAddressTBody').on('click', '.iBtn', function() {
+        $('#submitSubOfficeButton').hide();
+        $('#updateSubOfficeButton').show();
+
+        var data = dtable.row($(this).parents('tr')).data();
+        $('#subOfficeForm #subOfficeId').val(data[0]);
+        $('#subOfficeForm #subOfficeName').val(data[7]);
+        $('#subOfficeForm #thanaId').val(data[1]);
+        $('#subOfficeForm #districtId').val(data[2]);
+        $('#subOfficeForm #divisionId').val(data[3]);
+        $('#subOfficeForm #zoneId').val(data[4]);
+        $('#subOfficeForm #postalCode').val(data[6]);
+        $(window).scrollTop(0);
+    });
+
+    $('#masterAddressTable #masterAddressTBody').on('click', '.dBtn', function() {
+        var data = dtable.row($(this).parents('tr')).data();
+        var currentRow = $(this).closest("tr");
+        var col2 = currentRow.find("td:eq(7)").text();
+        $('#delmsg1').html(col2);
+        $('#delmsg2').html(col2);
+        $('#deleteModal #deleteSubOfficeId').val(data[0]);
+        $("#deleteModal").modal('show');
+    });
+</script>

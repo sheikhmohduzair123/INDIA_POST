@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="locale.language" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 	<meta name="_csrf" content="${_csrf.token}"/>
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
+ -->
+    <link rel="icon" href="/assets/images/favicon.ico">
+    <title>India Post</title>
+
+    <script src="/assets/js/jquery.min.js">
+    </script>
+    <!-- 	<script src="/assets/js/global.js"> </script>
+ -->
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/jquery.cookie.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/address.js"></script>
+    <script src="/assets/js/jquery.dataTables.min.js"></script>
+    <script src="/assets/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/validation/jquery.validate.min.js">
+    </script>
+    <script src="/validation/additional-methods.js">
+    </script>
+    <script th:src="${'/validation/messages_'+#locale+'.js'}"></script>
+    <script type="text/javascript" src="/assets/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/assets/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/assets/js/dataTables.buttons.min.js"></script>
+    <script src="/assets/js/jszip.min.js"></script>
+    <script src="/assets/js/pdfmake.min.js"></script>
+    <script src="/assets/js/vfs_fonts.js"></script>
+    <script src="/assets/js/buttons.html5.min.js"></script>
+    <script src="/assets/js/buttons.print.min.js"></script>
+    <script src="/assets/js/chosen.jquery.min.js"></script>
+    <script src="/assets/js/jquery.scannerdetection.js"></script>
+    <script src="/assets/js/bootstrap-multiselect.min.js"></script>
+    <script src="/assets/js/moment.js" type="text/javascript"></script>
+    <script src="/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/assets/js/webcamJS.js"></script>
+    <link rel="stylesheet" href="/assets/css/bootstrapv3.3.7.css">
+    <link rel="stylesheet" href="/assets/css/angular-loading-bar.css">
+    <link rel="stylesheet" href="/assets/css/ui-select.css">
+    <link rel="stylesheet" href="/assets/css/yamm3.css">
+    <link rel="stylesheet" href="/assets/css/chosen.min.css" />
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/dataTables.material.min.css" />
+    <link rel="stylesheet" href="/assets/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="/assets/css/bootstrap-multiselect.css" />
+    <link href="/assets/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+
+
+
+
+</head>
+
+<body class="create-label">
+    <div id="header" class="header">
+        <div class="navbar yamm navbar-default" role="navigation">
+            <div style="display:none">
+                <p id="profile" th:text="${@environment.getActiveProfiles()[0]}"></p>
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsed-navbar">
+                    <span class="sr-only" th:text="#{toggle.navigation}">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+                </button>
+                    <span><img src="/assets/images/bdw.png" class="logo"></span><a class="navbar-brand brand-text" href="senderHome"><span th:text="#{BDPost}">
+                        India
+						Post</span></a>
+                </div>
+
+                <!-- Menu -->
+                <div class="collapse navbar-collapse" id="collapsed-navbar">
+                    <ul class="nav navbar-nav" th:if="${@environment.getActiveProfiles()[0] == 'client' OR @environment.getActiveProfiles()[0] == 'clientonly'}">
+                        <li class="divider-vertical hidden-xs"></li>
+                        <!--					<li th:classappend="${#request.getServletPath() == '/#' ? 'activeButton' : ''}"><a id="dashboard" href="#" th:text="#{dashboard}">Dashboard</a></li>-->
+                        <li th:classappend="${#request.getServletPath() == '/client/senderHome' ? 'activeButton' : ''}"><a th:href="@{/client/senderHome}" th:text="#{book.a.parcel}">Book a Parcel</a></li>
+                        <li th:classappend="${#request.getServletPath() == '/client/searchParcel' ? 'activeButton' : ''}"><a id="searchParcel" href="/client/searchParcel"><span th:text="#{search.a.parcel}">Search a Parcel</span></a></li>
+                        <li th:classappend="${#request.getServletPath() == '/client/netPrice' ? 'activeButton' : ''}"><a id="netRate" href="/client/netPrice"><span th:text="#{amnt.calculation}">Amount Calculation</span></a></li>
+                        <!--					<li th:classappend="${#request.getServletPath() == '/client/sync' ? 'activeButton' : ''}"><a id="sync" href="#"><span>Sync DB</span></a></li>-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{reports}">Reports</span><span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li th:classappend="${#request.getServletPath() == '/client/getReportPage' ? 'text-primary' : ''}"><a id="reports" href="/client/getReportPage" th:text="#{parcel.report}">Parcel Report</a></li>
+                                <li class="divider"></li>
+                                <li th:classappend="${#request.getServletPath() == '/client/getRateReportPdf' ? 'text-primary' : ''}"><a id="downloadrate" href="/client/getRateReportPdf" th:text="#{download.rate}">Download Rate Card</a></li>
+                            </ul>
+                        </li>
+                        <li th:classappend="${#request.getServletPath() == '/client/getYesterday' ? 'text-primary' : ''}"><a href="" data-toggle="modal" data-target="#start-day-modal"><span th:text="#{start.day}" id="startDay">Start Day</span></a></li>
+                        <li th:classappend="${#request.getServletPath() == '/client/getDaily' ? 'text-primary' : ''}"><a href="" data-toggle="modal" data-target="#end-day-modal" id="endDay"><span th:text="#{end.day}">End Day</span></a></li>
+                        <li th:classappend="${#request.getServletPath() == '/client/addFunds' ? 'activeButton' : ''}"><a id="addFunds" href="/client/addFunds"><span th:text="#{add.funds}">Add Funds</span></a></li>
+                    </ul>
+
+                    <div th:if="${@environment.getActiveProfiles()[0] == 'server'}">
+
+                        <ul class="nav navbar-nav" th:if="${role} == 'ROLE_RMS_USER'">
+                            <li class="divider-vertical hidden-xs"></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{scanning}">Scanning</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/tracking/bagInward' ? 'text-primary' : ''}"><a id="bagInward" href="/tracking/bagInward" th:text="#{inward.scanning}">Inward Scanning</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/tracking/bagForward' ? 'text-primary' : ''}"><a id="bagForward" href="/tracking/bagForward" th:text="#{outward.scanning}">Outward Scanning</a></li>
+                                </ul>
+                            </li>
+
+                            <li th:classappend="${#request.getServletPath() == '/rms/rmsPage' ? 'activeButton' : ''}"><a href="/rms/rmsPage"><span th:text="#{rms.rebagging-title}">Re-Bagging</span></a></li>
+                            <!-- 			    	  	<li  th:classappend="${#request.getServletPath() == '/pbTracking/viewBagList' ? 'activeButton' : ''}"><a  href="/pbTracking/viewBagList"><span th:text="#{created.bag}">Bag List</span></a></li>
+ -->
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{reports}">Reports</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/dispatchParcelReport' ? 'text-primary' : ''}"><a id="dispatchReport" href="/pbTracking/dispatchParcelReport" th:text="#{daily.dispatch.report}">Daily Dispatch  Report</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/rms/rmsReports' ? 'text-primary' : ''}"><a id="rmsReport" href="/rms/rmsReports" th:text="#{rms.in.out.bag.report}">RMS Reports</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/viewBagList' ? 'text-primary' : ''}"><a href="/pbTracking/viewBagList"><span th:text="#{bags/parcels.inventory.report}">Bags/Parcels Inventory Report</span></a></li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{tracking}">Tracking</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/trackWithParcelId' ? 'text-primary' : ''}"><a id="trackParcel" href="/pbTracking/trackWithParcelId" th:text="#{track.with.parcel}">Track With Parcel Id</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/trackWithBagId' ? 'text-primary' : ''}"><a id="trackBag" href="/pbTracking/trackWithBagId" th:text="#{track.with.bag}">Track With Bag Id</a></li>
+                                </ul>
+                            </li>
+                            <li th:classappend="${#request.getServletPath() == '/pbTracking/searchBag' ? 'activeButton' : ''}"><a id="searchBag" href="/pbTracking/searchBag"><span th:text="#{search.bag}">Search Bag</span></a></li>
+                        </ul>
+
+                        <ul class="nav navbar-nav" th:if="${role} == 'ROLE_PO_USER'">
+                            <li class="divider-vertical hidden-xs"></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{scanning}">Scanning</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/tracking/bagInward' ? 'text-primary' : ''}"><a id="bagInward" href="/tracking/bagInward" th:text="#{inward.scanning}">Inward Scanning</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/tracking/bagForward' ? 'text-primary' : ''}"><a id="bagForward" href="/tracking/bagForward" th:text="#{outward.scanning}">Outward Scanning</a></li>
+                                </ul>
+                            </li>
+
+                            <li th:classappend="${#request.getServletPath() == '/po/poBagging' ? 'activeButton' : ''}"><a id="bagging" href="/po/poBagging" th:text="#{bagging}"><span>Bagging</span></a></li>
+
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{reports}">Reports</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/po/parcelsReportPage' ? 'text-primary' : ''}"><a href="/po/parcelsReportPage" th:text="#{parcels.report}">Parcels Report Mis</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/dispatchParcelReport' ? 'text-primary' : ''}"><a id="dispatchReport" href="/pbTracking/dispatchParcelReport" th:text="#{daily.dispatch.report}">Daily Dispatch  Report</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/po/poBagReports' ? 'text-primary' : ''}"><a id="poBagReports" href="/po/poBagReports" th:text="#{bag.inward.outward.reports}">Bag Inward/Outward Reports</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/viewBagList' ? 'text-primary' : ''}"><a href="/pbTracking/viewBagList"><span th:text="#{bags/parcels.inventory.report}">Bags/Parcels Inventory Report</span></a></li>
+
+                                </ul>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{tracking}">Tracking</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/trackWithParcelId' ? 'text-primary' : ''}"><a id="trackParcel" href="/pbTracking/trackWithParcelId" th:text="#{track.with.parcel}">Track With Parcel Id</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/trackWithBagId' ? 'text-primary' : ''}"><a id="trackBag" href="/pbTracking/trackWithBagId" th:text="#{track.with.bag}">Track With Bag Id</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{dispatch}">Dispatch</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/po/outForDelivery' ? 'text-primary' : ''}"><a id="outForDelivery" href="/po/outForDelivery"><span th:text="#{out.for.delivery}">Out For Delivery</span></a></li>
+
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/po/parcelDispatchStatus' ? 'text-primary' : ''}"><a id="trackBag" href="/po/parcelDispatchStatus" th:text="#{parcel.dispatch.status}">Parcel Dispatch Status</a></li>
+                                </ul>
+                            </li>
+                            <li th:classappend="${#request.getServletPath() == '/pbTracking/searchBag' ? 'activeButton' : ''}"><a id="searchBag" href="/pbTracking/searchBag"><span th:text="#{search.bag}">Search Bag</span></a></li>
+                        </ul>
+
+                        <ul class="nav navbar-nav" th:if="${role} == 'ROLE_ADMIN'">
+                            <li class="divider-vertical hidden-xs"></li>
+
+                            <li th:classappend="${#request.getServletPath() == '/server/registerClient' ? 'activeButton' : ''}"><a id="registerClient" href="/server/registerClient"><span th:text="#{register.counter}">Register Counter</span></a></li>
+                            <!-- <li  th:classappend="${#request.getServletPath() == '/server/registerUserPage' ? 'activeButton' : ''}"><a id="createUser" href="/server/registerUserPage"><span th:text="#{user}">User</span></a></li> -->
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{pocounters}">PO Counters</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/server/clientListAll' ? 'text-primary' : ''}"><a id="clientListAll" href="/server/clientListAll" th:text="#{view.all.counters}">View All Counters</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/clientListNonCommissioned' ? 'text-primary' : ''}"><a id="clientListNonCommissioned" href="/server/clientListNonCommissioned" th:text="#{uncommissioned.cntrs}">Uncommissioned Counters</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/clientListPending' ? 'text-primary' : ''}"><a id="clientListPending" href="/server/clientListPending" th:text="#{pending.approval}">Pending Approval</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/clientListApproved' ? 'text-primary' : ''}"><a id="clientListApproved" href="/server/clientListApproved" th:text="#{approved}">Approved</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/clientListRejected' ? 'text-primary' : ''}"><a id="clientListRejected" href="/server/clientListRejected" th:text="#{rejected}">Rejected</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/clientListExpired' ? 'text-primary' : ''}"><a id="clientListExpired" href="/server/clientListExpired" th:text="#{expired}">Expired</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown">
+
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{master.data}">Master Data</span><span class="caret"></span></a>
+
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a id="zoneAddress" href="/masterController/showZone"><span th:text="#{zone1}">Zone</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="divisionAddress" href="/masterController/showDivision"><span th:text="#{division1}">Division</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="districtAddress" href="/masterController/showDistrict"><span th:text="#{district1}">District</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="thanaAddress" href="/masterController/showThana"><span th:text="#{thana1}">Thana</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="masterAddress" href="/masterController/showMasterAddress"><span th:text="#{suboffice1}">SubOffice</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="rmsId" href="/masterController/showRms"><span th:text="#{add.rms}">Add RMS</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="createUser" href="/server/registerUserPage"><span th:text="#{user}">User</span></a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/masterController/serviceMaster' ? 'text-primary' : ''}"><a id="serviceMaster" href="/masterController/serviceMaster" th:text="#{service.master}">Service Master</a></li>
+
+
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{tracking}">Tracking</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a id="trackParcel" href="/pbTracking/trackWithParcelId" th:text="#{track.with.parcel}">Track With Parcel Id</a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="trackBag" href="/pbTracking/trackWithBagId" th:text="#{track.with.bag}">Track With Bag Id</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span th:text="#{reports}">Reports</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li th:classappend="${#request.getServletPath() == '/server/dailysummarypage' ? 'text-primary' : ''}"><a id="dailysummary" href="/server/dailysummarypage" th:text="#{daily.parcel.summary}">Daily Parcel Summary</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/collectionReport' ? 'text-primary' : ''}"><a id="collectionReport" href="/server/collectionReport" th:text="#{collection.report}">Collection Report</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/capacityReport' ? 'text-primary' : ''}"><a id="capacityReport" href="/server/capacityReport" th:text="#{capacity.management.report}">Capacity Management Report</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/dateWiseBagsReport' ? 'text-primary' : ''}"><a href="/server/dateWiseBagsReport" th:text="#{rms.in.out.bag.report}">RMS Bags Report</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/dateWisePoBagsReport' ? 'text-primary' : ''}"><a href="/server/dateWisePoBagsReport" th:text="#{po.inward.outward.report}">Postoffice Inward/Outward Report</a></li>
+
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/dispatchParcelReport' ? 'text-primary' : ''}"><a id="dispatchReport" href="/pbTracking/dispatchParcelReport" th:text="#{daily.dispatch.report}">Daily Dispatch  Report</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/server/parcelReportMisAdmin' ? 'text-primary' : ''}"><a href="/server/parcelReportMisAdmin" th:text="#{parcels.report}">Parcel Report Mis</a></li>
+                                    <li class="divider"></li>
+                                    <li th:classappend="${#request.getServletPath() == '/pbTracking/viewBagList' ? 'text-primary' : ''}"><a href="/pbTracking/viewBagList"><span th:text="#{bags/parcels.inventory.report}">Bags/Parcels Inventory Report</span></a></li>
+
+                                </ul>
+                            </li>
+                            <li th:classappend="${#request.getServletPath() == '/pbTracking/searchBag' ? 'activeButton' : ''}"><a id="searchBag" href="/pbTracking/searchBag"><span th:text="#{search.bag}">Search Bag</span></a></li>
+                        </ul>
+                    </div>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="divider-vertical"></li>
+                        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><span th:text="${user}"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" data-toggle="modal" data-target="#bdModal"><span th:text="#{change.pwd}">Change Password</span></a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a th:href="@{/logoutSuccessful}"><span th:text="#{sign.out}">Sign Out</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Menu -->
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <!--Start day -->
+
+
+    <div id="start-day-modal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="h3 col-xs-12 text-center"><span th:text="#{start.day}">Start Day</span><span>(</span><span id="startDate">(5th September 2019)</span>)</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span></button>
+                </div>
+                <div class="modal-body">
+
+                    <!--Details-->
+
+                    <div id="startDaySyncTimeClientOnly" class="col-md-12 text-center">
+                        <span><span th:text="#{previous.day.summary}">Previous Day Summary</span><span id="previousDate1">(09/09/2019)</span></span>
+                    </div>
+
+                    <div id="startDaySyncTime" class="col-md-12">
+                        <span class="col-xs-6 text-left"><span th:text="#{previous.day.summary}">Previous Day Summary</span><span> (</span><span id="previousDate">(09/09/2019)</span>)</span>
+                        <span class="col-xs-6 text-right"><span th:text="#{last.sync.time}">Last Sync time</span><span> - </span><span id="updatedtimestamp">Not Available</span></span>
+                    </div>
+                    <!-- 				<span class="col-xs-2 spacer-bottom-sm text-right"><span><button class="btn btn-primary" id="syncButton" th:text="#{sync.data}">Sync Data</button></span></span>
+ -->
+
+
+                    <table class="table table-striped col-md-12">
+
+                        <tbody>
+                            <tr>
+                                <td th:text="#{no.of.parcel.collected}">No. of Parcel Collected</td>
+                                <td class="wid-30" id="yesterdayParcelCount">NA</td>
+                            </tr>
+                            <tr>
+                                <td> <span th:text="#{collection.amount}">Collection Amount (In </span> <span th:text="#{taka}"></span><span>)</span> </td>
+                                <td id="yesterdayPaymentCollected">NA</td>
+                            </tr>
+                            <tr>
+                                <td th:text="#{total.load.collected}">Total Load Collected</td>
+                                <td id="yesterdayLoad">NA</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <table class="table table-striped col-md-12">
+
+                        <tbody>
+                            <tr>
+                                <td th:text="#{no.of.void.parcel}">No. of Void Parcel</td>
+                                <td class="wid-30" id="yesterdayVoidCount">NA</td>
+                            </tr>
+                            <tr>
+                                <td> <span th:text="#{amount.of.void.parcel.(in}"> Amount of Void Parcel (In </span> <span th:text="#{taka}"></span><span>)</span> </td>
+                                <td id="yesterdayVoidPaymentCollected">NA</td>
+                            </tr>
+                            <tr>
+                                <td th:text="#{void.load}">Void Load</td>
+                                <td id="yesterdayVoidLoad">NA</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <!--
+				 <h4 id="syncSuccess" class="hide text-success text-center"> Database Synced successfully!</h4>
+
+				 <h4 id="syncFail"  class="hide errorForm text-center">
+					 Database not Synced successfully, Please Try Again!!
+				 </h4>
+
+ -->
+                    <div id="startDaySyncButton" class="text-center col-md-12">
+
+                        <span><button type="button" class="btn btn-primary" id="syncButton" th:text="#{sync.data}">Sync Data</button></span>
+                    </div>
+                    <!-- /Details -->
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--// Start day-->
+
+    <!--End day -->
+
+    <div id="end-day-modal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="h3 col-xs-12 text-center" th:text="#{end.day}">End Day</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span></button>
+                </div>
+                <div class="modal-body">
+                    <!--Details-->
+                    <div id="endDaySyncTimeClientOnly" class="col-md-12 text-center">
+                        <span><span th:text="#{today.summary}">Today's Summary</span><span> (</span><span id="todayDate1"> (10/09/2019)</span>)</span>
+                    </div>
+
+                    <div id="endDaySyncTime" class="col-md-12">
+                        <span class="col-md-6 text-left"><span th:text="#{today.summary}">Today's Summary</span><span> (</span><span id="todayDate"> (10/09/2019)</span>)</span>
+                        <span class="col-md-6 text-right"><span th:text="#{last.sync.time}">Last Sync time</span><span> - </span><span id="updatedtime"> Not Available   </span></span>
+                    </div>
+
+                    <!-- <span class="col-xs-2 spacer-bottom-sm text-right"><button type="button" class="btn btn-primary" th:text="#{sync.data}">Sync Data</button></span> -->
+
+                    <table class="table table-striped col-md-12">
+
+                        <tbody>
+                            <tr>
+                                <td th:text="#{no.of.parcel.collected}">No. of Parcel Collected</td>
+                                <td class="wid-30" id="parcelCount">NA</td>
+                            </tr>
+                            <tr>
+                                <td> <span th:text="#{collection.amount}">Total Parcel Amount (In </span> <span th:text="#{taka}"></span><span>)</span> </td>
+                                <td id="paymentCollected">NA</td>
+                                <tr>
+                                    <td th:text="#{total.load.collected}">Total Load Collected</td>
+                                    <td id="todayLoad">NA</td>
+                                </tr>
+
+                        </tbody>
+                    </table>
+
+                    <table class="table table-striped col-md-12">
+
+                        <tbody>
+                            <tr>
+                                <td th:text="#{no.of.void.parcel}">No. of Void Parcel</td>
+                                <td class="wid-30" id="voidCount">NA</td>
+                            </tr>
+                            <tr>
+                                <td> <span th:text="#{amount.of.void.parcel.(in}"> Amount of Void Parcel (In </span> <span th:text="#{taka}"></span><span>)</span></td>
+                                <td id="voidPaymentCollected">NA</td>
+                            </tr>
+                            <tr>
+                                <td th:text="#{void.load}">Void Load</td>
+                                <td id="voidLoad">NA</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <div class="text-center col-md-12" id="endDaySyncButton">
+
+                        <span><button type="button" class="btn btn-primary" id="parcelButton" th:text="#{sync.parcel}">Sync Parcel</button></span>
+
+                    </div>
+
+
+                    <!-- /Details -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--// End day-->
+
+
+
+    <div id="bdModal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h3 th:text="#{change.your.pwd}">Change Your Password</h3>
+                    <button id="close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+                </div>
+
+                <div class="label-options" id="changePassword">
+                    <form autocomplete="off" name='updateForm' id="updateForm" method='POST'>
+                        <!-- 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+ --><input type="hidden" name="_flow" value="v2">
+
+                        <div class="form-group">
+                            <label for="oldPassword" th:text="#{old.pwd}">Old Password</label>
+                            <div class="input-group">
+                                <input id="oldPassword" name="oldPassword" type="password" th:minlength="6" th:maxlength="15" class="form-control" onselectstart="return false" onCopy="return false" onCut="return false"><span class="input-group-addon"><i
+									class="fa fa-lock"></i></span>
+                            </div>
+                            <div id="oldPwdErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword" th:text="#{new.pwd}">New Password</label>
+                            <div class="input-group">
+                                <input id="newPassword" name="newPassword" type="password" th:minlength="6" th:maxlength="15" class="form-control" onselectstart="return false" onCopy="return false" onCut="return false"><span class="input-group-addon"><i
+									class="fa fa-lock"></i></span>
+                            </div>
+                            <div id="newPwdErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword" th:text="#{cnfrm.new.pwd}">Confirm New Password</label>
+                            <div class="input-group">
+                                <input id="confirmPassword" name="confirmPassword" type="password" th:minlength="6" th:maxlength="15" class="form-control" onselectstart="return false" onCopy="return false" onCut="return false" onPaste="return false">
+                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                            </div>
+                            <div id="cnfmNewPwdErrorContainer" class="errorForm">
+                                <ul></ul>
+                            </div>
+                        </div>
+                        <div id="error" class="text-danger"></div>
+                        <button id="changePasswordButton" type="button" class="btn btn-primary btn-block btn-lg spacer-top-md" th:text="#{submit}">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--//Modal-->
+
+  <!-- change Password success Modal -->
+<div id="successChangePasswordModal" data-backdrop="static" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center col-md-12 spacer-bottom-md">
+                <h3 class="text-success" th:text="#{pwd.chng.success}">Password changed!!</h3>
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary btn-md" id="passwordChange-login"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+			</div>
+        </div>
+    </div>
+</div>
+<!-- change Password success Modal -->
+
+
+    <!-- sync success Modal -->
+    <div id="syncSuccessModal" data-backdrop="static" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center col-md-12 spacer-bottom-md">
+                    <h3 class="text-success" th:text="#{db.sync.success}">Database Synced Successfully!!</h3>
+                </div>
+                <div class="text-center">
+                    <span><button type="button" class="btn btn-primary btn-md" id="sync_ok_btn"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- sync success Modal -->
+
+
+    <!-- sync fail Modal -->
+    <div id="syncFailModal" data-backdrop="static" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center col-md-12 spacer-bottom-md">
+                    <h3 class="text-danger" th:text="#{db.sync.failed}">Database not Synced successfully, Please Try Again!!</h3>
+                </div>
+                <div class="text-center">
+                    <span><button type="button" class="btn btn-primary btn-md" id="sync_ok_btn"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- sync fail Modal -->
+
+
+    <!-- sync Server Error Modal -->
+    <div id="syncErrorModal" data-backdrop="static" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center col-md-12 spacer-bottom-md">
+                    <h3 class="text-danger" th:text="#{db.sync.error}">Oops! Could not connect with Server. Please Try Again in some time!</h3>
+                </div>
+                <div class="text-center">
+                    <span><button type="button" class="btn btn-primary btn-md" id="sync_ok_btn"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- sync Server Error Modal -->
+
+
+    <script>
+        if ($("#profile").text() == "clientonly") {
+            $("#startDaySyncButton").hide();
+            $("#startDaySyncTime").hide();
+        } else {
+            $("#startDaySyncTimeClientOnly").hide();
+        }
+
+        if ($("#profile").text() == "clientonly") {
+            $("#endDaySyncButton").hide();
+            $("#endDaySyncTime").hide();
+        } else {
+            $("#endDaySyncTimeClientOnly").hide();
+        }
+
+        var n = new Date();
+        var y = n.getFullYear();
+        var m = n.getMonth() + 1;
+        var d = n.getDate();
+        var yes = d - 1;
+        if (d < 10) {
+            d = '0' + d;
+        }
+        if (yes < 10) {
+        	yes = '0' + yes;
+        }
+        if (m < 10) {
+            m = '0' + m;
+        }
+        $("#startDate").html(d + '/' + m + '/' + y);
+        // Start Date
+
+        $("#todayDate").html(d + '/' + m + '/' + y);
+        $("#todayDate1").html(d + '/' + m + '/' + y);
+
+        $("#endDate").html(d + '/' + m + '/' + y);
+        // Date End
+
+        $("#previousDate").html(yes + '/' + m + '/' + y);
+        $("#previousDate1").html(yes + '/' + m + '/' + y);
+
+        $("#close").click(function() {
+            $('#updateForm').find("input[type=password]").val("");
+        });
+
+        $("#changePasswordButton").click(function() {
+            if ($("#updateForm").valid()) {
+                var updatePassword = $("#updateForm").serialize();
+
+                $.ajax({
+                    url: "/user/updatePassword?ajax=true&",
+                    data:updatePassword,
+                    type: "post",
+                    success: function(response) {
+                        var res = JSON.parse(response);
+                        if (res.Status == "Success") {
+                            $('#bdModal').modal('hide');
+                            $('#successChangePasswordModal').modal('show');
+                            $('#oldPassword').val('');
+                    		$('#newPassword').val('');
+                    		$('#confirmPassword').val('');
+
+                        } else {
+                            $('#error').html(res.Error);
+                        }
+                    },
+                    error: function() {
+                		$('#syncErrorModal').modal('show');
+                		$('#bdModal').modal('hide');
+                		$('#oldPassword').val('');
+                		$('#newPassword').val('');
+                		$('#confirmPassword').val('');
+                	},
+                });
+            }
+        });
+
+        $("#updateForm").validate({
+            rules: {
+                newPassword: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 15,
+                    pswdcheck: true
+                },
+
+                confirmPassword: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 15,
+                    equalTo: "#newPassword",
+                    pswdcheck: true
+                },
+
+                oldPassword: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 15
+                    //pswdcheck: true
+                }
+            },
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "oldPassword") {
+                    $("#oldPwdErrorContainer").html(error);
+                    $("#oldPwdErrorContainer").show();
+                } else if (element.attr("name") == "newPassword") {
+                    $("#newPwdErrorContainer").html(error);
+                    $("#newPwdErrorContainer").show();
+                } else if (element.attr("name") == "confirmPassword") {
+                    $("#cnfmNewPwdErrorContainer").html(error);
+                    $("#cnfmNewPwdErrorContainer").show();
+                }
+                //displays a tooltip
+                element.attr('title', error.text());
+                $(element).tooltip({
+                    position: {
+                        my: "left+5 center",
+                        at: "right center"
+                    },
+                    trigger: "hover"
+                });
+            },
+          //highlight the error field with red
+            highlight: function(element, error) {
+                $(element).css('background', '#FFCCCB');
+            },
+
+            // Called when the element is valid:
+            unhighlight: function(element) {
+                $(element).css('background', '#ffffff');
+            }
+        });
+
+        //Navbar menu button
+        $(function() {
+            var current = location.pathname;
+            $('#navbar-collapse li a').each(function() {
+                var $this = $(this);
+                // if the current path is like this link, make it active
+                if ($this.attr('href').indexOf(current) !== -1) {
+                    $this.addClass('active');
+                }
+            })
+        });
+        //Navbar menu button
+
+        $("#endDay").click(function() {
+            $.ajax({
+                type: 'post',
+                url: "/client/getDaily",
+
+                success: function(result) {
+                    var res = result.split(",")
+            
+                    $("#parcelCount").html(res[0]);
+                    $("#paymentCollected").html(res[1]);
+                    $("#todayLoad").html(res[2]);
+                    $("#voidCount").html(res[3]);
+                    $("#voidPaymentCollected").html(res[4]);
+                    $("#voidLoad").html(res[5]);
+                    if (res[6] == "null") {
+                        $("#updatedtime").html(" - ");
+                    } else {
+                    	
+                    	 var n =new Date(res[6]); 
+                         var y = n.getFullYear();
+                         var m = n.getMonth() + 1;
+                         var d = n.getDate();
+                         var h=n.getHours();
+                         var min=n.getMinutes();
+                         var s=n.getSeconds();
+                     
+                         var yes = d - 1;
+                         if (d < 10) {
+                             d = '0' + d;
+                         }
+                         if (m < 10) {
+                             m = '0' + m;
+                         }
+                         $("#updatedtime").html(d + '/' + m + '/' + y+' '+h+':'+min+':'+s);
+                      
+                    }
+                },
+            });
+        });
+
+        $("#startDay").click(function() {
+            $.ajax({
+                type: 'post',
+                url: "/client/getYesterday",
+                success: function(result) {
+                    var res2 = result.split(",")
+
+                    $("#yesterdayParcelCount").html(res2[0]);
+                    $("#yesterdayPaymentCollected").html(res2[1]);
+                    $("#yesterdayLoad").html(res2[2]);
+                    $("#yesterdayVoidCount").html(res2[3]);
+                    $("#yesterdayVoidPaymentCollected").html(res2[4]);
+                    $("#yesterdayVoidLoad").html(res2[5]);
+
+                    if (res2[6] == "null") {
+                        $("#updatedtimestamp").html(" - ");
+                    } else {
+                    	var n =new Date(res2[6]); 
+                        var y = n.getFullYear();
+                        var m = n.getMonth() + 1;
+                        var d = n.getDate();
+                        var h=n.getHours();
+                        var min=n.getMinutes();
+                        var s=n.getSeconds();
+                       
+                        var yes = d - 1;
+                        if (d < 10) {
+                            d = '0' + d;
+                        }
+                        if (m < 10) {
+                            m = '0' + m;
+                        }
+                        $("#updatedtimestamp").html(d + '/' + m + '/' + y+' '+h+':'+min+':'+s);
+                      
+                    }
+                },
+            });
+        });
+
+        $("#syncButton").click(function() {
+            $.ajax({
+                type: "post",
+                url: "/client/sync?ajax=true&",
+                cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                beforeSend: function() {
+                    $(".overlay").show();
+                    //window.scrollTo(0, 0);
+                },
+                success: function(result) {
+                    if (result == "success") {
+
+
+
+                        $("#syncSuccessModal").modal('show');
+                    } else if (result == "failure") {
+
+                        $("#syncFailModal").modal('show');
+                    }
+                },
+                error: function() {
+                    $("#syncErrorModal").modal('show');
+                },
+                complete: function(data) {
+                    $(".overlay").hide();
+                }
+            });
+        });
+
+
+        $("#parcelButton").click(function() {
+            $.ajax({
+                type: "post",
+                url: "/client/parcelDataToSync?ajax=true&",
+                cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+                beforeSend: function() {
+                    $(".overlay").show();
+                    //window.scrollTo(0, 0);
+                },
+                success: function(result) {
+                    if (result) {
+                        $("#syncSuccessModal").modal('show');
+                        window.location.href = "/client/senderHome";
+                    } else {
+                        $("#syncFailModal").modal('show');
+                    }
+                },
+                error: function() {
+                    $("#syncErrorModal").modal('show');
+                },
+                complete: function(data) {
+                    $(".overlay").hide();
+                }
+            });
+        });
+
+
+        $("#passwordChange-login").click(function(){
+    		window.location.href = "/logoutSuccessful";
+    	});
+
+    </script>

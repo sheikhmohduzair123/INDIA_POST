@@ -1,0 +1,443 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer create-label">
+
+	<div class="site-wrapper market-US">
+		<div class="container">
+			<h1 class="text-center" th:text="#{inward.scanning}">Inward
+				Scanning</h1>
+
+			<!-- Input the bag id -->
+			<div class="floating-unit">
+				<form autocomplete="off" name="inwardBagForm" id="inwardBagForm"
+					role="form" value="v2">
+					<div class="form-group">
+						<label th:text=#{enter.bag.id}>Enter/Scan Bag ID</label> <input
+							id="bagId" name="bagId" type="text" class="form-control">
+						<div id="scanErrorContainer" class="errorForm errorHeight">
+							<ul></ul>
+						</div>
+					</div>
+					<button id="addButton" type="button"
+						class="btn btn-primary btn-block btn-lg" th:text=#{add.to.list}>Add
+						to List</button>
+				</form>
+			</div>
+			<!-- Input the bag id end-->
+
+			<div class="col-md-12" id="tableview">
+				<h2 class="tableTitle" th:text=#{bag.list}>Bag List</h2>
+
+				<div id="no_of_entries" class="text-right">
+					<span><bold th:text="#{no.of.bags}" style="color:black">Total
+						number of bags added</bold></span> <span style="color: black">:</span> <span
+						id="total_bag_cnt" name="total_bag_cnt" style="color: black"></span>
+				</div>
+
+				<!-- 			<div id="searchContainer" class="col-md-2 col-sm-offset-10 padding-right">
+       			<input type="text" id="searchbox" class="form-control"  placeholder="search">
+   			</div>
+ -->
+				<!--   <div th:if="${not #lists.isEmpty(parcels)}">  -->
+				<table id="inwardTable" class="table">
+					<thead>
+						<tr>
+							<th class="text-center col-md-3" th:text="#{bagid}">Bag Id</th>
+							<th class="text-center col-md-1" th:text="#{weight.in.gms}">Weight</th>
+							<th class="text-center col-md-1" th:text="#{parcel.count}">Parcel
+								Count</th>
+							<th class="text-center col-md-3" th:text="#{bag.title}">Bag
+								Title</th>
+							<th class="text-center col-md-3" th:text="#{bag.description}">Bag
+								Description</th>
+							<th class="text-center col-md-1" th:text="#{remove.bag}">Remove
+								Bag</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+					</tbody>
+				</table>
+				<!-- </div> -->
+				<div class="text-center">
+					<button type="button" id="received_btn"
+						class="btn btn-primary spacer-bottom-md">
+						<span th:text="#{mark.as.received}"> Mark as Received</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Bag Id not present Error Modal -->
+<div id="bagIdNotPresentModal" class="modal fade" data-backdrop="static"
+	role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+					th:text="#{bagid.not.present.error}">Sorry this bag does not
+					exist. Please try again with correct Bag ID.</span>
+
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Bag Id not present Error Modal -->
+
+<!-- Bag ALready Added Error Modal -->
+<div id="bagAlreadyPresentModal" class="modal fade"
+	data-backdrop="static" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+					th:text="#{bag.already.added}">Bag has already been
+					scanned/added!!</span>
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Bag Alraedy Added Modal -->
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade" data-backdrop="static"
+	role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center" th:text="#{error.string}">Sorry,
+					an error has occurred!</span>
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Error Modal -->
+
+<!-- Success Modal -->
+<div id="successModal" class="modal fade" data-backdrop="static"
+	role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="text-center">
+					<img src="/assets/images/successmark.gif">
+				</div>
+				<span class="h3 col-xs-12 text-center"><span
+					th:text="#{inward}">Inward</span><span> - </span><span id="cnt"></span><span>
+				</span><span th:text="#{bags}"></span></span>
+
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+						id="suucessbutton" data-dismiss="modal" th:text="#{okay}">okay</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Success Modal -->
+
+<!-- Wrong Destination Modal -->
+<div id="bagWrongDestinationModal" class="modal fade"
+	data-backdrop="static" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+					th:text="#{bag.reached.wrong.destination}">Bag reached wrong
+					destination!!</span>
+
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Wrong Destination Modal -->
+
+<!-- Wrong Destination Modal -->
+<div id="bagStatusNotOutModal" class="modal fade" data-backdrop="static"
+	role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+					th:text="#{bag.status.not.out}">Bag cannot be inward!! Bag
+					has been created at this location.</span>
+
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Wrong Destination Modal -->
+
+
+<script type="text/javascript">
+    var arr = [];
+    var bag_cnt = 0;
+    var empty_bag_flag = 0;
+    var cnt_total = 0;
+    var wgt_total = 0;
+
+    function getBagDetails(bagid) {
+        $.ajax({
+            type: "post",
+            url: "/tracking/getBagDetails",
+            data: {
+                bagId: bagid,
+                reportFor: "inward"
+            },
+            //dataType : "json",
+            cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+            success: function(result) {
+
+                if (!jQuery.isEmptyObject(result)) {
+                    var item = result[0];
+                    if (item.trackingDesc == "bag status is not out") {
+                        $('#bagStatusNotOutModal').modal('show');
+                    } else {
+                        $("#tableview").show();
+                        var wgt = 0;
+                        if (item.trackingDesc == "wrong destination") {
+                            $('#bagWrongDestinationModal').modal('show');
+                        }
+
+                        var cnt = result.length;
+                        if ((cnt == 1) && (item.trackId == null)) {
+                            cnt = 0;
+                        }
+
+                        //to remove datatble text "no data available"
+                        if (arr.length == 0) {
+                            $('#inwardTable tbody').empty();
+                        }
+                        arr.push(item.bagId);
+                        $('#total_bag_cnt').text(++bag_cnt);
+
+                        if (item.trackId = null)
+                            wgt = 0;
+                        else {
+                            for (var i = 0; i < cnt; i++) {
+                                var parcel = result[i];
+                                var h = parcel.actWt;
+                                wgt = parseInt(wgt) + parseInt(h);
+                            }
+                        }
+
+                        $('#inwardTable').prepend([
+                            "<tr>",
+                            "<td class='text-center col-md-3'>" + item.bagId + "</td>",
+                            "<td class='text-center col-md-1'>" + wgt + "</td>",
+                            "<td class='text-center col-md-1'>" + cnt + "</td>",
+                            "<td class='text-center col-md-3'>" + item.bagTitle + "</td>",
+                            "<td class='text-center col-md-3'>" + item.bagDesc + "</td>",
+                            "<td class='text-center col-md-1'><a href='#' class='remove_icon'><i class='fa fa-trash-o' style='font-size:28px' aria-hidden='true'></i></a></td>",
+                            '</tr>'
+                        ].join(''));
+
+                        cnt_total = cnt_total + cnt;
+                        wgt_total = wgt_total + wgt;
+                        if (bag_cnt > 1) {
+                            $('#inwardTable tr:last').remove();
+                        }
+                        $('#inwardTable').append([
+                            "<tr>",
+                            "<td class='text-center col-md-3'>" + "Total:" + "</td>",
+                            "<td class='text-center col-md-1'>" + wgt_total + "</td>",
+                            "<td class='text-center col-md-1'>" + cnt_total + "</td>",
+                            "<td class='text-center col-md-3'></td>",
+                            "<td class='text-center col-md-3'></td>",
+                            "<td class='text-center col-md-1'></td>",
+                            '</tr>'
+                        ].join(''));
+                        $('#bagId').val("");
+                    }
+                } else {
+                    $('#bagIdNotPresentModal').modal('show');
+                }
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+    }
+
+    var oTable = $('#inwardTable').dataTable({
+        "bPaginate": false,
+        "ordering": false,
+
+        /*
+            'lengthMenu': [50, 100, 150],
+           	'oLanguage': {
+        	  		 "sLengthMenu": "_MENU_"
+        	 },
+        	//to disble page no for 1st page
+        		"fnDrawCallback": function(oSettings) {
+        	        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+        	            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+        	        }
+        	        else
+        	        {
+        	            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+        	        }
+        	    }
+        	 */
+    });
+    /*
+    $(".dataTables_length").css('clear', 'none');
+    $(".dataTables_length").css('margin-top', '-40px');
+    $(".dataTables_length").css('margin-left', '0px');
+
+    $('#searchbox').keyup(function(){
+
+          oTable.fnFilter($(this).val()).draw();
+
+    }) */
+
+    $('#inwardTable #tbody').on('click', '.remove_icon', function() {
+        // get the current row
+        var currentRow = $(this).closest("tr");
+        // get current row 3rd table cell  TD value
+        var id = currentRow.find("td:eq(0)").html();
+        var parcel_cnt = currentRow.find("td:eq(2)").html();
+        var parcel_wgt = currentRow.find("td:eq(1)").html();
+        currentRow.remove();
+        arr.splice($.inArray(id, arr), 1);
+
+        $('#total_bag_cnt').text(--bag_cnt);
+        cnt_total -= parcel_cnt;
+        wgt_total -= parcel_wgt;
+
+        $('#inwardTable tr:last').remove();
+        $('#inwardTable').append([
+            "<tr>",
+            "<td class='text-center col-md-3'>" + "Total:" + "</td>",
+            "<td class='text-center col-md-1'>" + wgt_total + "</td>",
+            "<td class='text-center col-md-1'>" + cnt_total + "</td>",
+            "<td class='text-center col-md-3'></td>",
+            "<td class='text-center col-md-3'></td>",
+            "<td class='text-center col-md-1'></td>",
+            '</tr>'
+        ].join(''));
+
+        if (arr.length == 0) {
+            $('#inwardTable tbody').empty();
+            $("#tableview").hide();
+            cnt_total = 0;
+        }
+
+    });
+
+    jQuery(document).ready(function() {
+        $("#tableview").hide();
+
+        // Check if body height is higher than window height
+        if ($(document).height() > $(window).height()) {
+            $("#foot").addClass("footer-top-margin");
+        }
+
+        //onclick of enter key also, button event must be triggered
+        $("#inwardBagForm").keydown(function(event) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);
+            //keycode for enter key is 13
+            if (keyCode == 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("addButton").click();
+            }
+        });
+
+        $("#inwardBagForm").validate({
+            rules: {
+                "bagId": {
+                    required: true,
+                    digits: true,
+                    minlength:10,
+                    maxlength:50
+                }
+            },
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "bagId") {
+                    $("#scanErrorContainer").html(error);
+                    $("#scanErrorContainer").show();
+                }
+              //displays a tooltip
+	            element.attr('title', error.text());
+	            $(element).tooltip({
+	                position: {
+	                    my: "left+5 center",
+	                    at: "right center"
+	                },
+	                trigger: "hover"
+	            });
+	        },
+	      //highlight the error field with red
+	        highlight: function(element, error) {
+	            $(element).css('background', '#FFCCCB');
+	        },
+
+	        // Called when the element is valid:
+	        unhighlight: function(element) {
+	            $(element).css('background', '#ffffff');
+	        }
+      });
+
+        $("#addButton").click(function() {
+            if ($("#inwardBagForm").valid()) {
+                var bagid = $('#bagId').val();
+
+                //bag scanned first time
+                if ($.inArray(bagid, arr) == -1) {
+                    getBagDetails(bagid);
+                } else {
+                    $('#bagAlreadyPresentModal').modal('show');
+                }
+            }
+        });
+
+        $("#received_btn").click(function() {
+            $("#cnt").html(arr.length);
+            $.ajax({
+                type: "post",
+                url: "/tracking/receiveBags?ajax=true",
+                data: {
+                    bagIds: arr,
+                },
+                success: function() {
+                    $('#successModal').modal('show');
+                },
+                error: function() {
+                    $('#errorModal').modal('show');
+                }
+            });
+        });
+
+        $("#suucessbutton").click(function() {
+            window.location.reload();
+        });
+    });
+</script>
+
+<th:block th:include="_footer"></th:block>
+</body>

@@ -1,0 +1,976 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer create-label">
+    <div class="site-wrapper market-US">
+        <div class="container">
+
+            <div style="display:none">
+                <p id="role" th:text="${role}"></p>
+            </div>
+            <div style="display:none">
+                <p id="usertype" th:text="${usertype}"></p>
+                <input type="hidden" id="userlocation" th:value="${userlocation}">
+            </div>
+
+            <h1 class="text-center" th:text="#{bags/parcels.inventory.report}">Bags/Parcels Inventory Report</h1>
+
+            <form autocomplete="off" name="Form" id="selectTypeForm" role="form">
+
+                <div class="downloadReport">
+                    <div th:if="${role} == 'ROLE_ADMIN'">
+
+                        <div class="col-md-12">
+                            <div class="col-md-3">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <div id="radiobtn">
+                                        <h4><span th:text="#{select.the.location.type.for.report.generation}">Select the location type for report generation</span></h4>
+                                        <div class="newradioinput">
+                                            <input type="radio" name="selectDestination" value="RMS"> RMS
+                                            <input type="radio" class="radiomarginleft" name="selectDestination" value="postoffice"> Post Office
+                                        </div>
+                                        <div id="radioErrorContainer" class="errorForm errorHeight">
+                                            <ul></ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 paddingleft spacer-bottom-sm">
+                                        <div id="rms">
+                                            <span> <h4 th:text="#{select.rms.and.type}">Select RMS Type and RMS Name</h4>
+						</span>
+                                            <div class="col-md-4">
+                                                <select id="rmsTypeList" class="selectpicker form-control">
+						</select>
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select id="rmsList" class="selectpicker form-control">
+						</select>
+                                            </div>
+                                            <div id="rmsErrorContainer" class="col-md-12">
+                                                <span class="errorForm errorHeight" th:text="#{no.rms.present}">No RMS present</span>
+                                            </div>
+                                        </div>
+                                        <div id="postoffice">
+                                            <span> <h4	th:text="#{select.post.office}">Enter postal code</h4>
+							</span>
+                                            <div class="col-md-4">
+                                                <input type='text' name='postofficeList' id='postofficeList' class='text-right form-control' th:maxlength="4" />
+                                            </div>
+                                            <div id="pincodeErrorContainer" class="col-md-12">
+                                                <span class="errorForm errorHeight" th:text="#{field.rqd}">This field is required</span>
+                                            </div>
+                                            <div id="pincodeMsgContainer" class="col-md-12 spacer-top-sm">
+                                                <span class="errorHeight" id="pincodemsg"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="col-md-3">
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-12">
+                                <div class="col-md-6 form-group paddingleft">
+                                    <h4>
+                                        <span th:text="#{generate.report.for}">Generate report for</span>
+                                    </h4>
+
+                                    <select class="form-control name" id="reportType" list="reportType">
+                    <option value="bags">Bags</option>
+                    <option value="parcels">Parcels</option>
+                </select>
+                                </div>
+                                <div class="col-md-6 spacer-top-lg paddingtop">
+                                    <button type="button" id="getReport" class="btn btn-primary btn-md col-md-12" th:text="#{get.list}">
+                    Get List
+                </button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                    </div>
+
+                    <div id="no_data">
+                        <h3 class="tableTitle text-center">
+                            <span th:text="#{no.transactions.available}"> No
+						Transactions Available </span><span>!!!</span>
+                        </h3>
+                    </div>
+                </div>
+            </form>
+
+            <div class="col-md-12" id="BagList">
+                <div class="col-md-2 pull-right padding-right">
+                    <input type="text" id="bagsearchbox" class="form-control name" placeholder="search">
+                </div>
+                <table id="BagListTable" class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center" th:text="#{s.no}">S.No.</th>
+                            <th class="text-center" th:text="#{bagid}">Bag Id</th>
+                            <th class="text-center" th:text="#{bag.title}">Bag Title</th>
+                            <th class="text-center" th:text="#{bag.description}">Bag Description</th>
+                            <th class="text-center" th:text="#{date.time}">Date & Time</th>
+                            <th class="text-center" th:text="#{parcel.count}">Parcel Count</th>
+                            <th class="text-center" th:text="#{weight.in.gms}">Weight (in gms)</th>
+                            <th class="text-center" th:text="#{parcel.list.pdf}">Parcel List (PDF)</th>
+                            <th class="text-center" th:text="#{bag.lable.pdf}">Bag Label (PDF)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                    <tfoot id="tfooter">
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="col-md-12" id="ParcelList">
+                <div class="col-md-2 pull-right padding-right">
+                    <input type="text" id="parcelsearchbox" class="form-control name" placeholder="search">
+                </div>
+                <table id="ParcelListTable" class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center" th:text="#{s.no}">S.No.</th>
+                            <th class="text-center" th:text="#{trackid}">Track Id</th>
+                            <th class="text-center" th:text="#{bagid}">Bag Id</th>
+                            <th class="text-center" th:text="#{payment.mode}">Payment Mode</th>
+                            <th class="text-center" th:text="#{to.collect}">To Collect (in Rs)</th>
+                            <th class="text-center" th:text="#{receiver.details}">Receiver Details</th>
+                            <th class="text-center" th:text="#{service}">Service</th>
+                            <th class="text-center" th:text="#{weight.in.gms}">Weight (in gms)</th>
+                            <th class="text-center" th:text="#{current.status}">Current Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ptbody">
+                    </tbody>
+                    <tfoot id="ptfooter">
+                    </tfoot>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    // Check if body height is higher than window height :)
+    if ($(document).height() > $(window).height()) {
+        $("#foot").addClass("footer-top-margin");
+    }
+
+    var oTable;
+    var pTable;
+    var destinationsuboffice;
+
+    function ajaxcall() {
+        $("#BagList").hide();
+        $("#ParcelList").hide();
+        $("#no_data").hide();
+
+        var location;
+        var locationName;
+        var locationType;
+        if ($("#role").text() == "ROLE_ADMIN") {
+            locationType = $('input[name="selectDestination"]:checked').val();
+
+            if ($('input[name="selectDestination"]:checked').val() == "RMS") {
+                location = $("#rmsList").find('option:selected').attr('id');
+                locationName = $("#rmsList").val() + '(' + $("#rmsTypeList").val() + ')';
+            } else if ($('input[name="selectDestination"]:checked').val() == "postoffice") {
+                location = $("#postofficeList").val();
+                locationName = destinationsuboffice + " (" + location + ")";
+            }
+        } else {
+            if ($("#role").text() == "ROLE_PO_USER") {
+                locationType = "postoffice";
+                location = $("#usertype").text();
+                locationName = $("#userlocation").val();
+            } else {
+                locationType = "RMS";
+                location = $("#usertype").text();
+                locationName = $("#userlocation").val();
+            }
+        }
+        if ($("#reportType").val() == "bags") {
+            $.ajax({
+                type: "post",
+                url: "/pbTracking/getBagList?ajax=true&",
+                data: {
+                    location: location,
+                    locationType: locationType
+                },
+                dataType: "json",
+                cache: false,
+                success: function(response) {
+
+                    $('#BagListTable').dataTable().fnDestroy();
+
+                    if (jQuery.isEmptyObject(response)) {
+                        $("#no_data").show();
+                        $("#BagList").hide();
+                    } else {
+                        var date_string;
+                        $('#BagListTable tbody').empty();
+                        $('#tfooter').empty();
+
+                        $("#no_data").hide();
+                        $("#BagList").show();
+
+                        var total_parcel_cnt = 0;
+                        var total_wgt = 0;
+                        var k = 0;
+                        $.each(response, function(key, value) {
+
+                            var parcel_cnt = 0;
+                            var wgt = 0;
+
+                            var item = value[0];
+                            for (var i = 0; i < value.length; i++) {
+                                if (value[i].trackId != null) {
+                                    parcel_cnt = parcel_cnt + 1;
+                                    wgt = parseInt(wgt) + parseInt(value[i].actWt);
+                                }
+                            }
+                            total_parcel_cnt = parseInt(total_parcel_cnt) + parseInt(parcel_cnt);
+                            total_wgt = parseInt(total_wgt) + parseInt(wgt);
+
+                            var updated_date = item.updatedOn;
+                            var time = new Date(updated_date);
+                            var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                            var dayName = days[time.getDay()];
+                            var userDate = item.updatedOn.substring(0, 10);
+                            var date = userDate.split("-");
+                            date_string = date[2] + "/" + date[1] + "/" + date[0];
+                            var parcellist;
+
+                            if (item.trackId != null)
+                                parcellist = $('<span><a href="#" class="download_parcel_list_icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a></span>');
+                            else
+                                parcellist = $('<span>-</span>')
+
+                            var rowdata = $('<tr>').append(
+                                $('<td>').text(++k),
+                                $('<td>').text(item.bagId),
+                                $('<td>').text(item.bagTitle),
+                                $('<td>').text(item.bagDesc),
+                                $('<td>' + date_string + " " + time.toString().substring(16, 21) + " (" + dayName + ")" + '</td>'),
+                                $('<td>').text(parcel_cnt),
+                                $('<td>').text(wgt),
+                                $('<td>').html(parcellist),
+                                $('<td>').html($('<span><a href="#" class="download_bag_label_icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a></span>')),
+                            );
+
+                            $('#tbody').append(rowdata);
+                        });
+                        rowdata = $('<tr>').append(
+                            $('<td>').text("TOTAL:"),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>').text(total_parcel_cnt),
+                            $('<td>').text(total_wgt),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>' + '' + '</td>'),
+                        );
+
+                        $('#tfooter').append(rowdata);
+
+                        //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                        var d1 = new Date();
+                        var jsDate = d1.getDate() + '-' + (d1.getMonth() + 1) + '-' + d1.getFullYear();
+
+
+                        oTable = $('#BagListTable').removeAttr('width').dataTable({
+
+                            "dom": '<"top"lB>rt<"bottom"ip>',
+
+                            "deferRender": true,
+
+                            'lengthMenu': [10, 25, 50],
+                            'oLanguage': {
+                                "sLengthMenu": "_MENU_"
+                            },
+                            //to disble page no for 1st page
+                            "fnDrawCallback": function(oSettings) {
+                                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                                } else {
+                                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                                }
+                            },
+
+                            bAutoWidth: false,
+                            aoColumns: [{
+                                sWidth: '1%'
+                            }, {
+                                sWidth: '20%'
+                            }, {
+                                sWidth: '20%'
+                            }, {
+                                sWidth: '20%'
+                            }, {
+                                sWidth: '30%'
+                            }, {
+                                sWidth: '3%'
+                            }, {
+                                sWidth: '4%'
+                            }, {
+                                sWidth: '1%'
+                            }, {
+                                sWidth: '1%'
+                            }, ],
+                            buttons: [
+
+                                {
+                                    extend: 'pdfHtml5',
+
+                                    text: '<span class="fa fa-file-pdf-o"></span>',
+                                    title: 'Bag Inventory Report (' + locationName + ') ',
+                                    orientation: 'landscape',
+                                    alignment: 'center',
+
+                                    pageSize: 'A4',
+                                    "charset": "utf-8",
+                                    footer: true,
+                                    exportOptions: {
+                                        columns: [1, 2, 3, 4, 5, 6],
+                                        modifier: {
+                                            page: 'all',
+                                            search: 'none'
+                                        },
+                                    },
+                                    customize: function(doc) {
+                                        doc.content[1].layout = "Borders";
+                                        doc.content[1].margin = [10, 10, 10, 10]; //left, top, right, bottom
+                                        doc.content[1].table.widths = ["10%", "20%", "20%", "30%", "10%", "10%"];
+
+                                        doc.defaultStyle.alignment = 'center';
+                                        doc.styles.tableHeader.alignment = 'center';
+
+                                        //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                                        //   		var d1 = new Date();
+                                        //		var jsDate = d1.getDate()+'/'+(d1.getMonth()+1)+'/'+d1.getFullYear();
+                                        var now = new Date();
+
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [{
+                                                    alignment: 'left',
+                                                    text: ['Created on: ', {
+                                                        text: now.toString().substring(0, 21)
+                                                    }]
+                                                }, {
+                                                    alignment: 'right',
+                                                    text: ['page ', {
+                                                        text: page.toString()
+                                                    }, ' of ', {
+                                                        text: pages.toString()
+                                                    }]
+                                                }],
+                                                margin: 20
+                                            }
+                                        });
+                                    },
+                                }, {
+                                    extend: 'excelHtml5',
+                                    text: '<span class="fa fa-file-excel-o"></span>',
+                                    title: 'Bag Inventory Report (' + locationName + ') ',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    footer: true,
+                                    exportOptions: {
+                                        columns: [1, 2, 3, 4, 5, 6],
+                                        modifier: {
+                                            page: 'all',
+                                            search: 'none'
+                                        },
+                                    },
+                                }
+                            ],
+
+                        });
+
+                        $('#bagsearchbox').keyup(function() {
+
+                            if ($(this).val().length > 0) {
+                                $('#tfooter').hide();
+                            } else {
+                                $('#tfooter').show();
+                            }
+                            oTable.fnFilter(this.value);
+                        })
+
+                        $(".dataTables_length").css('clear', 'none');
+                        $(".dataTables_length").css('margin-bottom', '-4%');
+
+                    }
+                }
+            });
+        } else if ($("#reportType").val() == "parcels") {
+            $.ajax({
+                type: "post",
+                url: "/pbTracking/getParcelList?ajax=true&",
+                data: {
+                    location: location,
+                    locationType: locationType
+                },
+                dataType: "json",
+                cache: false,
+                success: function(response) {
+                    $('#ParcelListTable').dataTable().fnDestroy();
+
+                    if (jQuery.isEmptyObject(response)) {
+                        $("#no_data").show();
+                        $("#ParcelList").hide();
+                    } else {
+                        var date_string;
+                        $('#ptbody').empty();
+                        $('#ptfooter').empty();
+
+                        $("#no_data").hide();
+                        $("#ParcelList").show();
+
+                        var total_wgt = 0;
+                        var k = 0;
+                        var amt_total = 0;
+
+                        $.each(response, function(key, value) {
+
+                            var item = value[0];
+                            var updated_date;
+                            var time;
+                            var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                            var dayName;
+                            var userDate;
+                            var date;
+                            if (item.bagId == null) {
+                                updated_date = item.objParcelVo.createdDate;
+                                time = new Date(updated_date);
+                                dayName = days[time.getDay()];
+                                userDate = item.objParcelVo.createdDate.substring(0, 10);
+                                date = userDate.split("-");
+                                date_string = date[2] + "/" + date[1] + "/" + date[0];
+                            } else {
+                                updated_date = item.updatedOn;
+                                time = new Date(updated_date);
+                                dayName = days[time.getDay()];
+                                userDate = item.updatedOn.substring(0, 10);
+                                date = userDate.split("-");
+                                date_string = date[2] + "/" + date[1] + "/" + date[0];
+                            }
+                            total_wgt = parseInt(total_wgt) + parseInt(item.objParcelVo.actWt);
+
+                            var bagid;
+                            if (item.bagId != null)
+                                bagid = item.bagId;
+                            else
+                                bagid = '-';
+
+                            var current_status;
+                            if (item.pStatus != null)
+                                current_status = item.pStatus.replace(/_/g, " ");
+                            else
+                                current_status = item.objParcelVo.status;
+
+                            var pmode;
+                            if (item.objParcelVo.toPay)
+                                pmode = "To Pay";
+                            else if (item.objParcelVo.cod)
+                                pmode = "COD";
+                            else
+                                pmode = "Prepaid";
+
+                            var amt;
+                            if (pmode == "To Pay")
+                                amt = item.objParcelVo.invoiceBreakup.payableAmnt;
+                            else if (pmode == "COD")
+                                amt = item.objParcelVo.parcelDeclerationValue;
+                            else
+                                amt = "-";
+
+                            if (amt != "-")
+                                amt_total = parseInt(amt_total) + parseInt(amt);
+
+                            current_status = current_status.toLowerCase();
+                            var rowdata = $('<tr>').append(
+                                $('<td>' + ++k + '</td>'),
+                                //  $('<td>' + item.objParcelVo.trackId +'</td>'),
+                                //$('<td><a href="/pbTracking/trackWithParcelId?trackId=' + item.objParcelVo.trackId + '" target="_blank" >' + item.objParcelVo.trackId + '</a></td>'),
+                               $('<td><a href="#" onclick="newTab(\'' + item.objParcelVo.trackId + '\')">' + item.objParcelVo.trackId + '</a></td>'),
+                                $('<td>' + bagid + '</td>'),
+                                $('<td>' + pmode + '</td>'),
+                                $('<td>' + amt + '</td>'),
+                                $('<td>' + item.objParcelVo.recipientName + '<br>' + item.objParcelVo.receiverAddress.addressLine1 + ', ' + (item.objParcelVo.receiverAddress.addressLine2 == "" ? '' : (item.objParcelVo.receiverAddress.addressLine2 + ', ')) + (item.objParcelVo.receiverAddress.landmark == "" ? "" : (item.objParcelVo.receiverAddress.landmark + ', ')) + item.objParcelVo.receiverAddress.subOffice + ', ' + item.objParcelVo.receiverAddress.thana + ', ' + item.objParcelVo.receiverAddress.district + ', ' + item.objParcelVo.receiverAddress.division + ', ' + item.objParcelVo.receiverAddress.zone + ' - ' + item.objParcelVo.receiverAddress.postalCode + '<br>(Mob: ' + item.objParcelVo.recipientMobileNumber + ')' + '</td>'),
+                                $('<td>' + item.bagDesc + '</td>'),
+                                $('<td>' + item.objParcelVo.actWt + '</td>'),
+                                $('<td>' + current_status + " on " + date_string + " " + time.toString().substring(16, 21) + " (" + dayName + ")" + '</td>'),
+                            );
+
+                            $('#ptbody').append(rowdata);
+                        });
+                        rowdata = $('<tr>').append(
+                            $('<td>').text("TOTAL:"),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>').text(amt_total),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>' + '' + '</td>'),
+                            $('<td>').text(total_wgt),
+                            $('<td>' + '' + '</td>'),
+                        );
+                        $('#ptfooter').append(rowdata);
+
+                        //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                        var d1 = new Date();
+                        var jsDate = d1.getDate() + '-' + (d1.getMonth() + 1) + '-' + d1.getFullYear();
+
+
+                        pTable = $('#ParcelListTable').removeAttr('width').dataTable({
+
+                            "dom": '<"top"lB>rt<"bottom"ip>',
+
+
+                            "deferRender": true,
+
+                            'lengthMenu': [10, 25, 50],
+                            'oLanguage': {
+                                "sLengthMenu": "_MENU_"
+                            },
+                            //to disble page no for 1st page
+                            "fnDrawCallback": function(oSettings) {
+                                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                                } else {
+                                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                                }
+                            },
+
+                            bAutoWidth: false,
+                            aoColumns: [{
+                                sWidth: '2%'
+                            }, {
+                                sWidth: '11%'
+                            }, {
+                                sWidth: '9%'
+                            }, {
+                                sWidth: '5%'
+                            }, {
+                                sWidth: '3%'
+                            }, {
+                                sWidth: '25%'
+                            }, {
+                                sWidth: '5%'
+                            }, {
+                                sWidth: '5%'
+                            }, {
+                                sWidth: '10%'
+                            }, ],
+                            buttons: [
+
+                                {
+                                    extend: 'pdfHtml5',
+
+                                    text: '<span class="fa fa-file-pdf-o"></span>',
+                                    title: 'Parcel Inventory Report  (' + locationName + ') ',
+                                    orientation: 'landscape',
+                                    alignment: 'center',
+
+                                    pageSize: 'A4',
+                                    "charset": "utf-8",
+                                    footer: true,
+                                    exportOptions: {
+                                        modifier: {
+                                            page: 'all',
+                                            search: 'none'
+                                        },
+                                    },
+                                    customize: function(doc) {
+                                        doc.content[1].layout = "Borders";
+                                        doc.content[1].margin = [0, 0, 0, 0]; //left, top, right, bottom
+                                        // 	   doc.content[1].table.widths = ["4%", "9%", "25%", "20%", "19%", "6%", "6%", "6%", "5%"];
+
+                                        doc.defaultStyle.alignment = 'center';
+                                        doc.styles.tableHeader.alignment = 'center';
+                                        var now = new Date();
+
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [{
+                                                    alignment: 'left',
+                                                    text: ['Created on: ', {
+                                                        text: now.toString().substring(0, 21)
+                                                    }]
+                                                }, {
+                                                    alignment: 'right',
+                                                    text: ['page ', {
+                                                        text: page.toString()
+                                                    }, ' of ', {
+                                                        text: pages.toString()
+                                                    }]
+                                                }],
+                                                margin: 20
+                                            }
+                                        });
+                                    },
+                                }, {
+                                    extend: 'excelHtml5',
+                                    text: '<span class="fa fa-file-excel-o"></span>',
+                                    title: 'Parcel Inventory Report  (' + locationName + ') ',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    footer: true,
+                                    exportOptions: {
+                                        modifier: {
+                                            page: 'all',
+                                            search: 'none'
+                                        },
+                                    },
+                                }
+                            ],
+                        });
+
+                        $('#parcelsearchbox').keyup(function() {
+
+                            if ($(this).val().length > 0) {
+                                $('#ptfooter').hide();
+                            } else {
+                                $('#ptfooter').show();
+                            }
+                            pTable.fnFilter(this.value);
+                        })
+
+                        $(".dataTables_length").css('clear', 'none');
+                        $(".dataTables_length").css('margin-bottom', '-4%');
+                    }
+                }
+            });
+        }
+
+    }
+
+    function getreport() {
+        if ($("#role").text() == "ROLE_ADMIN") {
+            if ($("#selectTypeForm").valid()) {
+                if ($('input[name="selectDestination"]:checked').val() == "postoffice") {
+                    if (($("#pincodemsg").text() == "This postal code doesnot exist.") || ($("#pincodemsg").text() == "Please enter atleast 4 digits.")) {
+                        if ($("#postofficeList").val() == "") {
+                            $("#pincodeErrorContainer").show();
+                        }
+
+                    } else if ($("#postofficeList").val() == "") {
+                        $("#pincodeErrorContainer").show();
+                    } else {
+                        $("#pincodeErrorContainer").hide();
+                        ajaxcall();
+                    }
+                } else {
+                    if ($("#rmsTypeList").val() == null) {
+                        $("#rmsErrorContainer").show();
+                    } else {
+                        $("#rmsErrorContainer").hide();
+                        ajaxcall();
+                    }
+                }
+            }
+
+        } else {
+            ajaxcall();
+        }
+    }
+
+    /*code: 48-57 Numbers
+    8  - Backspace,
+    35 - home key, 36 - End key
+    37-40: Arrow keys, 46 - Delete key*/
+    function restrictAlphabets(e) {
+        var x = e.which || e.keycode;
+        if ((x >= 48 && x <= 57) || x == 8 ||
+            (x >= 35 && x <= 40) || x == 46)
+            return true;
+        else
+            return false;
+    }
+
+    function rms() {
+        $.ajax({
+        	type: "post",
+            url: "/pbTracking/getRMSdata?ajax=true",
+            success: function(result) {
+
+                $("#rmsTypeList").empty();
+                $.each(result, function(key, data) {
+                    //  var rmsList = '<option id='+data.id+'>'+data.rmsName+'</option>';
+                    //  $("#rmsList").append(rmsList);
+
+                    var rmsType = '<option>' + data.rmsType + '</option>';
+                    $("#rmsTypeList").append(rmsType);
+                });
+                populateRMS();
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+
+    }
+
+    function populateRMS() {
+        var rms = $("#rmsTypeList").val();
+        $.ajax({
+            type: "post",
+            url: "/pbTracking/getRMSNameByRMSType",
+            data: {
+                rmsType: rms
+            },
+            success: function(result) {
+
+                $("#rmsList").empty();
+
+                $.each(result, function(key, data) {
+                    if (!($("#rmsUserInfo").text() == data.rmsName)) {
+                        var rmsList = '<option id=' + data.id + '>' + data.rmsName + '</option>';
+                        $("#rmsList").append(rmsList);
+                    }
+                });
+            },
+        });
+    }
+
+    $('#rmsTypeList').on('change', function() {
+        populateRMS();
+    });
+
+
+    $(document).ready(function() {
+
+        $("#rms").hide();
+        $("#postoffice").hide();
+        $("#pincodeErrorContainer").hide();
+        $("#pincodeMsgContainer").hide();
+        $("#rmsErrorContainer").hide();
+
+        $("#no_data").hide();
+        $("#BagList").hide();
+        $("#ParcelList").hide();
+
+        //onclick of enter key also, button event must be triggered
+        $("#selectTypeForm").keydown(function(event) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);
+            //keycode for enter key is 13
+            if (keyCode == 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("getReport").click();
+            }
+        });
+
+        $("#getReport").click(function() {
+            getreport();
+        });
+
+        $('#BagListTable #tbody').on('click', '.download_bag_label_icon', function() {
+            var currentRow = $(this).closest("tr");
+            // get current row 3rd table cell  TD value
+            var id = currentRow.find("td:eq(1)").html();
+
+            $.ajax({
+                url: "/pbTracking/bagLabel?ajax=true&",
+                method: 'post',
+                data: {
+                    bagId: id
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(data) {
+                    //format date
+                    var date = new Date();
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+                    var h = date.getHours();
+                    var m = date.getMinutes();
+                    var s = date.getSeconds();
+                    var finalDate = day + "-" + month + "-" + year + "-" + h + "-" + m + "-" + s;
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'Bag-Label-' + finalDate + '.pdf';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                }
+            });
+        });
+
+        $('#BagListTable #tbody').on('click', '.download_parcel_list_icon', function() {
+            var currentRow = $(this).closest("tr");
+            // get current row 3rd table cell  TD value
+            var id = currentRow.find("td:eq(1)").html();
+            <!--download in pdf-->
+            $.ajax({
+                url: "/pbTracking/bagParcelListPrint?ajax=true&",
+                method: 'post',
+                data: {
+                    bagId: id
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(data) {
+
+                    var date = new Date();
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+                    var h = date.getHours();
+                    var m = date.getMinutes();
+                    var s = date.getSeconds();
+                    var finalDate = day + "-" + month + "-" + year + "-" + h + "-" + m + "-" + s;
+
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'Bag-Parcels-' + finalDate + '.pdf';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                }
+            });
+        });
+
+
+        $("#selectTypeForm").validate({
+            rules: {
+                "selectDestination": {
+                    required: true
+                }
+            },
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "selectDestination") {
+                    $("#radioErrorContainer").html(error);
+                    $("#radioErrorContainer").show();
+                }
+
+                //displays a tooltip
+  	            element.attr('title', error.text());
+  	            $(element).tooltip({
+  	                position: {
+  	                    my: "left+5 center",
+  	                    at: "right center"
+  	                },
+  	                trigger: "hover"
+  	            });
+  	        },
+  	      //highlight the error field with red
+  	        highlight: function(element, error) {
+  	            $(element).css('background', '#FFCCCB');
+  	        },
+
+  	        // Called when the element is valid:
+  	        unhighlight: function(element) {
+  	            $(element).css('background', '#ffffff');
+  	        }
+        });
+
+        $("input[name='selectDestination']").click(function() {
+            if ($('input[name="selectDestination"]:checked').val() == "RMS") {
+                $("#rms").show();
+                $("#postoffice").hide();
+                $("#BagList").hide();
+                $("#ParcelList").hide();
+                $("#no_data").hide();
+                rms();
+                if ($("#rmsTypeList").val() == null) {
+                    $("#rmsErrorContainer").show();
+                }
+            } else if ($('input[name="selectDestination"]:checked').val() == "postoffice") {
+                $("#postoffice").show();
+                $("#rms").hide();
+                $("#BagList").hide();
+                $("#ParcelList").hide();
+                $("#no_data").hide();
+                $("#postofficeList").val("");
+                $("#pincodeMsgContainer").hide();
+                $("#pincodeErrorContainer").hide();
+            }
+        });
+
+        $('#postofficeList').on('keyup', function() {
+            if ($("#postofficeList").val() == "") {
+                $("#pincodeMsgContainer").hide();
+            }
+
+            if (($(this).val().length < 4) && ($(this).val().length > 0)) {
+                $("#pincodeMsgContainer").show();
+
+                $("#pincodemsg").text("Please enter atleast 4 digits.");
+                $("#pincodemsg").addClass('errorForm');
+            } else if ($(this).val().length == 4) {
+                $("#pincodeErrorContainer").hide();
+                $("#pincodeMsgContainer").show();
+
+                if ($("#postofficeList").val() == $("#postofficeUser").text()) {
+                    $("#pincodemsg").text("Destination Post Office can not  be same as User Post office");
+                    $("#pincodemsg").addClass('errorForm');
+                } else {
+                    $.ajax({
+
+                        type: "post",
+                        url: "/pbTracking/getPostalCodedata?ajax=true",
+                        data: {
+                            pincode: $("#postofficeList").val()
+                        },
+
+                        success: function(result) {
+                            if (result == "") {
+                                $("#pincodemsg").text("This postal code doesnot exist.");
+                                $("#pincodemsg").addClass('errorForm');
+                            } else {
+                                destinationsuboffice = result.subOffice;
+                                $("#pincodemsg").removeClass('errorForm');
+                                $("#pincodemsg").text(result.subOffice + ", " + result.thana);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    $(window).on('load', function() {
+        if ($("#role").text() == "ROLE_ADMIN") {
+            rms();
+        }
+    });
+
+
+</script>
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

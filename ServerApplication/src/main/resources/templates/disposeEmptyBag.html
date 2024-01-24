@@ -1,0 +1,239 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+   
+        <div class="container col-md-12 text-center">
+         <div>
+            <b>
+				<h1 th:text="#{dispose.empty.bag}">Dispose Empty Bag</h1>
+			</b>
+        </div>
+        <div>
+            <div class="container col-md-6 spacer-top-MD">
+                <h3 class="text-center" th:text="#{empty.bag.list}">Empty Bag List</h3>
+                <div class="col-md-3 text-right padding- spacer-top-sm col-md-offset-9">
+                    <input type="text" id="searchbox" class="form-control name" placeholder="Search Empty Bag">
+                </div>
+                <table id="showEmptyBag" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="select-all-th text-center"><input type="checkbox" name="select_all" id="select_all" onclick="checkAll()" ></th>
+                            <th th:text="#{bagid}" class="text-center">Bag Id</th>
+                            <th th:text="#{bag.status}" class="text-center">Bag Status</th>
+                            <th th:text="#{current.status}" class="text-center">Current Status</th>
+                            <th th:text="#{bag.description}" class="text-center">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+                                <div class="text-center"><button type="button" class="btn btn-primary" id="dispose-button" data-dismiss="modal" aria-hidden="true" th:text="#{dispose.bag}">Dispose Bag</button></div>
+                
+                </div>
+                
+            <div class="container col-md-6 spacer-top-MD">
+                <h3 class="text-center" th:text="#{disposed.bag}">Disposed BAG</h3>
+                <div class="col-md-3 text-right padding- spacer-top-sm col-md-offset-9">
+                    <input type="text" id="searchboxDisposed" class="form-control name" placeholder="Search Empty Bag">
+                </div>
+                <table id="disposedEmptyBag" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th th:text="#{bagid}" class="text-center">Bag Id</th>
+                            <th th:text="#{bag.status}" class="text-center">Bag Status</th>
+                            <th th:text="#{current.status}" class="text-center">Current Status</th>
+                            <th th:text="#{bag.description}" class="text-center">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="disposedBody">
+                    </tbody>
+                </table>
+                
+                </div>
+                
+                
+                
+                <!-- pop-up modal -->
+        <div id="bag-select" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content text-center">
+
+                    <h3 class="text-danger" th:text="#{select.empty.bag}">Please Select Empty Bag</h3>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" th:text="#{okay}">Okay</button>
+                </div>
+            </div>
+        </div>
+                
+           </div>
+     </div>
+     </div>
+ </div>    
+ <<script type="text/javascript">
+ 
+ var singleValue = [];
+ $(document).ready(function() {
+
+     if ($(document).height() > $(window).height()) {
+         $("#foot").addClass("footer-top-margin");
+     }
+
+     $.ajax({
+         type: "get",
+         url: "/po/disposeEmptyBagList",
+         dataType: "json",
+         cache: false,
+         success: function(result) {
+
+             $.each(result, function(i, item) {
+                 var $tr = $('<tr>').append(
+                     $('<td> <input  class="control checkbox" type="checkbox" name="bagid' + i + '"  id="bagid' + i + '" value="' + item.bagId + '" onclick="handleClick(this)" /></td>'),
+                     $('<td>').text(item.bagId),
+                     $('<td>').text(item.bagDesc),
+                     $('<td>').text(item.bagStatus),
+                     $('<td>').text(item.trackingDesc)
+                 );
+                 $('#tbody').append($tr);
+             });
+
+             var dTable = $('#showEmptyBag').dataTable({
+                 
+                "oLanguage": {
+                     "sLengthMenu": "_MENU_"
+                 },
+                 //to disble page no for 1st page
+                 "fnDrawCallback": function(oSettings) {
+                     if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                         $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                     } else {
+                         $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                     }
+                 }
+             });
+
+             <!--custom search box-->
+             $("#searchbox").keyup(function() {
+                 dTable.fnFilter(this.value);
+             });
+
+             $(".dataTables_length").css('clear', 'none');
+             $(".dataTables_length").css('margin-top', '-40px');
+             $(".dataTables_length").css('margin-left', '-217px');
+
+         }
+     });
+     
+     //
+     
+     $.ajax({
+         type: "get",
+         url: "/po/disposedEmptyBagList",
+         dataType: "json",
+         cache: false,
+         success: function(result) {
+
+             $.each(result, function(i, item) {
+                 var $tr = $('<tr>').append(
+                     $('<td>').text(item.bagId),
+                     $('<td>').text(item.bagDesc),
+                     $('<td>').text(item.bagStatus),
+                     $('<td>').text(item.trackingDesc)
+                 );
+                 $('#disposedBody').append($tr);
+             });
+
+             var dTable = $('#disposedEmptyBag').dataTable({
+                 
+                "oLanguage": {
+                     "sLengthMenu": "_MENU_"
+                 },
+                 //to disble page no for 1st page
+                 "fnDrawCallback": function(oSettings) {
+                     if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                         $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                     } else {
+                         $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                     }
+                 }
+             });
+
+             <!--custom search box-->
+             $("#searchboxDisposed").keyup(function() {
+                 dTable.fnFilter(this.value);
+             });
+
+             $(".dataTables_length").css('clear', 'none');
+             $(".dataTables_length").css('margin-top', '-40px');
+             $(".dataTables_length").css('margin-left', '-217px');
+
+         }
+     });
+     //
+  });
+ 
+//select all checkbox
+ function checkAll() {
+
+     singleValue = [];
+     if ($("#select_all").is(":checked")) {
+         $("#showEmptyBag #tbody  input.checkbox").each(function() {
+             $(this).prop('checked', true);
+             singleValue.push($(this).val());
+             console.log(singleValue);
+         });
+
+     } else {
+         $("#showEmptyBag #tbody input.checkbox").each(function() {
+             $(this).prop('checked', false);
+             console.log(singleValue);
+         });
+     }
+ }
+ 
+//single checkbox select and save into array--
+ function handleClick(cb) {
+	
+     var checked = $(cb).is(":checked");
+     if (checked) {
+         singleValue.push($(cb).val());
+         console.log(singleValue);
+         
+     } else {
+
+         var index = singleValue.indexOf($(cb).val());
+         if (index > -1) {
+             singleValue.splice(index, 1);
+             console.log(singleValue);
+         }
+     }
+ }
+ 
+ $("#dispose-button").on('click',function(){
+	 
+	 if (singleValue[0] == null) {
+		 
+         $('#bag-select').modal('show');
+     }else{
+    	 
+    	//var jsonString = JSON.stringify(singleValue);
+    	 $.ajax({
+             type: "post",
+             url: "/po/disposedEmptyBag",
+             dataType: "text",
+             data: {emptyBagId :singleValue},
+             cache: false,
+             success: function(result){
+             	location.reload(); 
+              }
+    	 });
+     }
+	 
+ })
+ 
+</script>
+        
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

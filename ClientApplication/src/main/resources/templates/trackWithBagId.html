@@ -1,0 +1,172 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="container fixed-header container-sm-footer">
+    <div class="site-wrapper market-US">
+
+        <!-- Input the tracking id -->
+        <div class="floating-unit">
+            <!-- <form autocomplete="off" name="trackParcelForm" id="trackParcelForm" role="form" value="v2"> -->
+            <div class="form-group">
+                <label th:text=#{tracking.bag}>Bag Tracking ID</label> <input id="trackId" name="trackId" type="text"
+                    class="form-control" th:maxlength="9">
+                <div id="errorContainer" class="errorForm">
+                    <ul></ul>
+                </div>
+            </div>
+            <button id="trackButton" type="button" class="btn btn-primary btn-block btn-lg" data-toggle="modal"
+                th:text=#{track.now}>Track Now</button>
+            <!-- </form> -->
+        </div>
+        <!-- Input the tracking id end-->
+    </div>
+
+    <table class="table table-bordered text-center" id="viewParcelDetails">
+        <thead>
+            <tr class="active">
+                <th class="text-center" style="width:25%">Date & Time</th>
+                <th class="text-center">Status</th>
+            </tr>
+        </thead>
+        <tbody id="tBody">
+            <tr>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<!-- End Container -->
+
+
+<!-- Track Id not present Error Modal -->
+<div id="trackIdNotPresentModal" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h3 col-xs-12 text-center" th:text="#{trackid.not.exist.error}">Tracking id does not exist.
+                    Please check again.</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+                </button>
+            </div>
+            <div class="text-center">
+                <span><button type="button" class="btn btn-primary" data-dismiss="modal"
+                        th:text="#{close}">Close</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Track Id not present Error Modal -->
+
+
+
+<script type="text/javascript">
+
+    function ajaxCallDemo(trackid) {
+        $.ajax({
+            type: "get",
+            url: "/pbTracking/getDetailsWithBagId",
+            data: {
+                trackId: trackid
+            },
+            dataType: "json",
+            cache: false,
+            success: function (result) {
+                $.each(result, function (i, value) {
+                	var a=[];
+                    $('#viewParcelDetails').show();
+                    var j = 0;
+
+                    for (j = 0; j < value.length; j++) {
+
+                        var item = value[j];
+                        if ($.inArray(item.bagStatus, a) == -1)
+                        {
+                            a.push(item.bagStatus);
+                        var created_date = item.updatedOn;
+                        var time = new Date(created_date);
+                        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                        var dayName = days[time.getDay()];
+                        var userDate = item.updatedOn.substring(0, 10);
+                        var date = userDate.split("-");
+                        var date_string = date[2] + "-" + date[1] + "-" + date[0];
+
+                        var $tr = $('<tr>').append(
+                            $('<td>' + dayName + " " + date_string + " " + time.toString().substring(16, 21) + '</td>'),
+                            $('<td>').text(item.trackingDesc)
+                        );
+                        }
+                        $('#tBody').append($tr);
+
+                    }
+                    //  $('#tBody').append($tr);
+                });
+            },
+            error: function (result) {
+                $('#viewParcelDetails').hide();
+                $('#trackIdNotPresentModal').modal('show');
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        $('#viewParcelDetails').hide();
+        // Check if body height is higher than window height
+        if ($(document).height() > $(window).height()) {
+            $("#foot").addClass("footer-top-margin");
+        }
+        //validations on trackid page
+        $("#trackParcelForm").validate(
+            {
+                rules: {
+                    "trackId": {
+                        required: true,
+                        minlength: 9,
+                        maxlength: 9
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    if ((element.attr("name") == "trackId")) {
+                        $("#errorContainer").html(error);
+                        $("#errorContainer").show();
+                    }
+                    //displays a tooltip
+                    element.attr('title', error.text());
+                    $(".error").tooltip({
+                        position: {
+                            my: "left+5 center",
+                            at: "right center"
+                        },
+                        trigger: "hover"
+                    });
+                },
+                //highlight the error field with red
+                highlight: function (element, error) {
+                    $(element).css('background', '#FFCCCB');
+                },
+                // Called when the element is valid:
+                unhighlight: function (element) {
+                    $(element).css('background', '#FFFFFF');
+                }
+            });
+    });
+
+    $("#trackButton").click(function () {
+        var trackid = $('#trackId').val();
+        if (trackid != '') {
+            ajaxCallDemo(trackid);
+            $('#tBody').empty();
+        } else {
+            alert("enter bag id");
+        }
+
+    });
+
+</script>
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en-us" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/assets/css/bootstrapv3.3.7.css" rel="stylesheet">
+    <link href="/assets/css/design_system.css" rel="stylesheet">
+    <link href="/assets/css/main.css" rel="stylesheet">
+    <link rel="icon" href="/assets/images/favicon.ico">
+    <script src="/assets/js/jquery.min.js"> </script>
+    <script src="/assets/js/jquery.cookie.js"> </script>
+    <script src="/validation/jquery.validate.min.js"> </script>
+    <script src="/validation/additional-methods.js"> </script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/validation/jquery.validate.min.js"> </script>
+	<script src="/validation/additional-methods.js"> </script>
+	<script th:src="${'/validation/messages_'+#locale+'.js'}"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+    <title>India Post Reset Password</title>
+</head>
+
+<body class="signin">
+    <div class="signin-wrapper container-sm-footer">
+        <!-- /login?error=true -->
+        <div th:if="${#request.getParameter('error') == 'true'}" style="color:red;margin:10px 0px;" th:text="#{login.failed}">
+            Login Failed!!!
+            <br /> Reason :
+            <span th:if="${#session!= null and #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}" th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}">
+                Static summary
+         </span>
+
+        </div>
+
+        <div id="show_body" style="display: block;">
+            <div class="signin-body-top">
+                <div class="floating-unit">
+                    <a href="http://www.pb.com/" target="_blank" id="pb_logo_link" class="signin-pb-logo"></a>
+                    <div class="signin-box">
+                        <h1 class="signin-heading"><img src="/assets/images/bdg.png" class="login-logo" th:text="#{BDPost}"></h1>
+                        <h5 class="signin-subheading"></h5>
+                        <form autocomplete="off" name="resetForm" id="resetForm" role="form"
+							th:action="resetPassword" method='POST'>
+
+                            	<input type="hidden" th:value="${param.activationCode}"
+								name="activationCode">
+
+                            <div &amp;&amp; class="form-group">
+                                <label for="password" th:text="#{pwd}">Password</label>
+                                <div class="input-group">
+                                    <input id="newPassword" name="newPassword" type="password" th:minlength="6" th:maxlength="15" class="form-control" onselectstart="return false" onCopy="return false" onCut="return false"><span style="cursor:pointer;cursor:hand;" class="input-group-addon"><i class="fa fa-lock"></i></span></div>
+								<div id="newPasswordErrorContainer" class="errorForm">
+                        		<ul></ul>
+                        		</div>
+
+                            </div>
+
+                            <div &amp;&amp; class="form-group">
+                                <label for="password" th:text="#{cnfrm.new.pwd}">Confirm New Password</label>
+                                <div class="input-group">
+                                    <input id="confirmNewPassword" name="confirmNewPassword" th:minlength="6" th:maxlength="15" type="password" class="form-control" onselectstart="return false" onCopy="return false" onCut="return false" onPaste="return false"><span style="cursor:pointer;cursor:hand;" class="input-group-addon"><i class="fa fa-lock"></i></span></div>
+                          	<div id="confirmNewPasswordErrorContainer" class="errorForm">
+                        	<ul></ul>
+                        	</div>
+                            </div>
+
+                            <span th:if="${message!=null}"  th:text="${message}" class="error text-danger">...</span>
+                             <span th:if="${error!=null}"  th:text="${error}" class="error text-danger">...</span>
+                             <input type="hidden" th:if="${role!=null}" th:value="${role}" id="roleValue">
+                            <button id="submitButton" type="submit" value="submit" class="btn btn-primary btn-block btn-lg spacer-top-md" th:text="#{submit}">Submit</button>
+                        </form>
+
+						<div>
+                             <input type="hidden" th:value="${successMessage}" id="successMessage">
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+
+<div id="resetModalserver" class="modal fade" role="dialog" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header text-center">
+			 <h2 th:utext="${successMessage}" class="text-center"  id="msg"></h2>
+
+			</div>
+			<div class="modal-footer">
+        <button type="button" id="modalLoginButton" class="btn btn-primary center-block" th:text="#{login.now}">Login Now</button>
+        </div>
+		</div>
+	</div>
+</div>
+
+<div id="resetModalclient" class="modal fade" role="dialog" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="text-center">
+			 <h2><span th:utext="${successMessage}" class="text-center" id="msg1"></span>
+			 <span class="text-center" th:text="#{please.proceed.to.login}">Please proceed to login.</span></h2>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--footer-->
+<th:block th:include="_footer"></th:block>
+<!--//footer-->
+
+<script type="text/javascript">
+
+       $(document).ready(function(){
+
+    	   if ($(document).height() > $(window).height()) {
+    		      $("#foot").addClass("footer-top-margin");
+    		}
+
+			$("#resetForm").validate({
+				rules : {
+					newPassword : {
+						required : true,
+						minlength : 6,
+						maxlength : 15,
+						pswdcheck : true
+					},
+
+					confirmNewPassword : {
+						equalTo : "#newPassword",
+						minlength : 6,
+						maxlength : 15,
+						pswdcheck : true
+					}
+				}
+			 errorPlacement: function(error, element) {
+	                if ((element.attr("name") == "newPassword")) {
+	                    $("#newPasswordErrorContainer").html(error);
+	                    $("#newPasswordErrorContainer").show();
+	                } else if ((element.attr("name") == "confirmNewPassword")) {
+	                    $("#confirmNewPasswordErrorContainer").html(error);
+	                    $("#confirmNewPasswordErrorContainer").show();
+	                }
+
+	              //displays a tooltip
+		            element.attr('title', error.text());
+		            $(element).tooltip({
+		                position: {
+		                    my: "left+5 center",
+		                    at: "right center"
+		                },
+		                trigger: "hover"
+		            });
+		        },
+		      //highlight the error field with red
+		        highlight: function(element, error) {
+		            $(element).css('background', '#FFCCCB');
+		        },
+
+		        // Called when the element is valid:
+		        unhighlight: function(element) {
+		            $(element).css('background', '#ffffff');
+		        }
+	      });
+       });
+
+		if($('#successMessage').val()!='')
+  		{
+	       			 if($('#roleValue').val()=='client')
+			     	 {
+				           	if($('#successMessage').val()!='')
+				       		{
+				       		 $("#resetModalclient").modal('show');
+				       		 }
+				     }
+				     else if($('#roleValue').val()=='server')
+				     {
+				     	if($('#successMessage').val()!='')
+				    	 {
+				    			$("#resetModalserver").modal('show');
+				    	 }
+				     }
+   		 }
+
+		$("#modalLoginButton").click(function(){
+				location.href = "/login";
+		});
+
+	</script>
+
+</body>
+
+</html>

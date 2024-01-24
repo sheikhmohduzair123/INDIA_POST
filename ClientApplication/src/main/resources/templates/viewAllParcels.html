@@ -1,0 +1,50 @@
+<body>
+<th:block th:include="_header"></th:block>
+<style>
+table{width:100%;}
+table td, table th { border: 1px solid grey;}
+table th { background: #eee;}
+.pagination-div{user-select: none;}
+.pagination-div span{border-radius:3px;border:1px solid #999;
+   padding:5px;margin:10px 0px 0px 10px;display:inline-block}
+span.selected{background:#ccf;}
+</style>
+<h2>Parcels</h2>
+<table>
+    <tr><th>LabelCode</th>
+        <th>TrackId</th>
+        <th>senderName</th>
+        <th>senderMobileNumber</th>
+        <th>recipientName</th>
+        <th>recipientMobileNumber</th>
+        <th>parcelContent</th>
+        <th>createdDate</th>
+    </tr>
+    <tr th:each="parcel : ${page.content}">
+        <td th:text="${parcel.labelCode}"></td>
+        <td th:text="${parcel.trackId}"></td>
+        <td th:text="${parcel.senderName}"></td>
+        <td th:text="${parcel.senderMobileNumber}"></td>
+        <td th:text="${parcel.recipientName}"></td>
+        <td th:text="${parcel.recipientMobileNumber}"></td>
+        <td th:text="${parcel.parcelContent}"></td>
+        <td th:text="${parcel.createdDate}"></td>
+    </tr>
+</table>
+
+<div class="pagination-div">
+    <span th:if="${page.hasPrevious()}">
+        <a th:href="@{/parcel/listParcels(page=${page.number-1},size=${page.size})}">Previous</a>
+    </span>
+    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+        <span th:unless="${page.number == i}">
+             <a th:href="@{/parcel/listParcels(page=${i},size=${page.size})}">[[${i}+1]]</a>
+        </span>
+    </th:block>
+    <span th:if="${page.hasNext()}">
+        <a th:href="@{/parcel/listParcels(page=${page.number+1},size=${page.size})}">Next</a>
+    </span>
+</div>
+<th:block th:include="_footer"></th:block>
+</body>

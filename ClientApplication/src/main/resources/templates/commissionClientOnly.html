@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en-us" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/assets/js/jquery.min.js"> </script>
+<script src="/validation/jquery.validate.js"> </script>
+<script src="/assets/js/jquery.cookie.js"> </script>
+<script src="/validation/jquery.validate.min.js"> </script>
+<script src="/validation/additional-methods.js"> </script>
+<!-- fetch the current locale of the page to display front end validation messages in selected language -->
+<script th:src="${'/validation/messages_'+#locale+'.js'}"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+
+<link href="/assets/css/font-awesome.min.css" rel="stylesheet">
+<link href="/assets/css/bootstrapv3.3.7.css" rel="stylesheet">
+<link href="/assets/css/design_system.css" rel="stylesheet">
+<link href="/assets/css/main.css" rel="stylesheet">
+<link rel="icon" href="/assets/images/favicon.ico">
+<title>Client Commissioning</title>
+</head>
+
+<body class="signin">
+	<div class="signin-wrapper">
+	<div id="show_body" style="display: block;">
+			<div class="signin-body-top">
+				<div class="floating-unit">
+					<a href="http://www.pb.com/" target="_blank" id="pb_logo_link"
+						class="signin-pb-logo"></a>
+					<div class="signin-box">
+						<h1 class="signin-heading">
+							<img src="/assets/images/bdw.png" class="login-logo"
+								th:text="#{BDPost}">
+						</h1>
+						<h5 class="signin-subheading"></h5>
+
+
+						<form autocomplete="off" name="commissionClientOnlyForm" id="commissionClientOnlyForm">
+													   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+							<h2 class="text-center textColor" th:text="#{commissioning.client}">Client Commissioning</h2>
+							<div id="noClient" class="hide">
+								<div id="noSuchClient" class="alert alert-danger">
+								</div>
+							</div>
+							<div &amp;&amp;&amp;&amp; class="form-group col-md-12">
+								<label>
+									<span th:text="#{client.id}">Client ID</span> <span>*</span>
+								</label>
+								<input id="clientId" name="clientId" type="text" class="form-control">
+								<div id="clientIdErrorContainer" class="errorForm">
+									<ul></ul>
+							    </div>
+							</div>
+						<button id="requestButton" type="button" class="btn client-form btn-primary btn-block btn-lg spacer-top-md" data-toggle="modal" th:text="#{request.for.approval}">Request For Approval</button>
+						</form>
+						<div class="text-center">
+							<ul class="list-unstyled list-inline spacer-top-xs client-form">
+								<div class="language-select spacer-top-sm">
+									<span class="language-dropdown"><select
+										id="localeChangeDropdown" class="form-control">
+											<option label="English (United States)" value="?lang=en">English
+												(United States)</option>
+											<!-- <option label="Bangla (বাংলা)" value="?lang=bn"></option> -->
+									</select></span>
+								</div>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="overlay">
+		<div id="loading-img"></div>
+	</div>
+		<!--Success Modal -->
+		<div id="clientCommisssionSuccessModal" class="modal fade" data-backdrop="static" role="dialog">
+		<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center" th:text="#{request.sent.successfully}">Request Sent Successfully</span>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary" id="ok_btn"
+						data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+			</div>
+		</div>
+		</div>
+		</div>
+<!--  Modal end -->
+
+<!--request pending Modal -->
+		<div id="requestPendingModal" class="modal fade" data-backdrop="static" role="dialog">
+		<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center" th:text="#{request.pending}">Request Still Pending for Approval</span>
+			</div>
+				<div class="text-center">
+					<button id="requestPendingButton" type="button" class="btn btn-primary btn-block btn-lg spacer-top-md" data-toggle="modal" th:text="#{request.pending.for.approval}">Check Commission Request Status</button>
+				</div>
+			<div id="approvalRequired" class="text-center hide">
+				<h6 class="text-danger">Client not yet approved, Please, contact Administrator!!</h6>
+			</div>
+		</div>
+		</div>
+		</div>
+<!--  Modal end -->
+
+	<!--request rejected Modal -->
+	<div id="requestRejectedModal" class="modal fade" data-backdrop="static" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="h3 col-xs-12 text-center" th:text="#{request.pending}">Client has been Rejected. Please contact Administrator!!</h3>
+					<button id="close_success" type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+						<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--request expired Modal -->
+	<div id="expiredClient" class="modal fade" data-backdrop="static" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="h3 col-xs-12 text-center" th:text="#{request.pending}">Client has been Rejected. Please contact Administrator!!</h3>
+					<button id="close_expire" type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+						<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--  Modal end -->
+
+	<!--request expired Modal -->
+	<div id="adminContact" class="modal fade" data-backdrop="static" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="h3 col-xs-12 text-center" >There is some issue with Client Registration. Please contact Administrator!!</h3>
+					<button id="close_expire" type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+						<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--  Modal end -->
+
+<!-- Error Modal -->
+<div id="clientCommissionErrorModal" class="modal fade"
+	data-backdrop="static" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center" th:text="#{sorry.some.error.occurred}">Sorry!! Some error occurred</span>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Error Modal -->
+
+<!--footer-->
+<th:block th:include="_footer"></th:block>
+<!--//footer-->
+</body>
+
+<script type="text/javascript">
+$(function () {
+    var token = $("input[name='_csrf']").val();
+    var header = "X-CSRF-TOKEN";
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+});
+
+<!-- front end validations -->
+	 $(window).on('load',function(){
+	 	$.ajax({
+	    	type : "post",
+			url : "/client/checkClientOnlyStatus?ajax=true&",
+			cache : false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+			success : function(result) {
+				if(result == "rejected"){
+					$("#requestRejectedModal").modal('show');
+				} else if(result == "expired"){
+					$("#expiredClient").modal('show');
+				}else if(result == "approved"){
+					alert("here");
+					window.location.href = "/login";
+				}
+				else if(result == "no client commissioned"){
+					$("#adminContact").modal('show');
+				}
+			},
+			error : function() {
+				$('#clientCommissionErrorModal').modal('show');
+			},
+    		complete:function(data){
+      			$(".overlay").hide();
+    		}
+		});
+	 });
+
+	 $(document).ready(function() {
+	//Check if body height is higher than window height :)
+		if ($(document).height() > $(window).height()) {
+			   $("#foot").addClass("footer-top-margin");
+		}
+
+	 //$("#requestPendingButton").hide();
+
+		//onclick of enter key also, button event must be triggered
+		$("#commissionClientOnlyForm").keydown(function(event) {
+			var keyCode = (event.keyCode ? event.keyCode : event.which);
+			//keycode for enter key is 13
+			if (keyCode == 13) {
+				// Cancel the default action, if needed
+				event.preventDefault();
+				// Trigger the button element with a click
+				document.getElementById("requestButton").click();
+			}
+		});
+
+
+    $("#commissionClientOnlyForm").validate({
+        rules:{
+        	"clientId":{
+        		required: true
+        	}
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "clientId")
+            {
+              $("#clientIdErrorContainer").html(error);
+              $("#clientIdErrorContainer").show();
+            }
+
+          //displays a tooltip
+			element.attr('title', error.text());
+			$(element).tooltip({
+				position : {
+					my : "left+5 center",
+					at : "right center"
+				},
+				trigger : "hover"
+			});
+		},
+		//highlight the error field with red
+		highlight : function(element, error) {
+			$(element).css('background','#FFCCCB');
+		},
+		// Called when the element is valid:
+		unhighlight : function(element) {
+			$(element).css('background','#ffffff');
+		}
+
+    });
+
+    $("#requestButton").click(function() {
+		if ($("#commissionClientOnlyForm").valid()) {
+				var clientId =  $('#clientId').val();
+			$.ajax({
+		    	type : "post",
+				url : "/client/generatePassword",
+				data : {
+					clientId :clientId
+				},
+				credentials: false,
+				cache : false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+				success : function(result) {
+					if(result == "approved"){
+						window.location.href = "/login";
+					}
+					else if(result=="No Client Found with Given Client Id"){
+						$("#noClient").removeClass('hide');
+						$("#noSuchClient").html(result);
+					}
+				},
+				error : function() {
+					$('#clientCommissionErrorModal').modal('show');
+				},
+    			complete:function(data){
+      				$(".overlay").hide();
+    			}
+			});
+ 		}
+	});
+
+<!-- for changing selected language -->
+//when we change language from dropdown menu
+$('#localeChangeDropdown').on('change', function ()
+{ // bind change event to select
+      var url = $(this).val();// get selected value
+      if (url != '') { // require a URL
+          window.location.href = url; // redirect
+      }
+       return false;
+});
+
+//to set default locale as placeholder and update in url
+$(document).ready(function(){
+       	var loc = $(location).attr("href");
+       	if(loc.indexOf('?') == -1){			//when url is not containing ?lang string, set default to en.
+       		var userLang = $.cookie('lang1');		//get the cookie
+       		if(userLang == "?lang=en" ||  userLang==undefined)
+       		{
+       		//	$.cookie('lang1', '?lang=en');		//set the cookie to en if null
+       			document.cookie = "lang1 = ?lang=en; secure; path=/; samesite=strict; httpOnly";
+       			$("#localeChangeDropdown").val("?lang=en");    //used to set the dropdown
+           		window.location.href = "?lang=en";			   //used to reload the page
+       		}
+       		else									//if lang is set to bn, then load the page with bn locale and set dropdown also
+				{
+       			$("#localeChangeDropdown").val(userLang);
+           		window.location.href = userLang;
+				}
+
+       	}
+       	else
+       	if(loc.slice(loc.indexOf('?')) == "?error=true")    //fetch the current locale stored in cookie when going for validation and load the page accordingly
+       	{
+       		var userLang = $.cookie('lang1');
+            	$("#localeChangeDropdown").val(userLang);
+        	}
+       	else
+       	{
+       		var selected_lang = loc.slice(loc.indexOf('?'));
+   			$("#localeChangeDropdown").val(selected_lang);
+   		//	$.cookie('lang1', selected_lang);
+   			document.cookie = "lang1 = "+selected_lang+"; secure; path=/; samesite=strict; httpOnly";
+   			var userLang = $.cookie('lang1');
+       	}
+});
+	 });
+
+</script>

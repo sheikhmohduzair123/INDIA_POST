@@ -1,0 +1,2018 @@
+<!-- header -->
+
+<th:block th:include="_header"></th:block>
+
+<!-- /header -->
+
+<form name="parcelForm" id="parcelForm" autocomplete="off">
+	<div class="fixed-header">
+		<div class="site-wrapper market-US">
+			<div style="display: none">
+				<p id="enablePdfDownload" th:text="${enablePdfDownload}"></p>
+				<input type="hidden" id="volumetricFactor" th:value="${volumetricFactor}">
+			</div>
+
+			<div style="display: none">
+				<p id="printer" th:text="${printer}"></p>
+			</div>
+
+			<div class="sender-bar">
+				<span class="col-xs-3 text-center"><span th:text="#{today.parcel.cnt}">Today's Parcel
+						Count</span><span>: </span><span class="small-header"><strong>
+							<span id="parcelCount_home" th:text="${dailyData[0]}">...</span></strong></span></span>
+
+
+
+				<!-- <span class="col-xs-3 text-center">
+					<span th:text="#{today.total.clctn}">Today's Total Collection</span><span>
+						: </span><span class="small-header"><strong><span th:text="#{taka}"></span><span
+								id="paymentCollected" th:text="${dailyData[1]}"> </span> </strong></span></span>
+					 -->
+
+
+				<span class="col-xs-3 text-center"><span th:text="#{shipping.date}">Shipping Date</span><span> :
+					</span><span class="small-header font-weight-bold"><strong
+							id="shipDate">02/09/2019</strong></span></span>
+
+				<span class="col-xs-3 text-center">
+					<span>Availabale Balance</span><span>
+						: </span><span class="small-header"><strong><span th:text="#{taka}"></span><span
+								id="avalBalance" th:text="${dailyData[2]}"> </span> </strong></span></span>
+
+				<span class="col-xs-3 text-center">
+					<span>Total Balance</span><span>
+						: </span><span class="small-header"><strong><span th:text="#{taka}"></span><span
+								id="totalBalance" th:text="${dailyData[3]}"> </span> </strong></span></span>
+
+
+				<!-- <span class="col-xs-3 text-center"><span th:text="#{pin.code}">PIN Code</span><span> : </span><span
+						class="small-header font-weight-bold"><strong th:text="${postalCode}"></strong></span></span> -->
+			</div>
+
+			<div class="alert alert-success alert-dismissible" role="alert" style="display: none">
+				<strong><span th:text="#{label.successfully.printed}">Label
+						Successfully Printed</span><span>!</span></strong>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div id="someerror" class="alert alert-danger alert-dismissible" role="alert" style="display: none">
+				<strong><span th:text="#{some.error.has.occurred}">Some
+						error has occurred</span><span>!</span></strong>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div id="rateError" class="alert alert-danger alert-dismissible" role="alert" style="display: none">
+				<strong><span id="rateErrorMsg">Some error has
+						occurred</span><span>!</span></strong>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div id="requiredfields" class="alert alert-danger alert-dismissible" role="alert" style="display: none">
+				<strong><span th:text="#{fill.details}">Please fill
+						the required details.</span><span>!</span></strong>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<!-- 		<input type="hidden" th:name="${_csrf.parameterName}"
+				th:value="${_csrf.token}" />
+ -->
+
+			<div id="receiver_sender">
+				<!-- Receiver Page -->
+				<div class="container col-md-6 spacer-top-sm">
+					<div class="col-xs-12">
+						<div>
+							<h1 class="header-section-title" th:text="#{receiver.details}">Receiver's
+								Details</h1>
+							<p class="instructions" th:text="#{enter.receiver.details}">Enter
+								the Receiver's details</p>
+						</div>
+						<div id="ReceiverErrorContainer" class="errorForm">
+							<ul></ul>
+						</div>
+						<div id="errorPostal" class="errorForm">
+							<ul></ul>
+						</div>
+						<div class="form-fancy2 textfields form-outline row">
+							<div class="col-xs-12">
+								<div class="selectize-input form-control">
+									<div th:text="#{bangladesh}">India</div>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="receiverAddress.postalCode" id="recieverPostalCode" autocomplete="off"
+										class="form-control name" type="text" th:placeholder="#{pin.code.rqd}"
+										th:maxlength="6">
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="receiverAddress.zone" id="recieverZone" autocomplete="off"
+										class="form-control" list="zoneList" type="text" th:placeholder="#{zone}">
+									<datalist id="zoneList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="receiverAddress.division" id="recieverDivision" autocomplete="off"
+										class="form-control name" list="divisionList" type="text"
+										th:placeholder="#{division}">
+									<datalist id="divisionList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="receiverAddress.district" id="recieverDistrict" autocomplete="off"
+										class="form-control" list="districtList" type="text"
+										th:placeholder="#{district}">
+									<datalist id="districtList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="receiverAddress.thana" id="recieverThana" autocomplete="off"
+										class="form-control name" list="thanaList" type="text"
+										th:placeholder="#{thana}">
+									<datalist id="thanaList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="receiverAddress.subOffice" id="recieverSubOffice" autocomplete="off"
+										class="form-control" list="subOfficeList" type="text"
+										th:placeholder="#{suboffice}">
+									<datalist id="subOfficeList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="receiverAddress.addressLine1" id="receiveraddress1" th:maxlength="30"
+										autocomplete="off" th:placeholder="#{address1}" class="form-control"
+										type="text">
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="receiverAddress.addressLine2" id="receiveraddress2" th:maxlength="30"
+										autocomplete="off" th:placeholder="#{address2}" class="form-control"
+										type="text">
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="receiverAddress.landmark" autocomplete="off" id="receiverlandmark"
+										th:maxlength="30" th:placeholder="#{landmark}" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="recipientName" id="recieverName" autocomplete="off"
+										th:placeholder="#{recipient.name}" th:maxlength="35" class="form-control"
+										type="text">
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="recipientMobileNumber" id="recipientMobileNumber" autocomplete="off"
+										th:placeholder="#{mobile.rqd}" th:maxlength="10" class="form-control name"
+										type="text">
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="ecommerceReferenceNo" id="ecommerceReferenceNo" autocomplete="off"
+										th:placeholder="#{Ecom.No}" th:minlength="10" th:maxlength="28"
+										class="form-control" type="text">
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+				<!-- //Receiver Page -->
+
+				<!-- Sender's Page -->
+				<div class="container col-md-6 spacer-top-sm">
+
+					<div class="col-xs-12">
+						<h1 class="header-section-title" th:text="#{sender.details}">Sender's
+							Details</h1>
+						<p class="instructions" th:text="#{enter.sender.details}">Enter
+							the Sender's details</p>
+
+						<div id="SenderErrorContainer" class="errorForm errorHeight">
+							<ul></ul>
+						</div>
+						<div id="senderErrorPostal" class="errorForm">
+							<ul></ul>
+						</div>
+					</div>
+
+
+					<div class="col-xs-12">
+						<div class="form-fancy2 textfields form-outline row">
+							<div class="col-xs-12">
+								<div class="selectize-input form-control">
+									<div th:text="#{bangladesh}">India</div>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="senderAddress.postalCode" id="senderPostalCode" autocomplete="off"
+										class="form-control name" type="text" data-toggle="tooltip"
+										data-placement="right" th:placeholder="#{pin.code.rqd}" th:maxlength="6">
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="senderAddress.zone" id="senderZone" autocomplete="off"
+										class="form-control" list="senderZoneList" type="text" th:placeholder="#{zone}">
+									<datalist id="senderZoneList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="senderAddress.division" id="senderDivision" autocomplete="off"
+										class="form-control name" list="senderDivisionList" type="text"
+										th:placeholder="#{division}">
+									<datalist id="senderDivisionList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="senderAddress.district" id="senderDistrict" autocomplete="off"
+										class="form-control" list="senderDistrictList" type="text"
+										th:placeholder="#{district}">
+									<datalist id="senderDistrictList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="senderAddress.thana" id="senderThana" autocomplete="off"
+										class="form-control name" list="senderThanaList" type="text"
+										th:placeholder="#{thana}">
+									<datalist id="senderThanaList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div>
+									<input name="senderAddress.subOffice" id="senderSubOffice" autocomplete="off"
+										class="form-control" list="sendersubOfficeList" type="text"
+										th:placeholder="#{suboffice}">
+									<datalist id="sendersubOfficeList">
+									</datalist>
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="senderAddress.addressLine1" id="senderaddress1" th:maxlength="30"
+										autocomplete="off" th:placeholder="#{address1}" class="form-control"
+										type="text">
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="senderAddress.addressLine2" id="senderaddress2" th:maxlength="30"
+										autocomplete="off" th:placeholder="#{address2}" class="form-control"
+										type="text">
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="senderAddress.landmark" autocomplete="off" th:placeholder="#{landmark}"
+										th:maxlength="30" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="senderName" autocomplete="off" id="senderName"
+										th:placeholder="#{sender.name}" th:maxlength="35" class="form-control"
+										type="text">
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div>
+									<input name="senderMobileNumber" id="senderMobileNumber" autocomplete="off"
+										th:maxlength="10" th:placeholder="#{mobile.rqd}" class="form-control"
+										type="text">
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- Sender's Page -->
+			</div>
+
+			<!-- Arrow Button -->
+			<div class="col-sm-12 text-center spacer-top-lg">
+				<button type="button" id="receiver_sender_continue" class="btn btn-primary btn-lg">
+					<span><i class="fa fa-arrow-down"></i></span>
+				</button>
+			</div>
+			<!-- Arrow Button -->
+
+
+			<!-- Parcel Page -->
+			<div id="parcel">
+				<div class="scrollSection" id="parcel-section">
+					<div class="container col-md-8 package-selection-section" id="packageSelection">
+						<div class="spacer-top-lg spacer-bottom-lg">
+							<div id="choose_package">
+								<div class="package-selection">
+									<div class="spacer-bottom-md">
+										<div class="col-xs-12 col-md-6">
+											<h1 class="header-section-title" th:text="#{choose.your.packaging}">Choose
+												Your
+												Packaging</h1>
+											<p class="instructions" th:text="#{select.a.packaging.type}">Select
+												a packaging type.</p>
+										</div>
+										<div class="col-xs-12 col-md-6">
+											<div class="row package-types-row">
+												<div class="col-xs-6 col-pbdevice-12 text-center" id="smb">
+													<input type="radio" name="parcelPackageType" checked
+														id="selectedToolbarItem-boxEnvelope" value="boxEnvelope">
+													<label for="selectedToolbarItem-boxEnvelope"
+														class="item-selector-button package-type-tab-btn">
+														<div class="title" th:text="#{my.box.or.envelope}">My
+															Box or Envelope</div>
+														<div class="divider"></div>
+														<div class="image boxEnv"></div>
+													</label>
+												</div>
+
+												<div class="col-xs-6 text-center" id="pmb" style="display: none">
+													<input type="radio" name="parcelPackageType"
+														id="selectedToolbarItem-priorityMailBoxes"
+														value="priorityMailBoxes"> <label
+														for="selectedToolbarItem-priorityMailBoxes"
+														class="item-selector-button package-type-tab-btn">
+														<div class="title" th:text="#{priority.mail.boxes}">Priority
+															Mail Boxes</div>
+														<div class="divider"></div>
+														<div class="image prior"></div>
+													</label>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="col-xs-12 spacer-top-md" id="smbc">
+											<div class="white-dropshadow-box">
+												<div class="custom-parcel-form">
+													<div class="row">
+														<div class="col-sm-12 col-md-4 text-center">
+															<div class="img-center-vertical">
+																<div class="img-responsive center-block">
+																	<div>
+																		<svg class="img-responsive" version="1.1"
+																			id="Layer_1"
+																			xmlns="http://www.w3.org/2000/svg"
+																			xmlns:xlink="http://www.w3.org/1999/xlink"
+																			width="350px" height="280px"
+																			viewBox="0 0 350 350">
+																			<g id="Layer_16" data-name="Layer 16">
+																			</g>
+																			<g id="large_b_solid_final"
+																				data-name="large b solid final">
+																				<polygon fill="#bf8e48"
+																					points="211.23 309.32 50.72 239.81 50.72 135.48 211.23 204.98 211.23 309.32">
+																				</polygon>
+																				<polygon fill="#d5b386"
+																					points="50.72 135.55 211.23 205.06 331.71 152.89 171.19 83.39 50.72 135.55">
+																				</polygon>
+																				<polygon fill="#caa067"
+																					points="331.7 152.89 211.24 205.06 211.24 309.39 331.7 257.22 331.7 152.89">
+																				</polygon>
+																				<polygon fill="#ede1d9" opacity="0.7"
+																					points="287.1 172.23 287.1 193.94 261.58 205.3 261.7 183.23 287.1 172.23">
+																				</polygon>
+																				<polygon fill="#fff0e2"
+																					points="128.87 101.74 287.05 172.19 261.65 183.19 102.91 112.96 128.87 101.74">
+																				</polygon>
+																				<polygon fill="#ede1d9" opacity="0.7"
+																					points="287.05 256.91 287.05 276.24 261.54 287.6 261.65 267.91 287.05 256.91">
+																				</polygon>
+																				<text font-size="18px"
+																					font-family="'HelveticaNeue', 'Helvetica Neue'"
+																					transform="translate(359.18 206.06)"
+																					fill="#717171">H</text>
+																				<text font-size="18px"
+																					font-family="'HelveticaNeue', 'Helvetica Neue'"
+																					transform="translate(290.61 304.35)"
+																					fill="#717171">W</text>
+																				<text font-size="18px"
+																					font-family="'HelveticaNeue', 'Helvetica Neue'"
+																					transform="translate(94.82 294.44)"
+																					fill="#717171"
+																					text-anchor="end">L</text>
+																				<line stroke="#9B9B9B"
+																					stroke-linecap="round"
+																					stroke-miterlimit="10" x1="347.88"
+																					y1="249.58" x2="347.88" y2="145.09">
+																				</line>
+																				<line stroke="#9B9B9B"
+																					stroke-linecap="round"
+																					stroke-miterlimit="10" x1="195.29"
+																					y1="315.42" x2="31.35" y2="244.3">
+																				</line>
+																				<line stroke="#9B9B9B"
+																					stroke-linecap="round"
+																					stroke-miterlimit="10" x1="226.11"
+																					y1="315.19" x2="347.09" y2="262.8">
+																				</line>
+																			</g>
+																		</svg>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														<div class="col-sm-12 col-md-8">
+															<div class="col-xs-6 col-md-6">
+																<h4 th:text="#{enter.packaging.details}">Enter
+																	Packaging Details</h4>
+															</div>
+															<div class="col-xs-2 col-md-2">
+																<img id="pthumbnail"
+																	class="rounded img-thumbnail cam" />
+															</div>
+															<div class="col-xs-4 col-md-4">
+																<button type="button" id="pic"
+																	class="btn-primary form-control">Take Photo</button>
+															</div>
+
+															<div class="col-xs-4 col-md-4">
+																<button type="button"
+																	class="btn btn-primary spacer-top-sm form-control"
+																	id="getWeight" data-toggle="tooltip"
+																	data-placement="bottom"
+																	th:title="#{get.wgt.toottip}">
+																	<span th:text="#{get.weight}"> Get Weight</span> <i
+																		class="pbfont pbfont-scale"></i>
+																</button>
+															</div>
+
+															<div class="col-xs-12 spacer-top-md">
+																<div id="PackagingDetailErrorContainer"
+																	class="errorForm">
+																	<ul></ul>
+																</div>
+
+																<div
+																	class="form-group form-inline parcel-dimension-inputs">
+																	<ul class="list-inline parcel-dimension-label">
+																		<li><label
+																				th:text="#{dimensions}">Dimensions</label>
+																		</li>
+																	</ul>
+
+																	<!--																	<div class="form-group input-mini">-->
+																	<!--																		<div class="input-group">-->
+																	<!--																			<input class="form-control" name="parcelLength"-->
+																	<!--																				   id="parcel-dimensions" placeholder="L"-->
+																	<!--																				   type="number"> <span-->
+																	<!--																				class="input-group-addon">cms</span>-->
+																	<!--																		</div>-->
+																	<!--																	</div>-->
+
+																	<div class="form-group input-mini">
+																		<div class="input-group">
+																			<input class="form-control"
+																				name="parcelLength"
+																				id="parcel-form-length" placeholder="L"
+																				type="number"> <span
+																				class="input-group-addon">cms</span>
+																		</div>
+																	</div>
+
+																	<div class="form-group fancy-x">X</div>
+
+																	<div class="form-group input-mini">
+																		<div class="input-group">
+																			<input class="form-control"
+																				name="parcelWidth"
+																				id="parcel-form-width" placeholder="W"
+																				type="number">
+																			<span class="input-group-addon">cms</span>
+																		</div>
+																	</div>
+
+																	<div class="form-group fancy-x">X</div>
+
+																	<div class="form-group input-mini">
+																		<div class="input-group">
+																			<input class="form-control"
+																				name="parcelHeight"
+																				id="parcel-form-height" placeholder="H"
+																				type="number"> <span
+																				class="input-group-addon">cms</span>
+																		</div>
+																	</div>
+
+																</div>
+															</div>
+
+															<div class="spacer-top-md"
+																style="display: inline-flex; align-items: center;">
+																<div class="col-xs-12 ">
+
+																	<div
+																		class="form-group weight-input-directive input-weight">
+
+																		<ul class="list-inline spacer-top-sm-pbdevice">
+																			<li>
+
+																				<div>
+																					<label th:text="#{dead.wght}"> Dead
+																						Weight
+																					</label>
+
+																					<div class="input-group">
+																						<input
+																							id="parcel-form-weight-ounces"
+																							name="parcelDeadWeight"
+																							class="form-control"
+																							type="text" /> <span
+																							class="input-group-addon">gms</span>
+																					</div>
+																				</div>
+
+																			</li>
+																			<li>
+																				<div>
+																					<label th:text="#{volumetric.wght}">
+																						Volumetric Weight </label>
+
+																					<div class="input-group">
+																						<input id="volumetricWeight"
+																							name="parcelVolumeWeight"
+																							class="form-control"
+																							type="text" readonly />
+																						<span
+																							class="input-group-addon">gms</span>
+																					</div>
+
+																				</div>
+																			</li>
+
+																			<li>
+																				<div>
+																					<label th:text="#{parcel.barcode}">
+																						Parcel
+																						Barcode </label>
+
+																					<div class="input-group">
+																						<input id="parcelBarcode"
+																							name="scanedBarcode"
+																							class="form-control"
+																							placeholder="Scan Here"
+																							type="text" />
+																					</div>
+
+
+																				</div>
+																			</li>
+
+																		</ul>
+																	</div>
+
+																</div>
+															</div>
+
+														</div>
+													</div>
+
+												</div>
+
+
+											</div>
+										</div>
+
+										<!--pmb-->
+										<div class="col-xs-12 spacer-top-md" id="pmbc">
+											<div class="white-dropshadow-box">
+
+												<div class="row package-listing">
+													<div class="package-tiles-container">
+
+														<div class="col-xs-6 package-tiles-column">
+
+															<div class="package-tile-wrapper">
+																<input type="checkbox">
+																<div class="package-tile">
+																	<div class="tile-content">
+																		<span class="package-name">Small Flat Rate
+																			Box</span>
+
+
+																		<div class="details">
+																			<div>
+																				<em><span>5.375" × 8.625" ×
+																						1.625"</span></em>
+																			</div>
+																			<div>
+																				<em><span>Weight up to</span> 70
+																					gms</em>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+
+															<div class="package-tile-wrapper">
+																<input type="checkbox" value="FRB">
+																<div class="package-tile">
+																	<div class="tile-content">
+																		<span class="package-name">Medium Flat Rate
+																			Box</span>
+
+
+																		<div class="details">
+																			<div>
+																				<em><span>Dimensions Vary</span></em>
+																			</div>
+																			<div>
+																				<em><span>Weight up to</span> 70
+																					gms</em>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+
+															<div class="package-tile-wrapper">
+																<input type="checkbox">
+																<div class="package-tile">
+																	<div class="tile-content">
+																		<span class="package-name">Large Flat Rate
+																			Box</span>
+
+																		<div class="details">
+																			<div>
+																				<em><span>12" × 12" × 5.5"</span></em>
+																			</div>
+																			<div>
+																				<em><span>Weight up to</span> 70
+																					gms</em>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+
+														</div>
+														<!---->
+														<div class="col-xs-6 package-tiles-column">
+															<!---->
+															<div class="package-tile-wrapper">
+																<input type="checkbox">
+																<div class="package-tile">
+																	<div class="tile-content">
+																		<span class="package-name">Regional Box A</span>
+
+																		<!---->
+																		<div class="details">
+																			<div>
+																				<em>
+																					<!---->
+																					<!----> <span>10" × 7" ×
+																						4.75"</span>
+																					<!---->
+																				</em>
+																			</div>
+																			<div>
+																				<em><span>Weight up to</span> 15
+																					gms</em>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!---->
+															<div class="package-tile-wrapper">
+																<input id="parcel-list-item-RBB" type="checkbox"
+																	value="RBB">
+																<div class="package-tile">
+																	<div class="tile-content">
+																		<span class="package-name">Regional Box B</span>
+																		<div class="details">
+																			<div>
+																				<em><span>12" × 10.25" × 5"</span></em>
+																			</div>
+																			<div>
+																				<em><span>Weight up to</span> 20
+																					gms</em>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!---->
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+										<!--/pmb-->
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Parcel Page -->
+				<!-- Print -->
+				<div class="col-md-4">
+					<div id="services" class="mail-services">
+						<div class="main-section spacer-top-lg spacer-top-none">
+							<div class="row">
+								<div class="col-md-12 col-xs-12">
+									<h1 class="header-section-title col-md-12" th:text="#{choose.your.service}">Choose
+										Your Service</h1>
+									<div id="ServiceErrorContainer" class="errorForm col-md-12">
+										<ul></ul>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+
+						<div class="col-xs-12 col-md-12">
+							<div class="table-wrapper under-max">
+								<div class="table-scroll">
+									<div class="row">
+
+										<div class="col-xs-6">
+											<label for="parcel_contains" th:text="#{parcel.declaration.value}">Parcel
+												Declaration Value(\u20B9)</label>
+											<div>
+												<input id="parcel_declaration" name="parcelDeclerationValue" type="text"
+													class="form-control" maxlength="7">
+											</div>
+										</div>
+
+										<div class="col-xs-6">
+											<label for="parcel_contains" th:text="#{parcel.contents.rqd}">Parcel
+												Contents</label>
+											<div>
+												<input id="parcel_contains" name="parcelContent" type="text"
+													class="form-control" maxlength="40">
+											</div>
+										</div>
+									</div>
+
+									<div class="spacer-top-md spacer-top-none">
+										<select class="form-control name" name="service" id="service">
+											<option th:each="postalService : ${postalServiceList}"
+												th:value="${postalService.id}" th:id="${postalService.id}"
+												th:text="${postalService.serviceName}"></option>
+										</select>
+									</div>
+									<div class="col-md-12 well info-tray border table-details collapse in checkbox-div">
+
+									</div>
+								</div>
+							</div>
+
+							<button type="button" id="SubmitParcelDetails"
+								class="btn btn-primary btn-lg center-block spacer-top-sm spacer-bottom-sm">
+								<span th:text="#{get.rate}">Get Rate</span>
+							</button>
+
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+			<div class="overlay">
+				<div id="loading-img"></div>
+			</div>
+		</div>
+		<!-- Modal -->
+
+		<div id="bdModalPrint" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="h3">
+							<label class="col-xs-8" th:text="#{verify.parcel.details}">Verify
+								Parcel Details</label> <label class="col-xs-4"><label
+									th:text="#{price}">Price</label>:<label class="labelModal"
+									th:text="#{taka}"></label><label class="labelModal" id="bdModalPrice">
+								</label></label>
+						</div>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true"></span><span class="sr-only">Close</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row" id="labelOptions">
+							<div name="labelPrint">
+								<!--Details-->
+								<div class="col-sm-12">
+									<div class="col-sm-6">
+										<div class="col-sm-6">
+											<h5 th:text="#{recipient.details}">Recipient's Details</h5>
+											<p id="bdModalRDetails"></p>
+										</div>
+
+										<div class="col-sm-6">
+											<h5 th:text="#{recipient.mobile}">Recipient Mobile</h5>
+											<p id="bdModalRMobile"></p>
+										</div>
+
+										<div class="col-sm-12">
+											<h5 th:text="#{recipient.address}">Recipient Address</h5>
+											<p id="bdModalRAddress"></p>
+										</div>
+
+									</div>
+
+									<div class="col-sm-6">
+
+										<div class="col-sm-6">
+											<h5 th:text="#{sender.details}">Sender's Details</h5>
+											<p id="bdModalSDetails"></p>
+										</div>
+
+										<div class="col-sm-6">
+											<h5 th:text="#{sender.mobile}">Sender's Mobile</h5>
+											<p id="bdModalSMobile"></p>
+										</div>
+
+										<div class="col-sm-12">
+											<h5 th:text="#{sender.address}">Sender Address</h5>
+											<p id="bdModalSAddress"></p>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="col-sm-12">
+									<hr />
+									<div class="col-sm-6">
+										<h5 th:text="#{cost.of.services}">Cost of Services</h5>
+										<table class="table taxtable" id="invoiceTable">
+											<thead>
+												<tr>
+													<th th:text="#{service.name}">Service Name</th>
+													<th th:text="#{price}">Price</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr id="bdModalGeneralRow">
+													<td><span id="bdModalGeneralLabel"></span>
+														<!--														<p class="tax" id="bdModalGeneralLabelTaxP"></p> <a-->
+														<!--															href="">T&C</a>-->
+													</td>
+													<td><label class="labelModal" th:text="#{taka}"></label>
+														<span id="bdModalGeneral"></span>
+														<!--														<p class="tax" id="bdModalGeneralLabelTaxC"></p>-->
+													</td>
+												</tr>
+												<!-- new field added for pickup charges -->
+												<!--												<tr>-->
+												<!--													<td th:text="#{pickup.charges}">Pickup Charges</td>-->
+												<!--													<td><label class="labelModal" th:text="#{taka}"></label>-->
+												<!--														<span id="bdModalPickupCharges"></span>-->
+												<!--													</td>-->
+												<!--												</tr>-->
+												<!--												<tr>-->
+												<!--													<td th:text="#{ins.charges}">INS Charges</td>-->
+												<!--													<td><label class="labelModal" th:text="#{taka}"></label>-->
+												<!--														<span id="bdModalInsCharges"></span>-->
+												<!--													</td>-->
+												<!--												</tr>-->
+												<!--												<tr>-->
+												<!--													<td th:text="#{cod.charges}">COD Charges</td>-->
+												<!--													<td><label class="labelModal" th:text="#{taka}"></label>-->
+												<!--														<span id="bdModalCodCharges"></span>-->
+												<!--													</td>-->
+												<!--												</tr>-->
+												<!--     till here                -->
+												<tr>
+													<td th:text="#{total.tax}">Total Tax</td>
+													<td><label class="labelModal" th:text="#{taka}"></label>
+														<span id="bdModalTotalTax"></span>
+													</td>
+												</tr>
+												<tr>
+													<td th:text="#{sub.total}">Sub Total</td>
+													<td><label class="labelModal" th:text="#{taka}"></label>
+														<span id="bdModalSubTotal"></span>
+													</td>
+												</tr>
+
+											</tbody>
+											<tfoot>
+												<tr>
+													<td th:text="#{payable.amount}">Payable Amount</td>
+													<td><label class="labelModal" th:text="#{taka}"></label><span
+															id="bdModalPayableAmnt"></span></td>
+												</tr>
+											</tfoot>
+										</table>
+
+									</div>
+
+									<div class="col-sm-6">
+
+										<h5 th:text="#{parcel.details}">Parcel Details</h5>
+
+										<div class="col-sm-12">
+
+											<div class="col-sm-6 parcelDetails">
+												<h5 class="display inline" th:text="#{declared.value}">
+													Declared Value <span> :</span>
+												</h5>
+											</div>
+
+											<div class="col-sm-6 parcelDetails">
+												<label class="labelModal" th:text="#{taka}"> </label> <span
+													id="bdModalDeclerationVal"></span>
+											</div>
+
+										</div>
+
+										<div class="col-sm-12">
+											<div class="col-sm-6 parcelDetails">
+												<h5 class="display inline" th:text="#{parcel.contains}">
+													Parcel Contains <span> :</span>
+												</h5>
+											</div>
+
+											<div class="col-sm-6 parcelDetails">
+												<span id="bdModalParcelContent"></span>
+											</div>
+										</div>
+
+										<div class="col-sm-12">
+											<div class="col-sm-6 parcelDetails">
+												<h5 class="display inline" th:text="#{parcel.image}">
+													Parcel Image <span> :</span>
+												</h5>
+											</div>
+
+											<div class="col-sm-6 parcelDetails">
+												<a href="#" class="parcelpic">Preview</a>
+											</div>
+										</div>
+
+										<div class="col-sm-12" id="noprinter">
+											<h4 class="text-center text-danger" th:text="#{no.printer}">No
+												printer available.</h4>
+										</div>
+
+										<!-- Parcel -->
+										<div class="col-sm-12" id="printername">
+											<div class="col-sm-6 parcelDetails">
+												<h5 class="display inline">
+													<span th:text="#{printer}"> Printer</span><span>:</span>
+												</h5>
+											</div>
+
+											<div class="col-sm-6 parcelDetails">
+												<span> <span class="defaultPrinter" th:text="${printer}"></span>
+												</span>
+											</div>
+
+										</div>
+										<!-- Get Parcel -->
+
+
+										<div class="col-sm-12 form-group mar-b-10" id="print-size">
+											<div class="col-sm-6">
+												<h5 th:text="#{select.print.size}">Select a Print Size</h5>
+											</div>
+											<div id="labelSize" class="col-sm-6">
+												<div class="dropdown">
+													<select class="form-control" name="printOption" id="printOption"
+														data-toggle="dropdown">
+														<option class="default" value="A6">A6 - 4 x 6</option>
+														<option value="A5">A5 - 8 x 6</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-12  text-left">
+											<div id="radiobtn" class="col-sm-12 form-group mar-b-10">
+												<h5 class="form-group mar-b-10" th:text="#{update.paybleAmount}">Do you
+													want to update
+													Payable Amount?</h5>
+
+												<div>
+													<input id="radioNo" type="radio" style='margin-left: 10px'
+														name="radioButtonValue" value="NO" checked th:text="#{no}">
+													<input id="radioYes" type="radio" style='margin-left: 80px'
+														name="radioButtonValue" value="YES" th:text="#{yes}">
+												</div>
+											</div>
+											<div>
+												<div class="col-sm-6" id="update-payable-amount">
+													<h5 th:text="#{payable.amount}">Payable Amount</h5>
+												</div>
+												<div class="col-sm-6">
+													<input name="updateAmount" id="updateAmountId" style="display: none"
+														class="form-control name" th:placeholder="#{payable.amount}"
+														type="text" data-toggle="tooltip" maxlength="7">
+													<h6 id="errorSpan" class="errorForm" th:text="#{enter.value}"></h6>
+													<div id="updateAmountError" class="errorForm">
+														<ul></ul>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-12">
+											<button type="button" id="print-btn"
+												class="btn btn-success btn-print btn-lg">
+												<i class="fa fa-print mar-r-10" aria-hidden="true"></i> <span
+													id="printxt" th:text="#{print}"> Print</span>
+											</button>
+											<ul id="parcelErrors" class="text-danger" style="display: none;">
+											</ul>
+										</div>
+									</div>
+
+								</div>
+
+								<!-- /Details -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<input type="text" id="parcel_image" name="parcelImageString" style="display: none;" />
+</form>
+
+<!--sync Modal -->
+<div id="syncModal" class="modal fade" data-backdrop="static" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="h3 col-xs-12 text-center">Please sync your
+					Database!!</span>
+			</div>
+			<div class="text-center">
+
+				<button id="syncButton1" type="button" class="btn btn-primary btn-block btn-lg spacer-top-md"
+					data-toggle="modal">Sync Database</button>
+
+			</div>
+			<div id="syncFail" class="text-center hide">
+				<h6 class="text-danger">Database not Synced successfully,
+					Please Try Again!!</h6>
+			</div>
+		</div>
+	</div>
+</div>
+<!--  Modal end -->
+
+<!-- sync success Modal -->
+<div id="syncSuccessModal" data-backdrop="static" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body text-center">
+				<h3 class="text-success" th:text="#{db.sync.success}">Database
+					Synced Successfully!!</h3>
+			</div>
+			<div class="text-center">
+				<span><button type="button" class="btn btn-primary" id="sync_ok_btn" data-dismiss="modal"
+						th:text="#{okay}">Okay</button></span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- sync success Modal -->
+
+<!-- ****Start Parcel Image Modal**** -->
+<div id="photoModal" class="modal fade" role="dialog" data-backdrop="static">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="h3 col-md-10">
+					<label>Parcel Photo</label>
+				</div>
+				<div class="col-md-2">
+					<button id=webcam_close type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span id=close aria-hidden="true"></span><span class="sr-only">Close</span>
+					</button>
+				</div>
+			</div>
+			<div class="modal-body">
+				<div id="my_camera"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- ****End Parcel Image Modal**** -->
+
+<script>
+
+	var vol_wgt_flag = 0; //flag to check if volumetric weight has been calculated or not
+	$(function () {
+		var token = $("input[name='_csrf']").val();
+		var header = "X-CSRF-TOKEN";
+		$(document).ajaxSend(function (e, xhr, options) {
+			xhr.setRequestHeader(header, token);
+		});
+	});
+
+	$(window).on('load', function () {
+		$("#errorSpan").hide();
+
+		if ($("#profile").text() != "clientonly") {
+			$.ajax({
+				type: "post",
+				url: "/client/checkClientRejectedOrExpired?ajax=true&",
+				cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+				success: function (result) {
+
+					if (result == "rejected" || result == "expired") {
+						window.location.href = "/commissionClient";
+					}
+					else if (result == "disabled" || result == "cookie_expired") {
+						window.location.href = "/logoutSuccessful";
+					}
+					/* else{
+							window.location.href = "/client/senderHome";
+						} */
+				},
+				error: function () {
+					//	window.location.href = "/client/senderHome";
+				},
+				complete: function (data) {
+					$(".overlay").hide();
+				}
+			});
+
+		}
+	});
+
+	$("input[name='radioButtonValue']").click(function () {
+
+		var selectedOption = $("input:radio[name='radioButtonValue']:checked").val();
+		if (selectedOption == "NO") {
+			$("#updateAmountId").hide();
+			$("#update-payable-amount").hide();
+			$("#errorSpan").hide();
+		}
+		else if (selectedOption == "YES") {
+			$("#updateAmountId").show();
+			$("#update-payable-amount").show();
+			$("#errorSpan").show();
+
+		}
+
+	});
+
+	$('#updateAmountId').on('keyup', function () {
+		if ($(this).val().length > 0) {
+			$("#errorSpan").hide();
+		}
+		else {
+			$("#updateAmountId").css('background', 'rgb(255, 204, 203)');
+			$("#errorSpan").show();
+
+		}
+	});
+
+	$(document).ready(function () {
+		$("#updateAmountId").hide();
+		$("#update-payable-amount").hide();
+
+		// Check if body height is higher than window height :)
+		if ($(document).height() > $(window).height()) {
+			$("#foot").addClass("footer-top-margin");
+		}
+
+		//Service and Subservices
+
+		var service = $("#service option:first").attr("id");
+		$.ajax({
+			type: "POST",
+			url: "/parcel/getSubService?ajax=true",
+			data: {
+				serviceId: service
+			},
+			success: function (result) {
+				$('.checkbox-div').empty();
+				$.each(result, function (index, subService) {
+					let row = "<div class='col-xs-12 spacer-top-xs'><div class='col-xs-12'><label class='control checkbox'><input id='glp' name='subServices' type='checkbox' value='" + subService.id + "' > <span class='control-indicator'></span><span>" + subService.serviceName + "</span></label></div></div>";
+
+					if (subService.exclusionPolicies != null) {
+						var data = "<div class='col-xs-12 text-danger control'>Flammables are not allowed</div>";
+
+					}
+
+					$('.checkbox-div').append(row);
+					$('.checkbox-div').append(data);
+
+				});
+				let x = document.querySelectorAll("#glp");
+				x.forEach(y => {
+					if (y.offsetParent.innerText == "Business Parcel") {
+						y.checked = true;
+						$(y).attr('onclick', 'return false');
+					}
+				})
+			}
+		});
+		$('#service').on('change', function () {
+			var service = $(this).children(":selected").attr("id");
+			$.ajax({
+				type: "post",
+				url: "/parcel/getSubService?ajax=true",
+				data: {
+					serviceId: service
+				},
+				success: function (result) {
+					$('.checkbox-div').empty();
+					$.each(result, function (index, subService) {
+						var row = "<div class='col-xs-12 spacer-top-xs'><div class='col-xs-12'><label class='control checkbox'><input id='glp' name='subServices' type='checkbox' value='" + subService.id + "' > <span class='control-indicator'></span><span>" + subService.serviceName + "</span></label></div></div>";
+						$('.checkbox-div').append(row);
+					});
+
+				}
+			});
+		});
+
+		$(".alert-success").hide();
+		$(".alert-danger").hide();
+
+		// Shipping Date Start
+		var n = new Date();
+		var y = n.getFullYear();
+		var m = n.getMonth() + 1;
+		var d = n.getDate();
+		if (d < 10) {
+			d = '0' + d;
+		}
+		if (m < 10) {
+			m = '0' + m;
+		}
+		$("#shipDate").html(d + '/' + m + '/' + y);
+		// Shipping Date End
+
+		/**** scroll button functionality ****/
+		$("#receiver_sender_continue").click(function () {
+			$('html,body').animate({ scrollTop: 999 }, 'slow');
+
+		});
+		/**** scroll button functionality ****/
+		getAddress();
+		/**** End of Block Dropdown functionality on District, Division, Suboffice, thana ****/
+
+		$('#pmbc').hide();
+
+		$("#pmb").click(function () {
+			$("#smbc").hide();
+			$("#pmbc").show();
+		});
+
+		$("#smb").click(function () {
+			$("#pmbc").hide();
+			$("#smbc").show();
+		});
+
+		/****** Start of validation on parcel ********/
+		$("#parcelForm")
+			.validate(
+				{
+					rules: {
+						"receiverAddress.postalCode": {
+							required: true,
+							minlength: 6,
+							maxlength: 6,
+							digits: true
+						},
+						"receiverAddress.zone": {
+							required: true,
+							address2: true
+						},
+						"receiverAddress.division": {
+							required: true,
+							address2: true
+						},
+						"receiverAddress.thana": {
+							required: true,
+							address2: true
+						},
+						"receiverAddress.district":
+						{
+							required: true,
+							address2: true
+						},
+						"receiverAddress.subOffice":
+						{
+							required: true,
+							Suboffice: true
+						},
+						"receiverAddress.addressLine1": {
+							required: true,
+							address1: true
+						},
+
+						"receiverAddress.addressLine2": {
+							address1: true
+						},
+
+						"receiverAddress.landmark": {
+							address1: true
+						},
+
+						"recipientName": {
+							required: true,
+							valid_name: true
+						},
+						"recipientMobileNumber": {
+							required: true,
+							mobiles: true,
+							minlength: 10,
+							maxlength: 10
+						},
+						"ecommerceReferenceNo": {
+							minlength: 10,
+							maxlength: 28,
+							ecommerceReferenceNo: true
+
+						},
+						"senderAddress.postalCode": {
+							required: true,
+							minlength: 6,
+							maxlength: 6,
+							digits: true
+						},
+						"senderAddress.zone": {
+							required: true,
+							address2: true
+						},
+						"senderAddress.division": {
+							required: true,
+							address2: true
+						},
+						"senderAddress.thana": {
+							required: true,
+							address2: true
+						},
+						"senderAddress.district": {
+							required: true,
+							address2: true
+						},
+						"senderAddress.subOffice": {
+							required: true,
+							Suboffice: true
+						},
+						"senderAddress.addressLine1": {
+							required: true,
+							address1: true
+						},
+						"senderAddress.addressLine2": {
+							address1: true
+						},
+						"senderAddress.landmark": {
+							address1: true
+						},
+						"senderName": {
+							required: true,
+							valid_name: true
+						},
+						"senderMobileNumber": {
+							required: true,
+							minlength: 10,
+							mobiles: true,
+							maxlength: 10
+						},
+						"parcelLength": {
+							positiveDecimalNumber: true,
+							required: true
+						},
+						"parcelWidth": {
+							positiveDecimalNumber: true,
+							required: true
+						},
+						"parcelHeight": {
+							positiveDecimalNumber: true,
+							required: true
+						},
+						"parcelVolumeWeight": {
+							required: true
+						},
+						"parcelDeadWeight": {
+							positiveDecimalNumber: true,
+							required: true
+						},
+						"parcelDeclerationValue": {
+							positiveDecimalNumber: true,
+							required: true
+						},
+						"updateAmount": {
+							positiveDecimalNumber: true,
+							// required : true
+						},
+						"parcelContent": {
+							required: true,
+							parcelContentValidation: true
+						}
+					},
+					errorPlacement: function (error,
+						element) {
+						if ((element.attr("name") == "receiverAddress.postalCode")
+							|| (element
+								.attr("name") == "receiverAddress.addressLine1")
+							|| (element
+								.attr("name") == "receiverAddress.addressLine2")
+							|| (element
+								.attr("name") == "receiverAddress.landmark")
+							|| (element
+								.attr("name") == "recipientName")
+							|| (element
+								.attr("name") == "recipientMobileNumber")
+							|| (element
+								.attr("name") == "ecommerceReferenceNo")
+							|| (element
+								.attr("name") == "receiverAddress.zone")
+							|| (element
+								.attr("name") == "receiverAddress.division")
+							|| (element
+								.attr("name") == "receiverAddress.thana")
+							|| (element
+								.attr("name") == "receiverAddress.district")
+							|| (element
+								.attr("name") == "receiverAddress.subOffice")) {
+							$("#ReceiverErrorContainer")
+								.html(error);
+							$("#ReceiverErrorContainer")
+								.show();
+						} else if ((element
+							.attr("name") == "senderAddress.postalCode")
+							|| (element
+								.attr("name") == "senderAddress.addressLine1")
+							|| (element
+								.attr("name") == "senderAddress.addressLine2")
+							|| (element
+								.attr("name") == "senderAddress.landmark")
+							|| (element
+								.attr("name") == "senderName")
+							|| (element
+								.attr("name") == "senderMobileNumber")
+							|| (element
+								.attr("name") == "senderAddress.zone")
+							|| (element
+								.attr("name") == "senderAddress.division")
+							|| (element
+								.attr("name") == "senderAddress.thana")
+							|| (element
+								.attr("name") == "senderAddress.district")
+							|| (element
+								.attr("name") == "senderAddress.subOffice")) {
+							$("#SenderErrorContainer")
+								.html(error);
+							$("#SenderErrorContainer")
+								.show();
+						} else if ((element
+							.attr("name") == "parcelLength")
+							|| (element
+								.attr("name") == "parcelWidth")
+							|| (element
+								.attr("name") == "parcelHeight")
+							|| (element
+								.attr("name") == "parcelVolumeWeight")
+							|| (element
+								.attr("name") == "parcelDeadWeight")) {
+							$(
+								"#PackagingDetailErrorContainer")
+								.html(error);
+							$(
+								"#PackagingDetailErrorContainer")
+								.show();
+						} else if ((element
+							.attr("name") == "parcelDeclerationValue")
+							|| (element
+								.attr("name") == "parcelContent")) {
+							$("#ServiceErrorContainer")
+								.html(error);
+							$("#ServiceErrorContainer")
+								.show();
+						}
+						else if ((element
+							.attr("name") == "updateAmount")) {
+							$("#updateAmountError")
+								.html(error);
+							$("#updateAmountError")
+								.show();
+						}
+
+						//displays a tooltip
+						element.attr('title', error
+							.text());
+						$(element).tooltip({
+							position: {
+								my: "left+5 center",
+								at: "right center"
+							},
+							trigger: "hover"
+						});
+					},
+					//highlight the error field with red
+					highlight: function (element, error) {
+						$(element).css('background',
+							'#FFCCCB');
+					},
+					// Called when the element is valid:
+					unhighlight: function (element) {
+						$(element).css('background',
+							'#ffffff');
+					}
+				});
+		/****** End of validation on parcel ********/
+	});
+
+
+	$("#SubmitParcelDetails").click(function () {
+		$("#updateAmountId").hide();
+		$("#update-payable-amount").hide();
+
+		if (($("#parcelForm").valid()) && (vol_wgt_flag == 1)) {
+			$("#requiredfields").hide();
+			$("#noprinter").hide();
+
+			var parcelDetailVO = $("#parcelForm").serialize();
+			console.log("parcelForm", parcelDetailVO);
+			$.ajax({
+				type: "post",
+				url: "/parcel/calculateRateForParcel?ajax=true&",
+				data: parcelDetailVO,
+				beforeSend: function () {
+					$(".overlay").show();
+					//window.scrollTo(0, 0);
+				},
+				success: function (result) {
+					$(".overlay").hide();
+					if (result.pStatus != null) {
+
+						$("#rateErrorMsg").html(result.pStatus);
+
+						$("#rateError").show();
+						window.scrollTo(0, 0);
+					}
+					else if (result.rateCalculation == null) {
+
+						$("#rateErrorMsg").html("Not able to connect with Rate API");
+
+						$("#rateError").show();
+						window.scrollTo(0, 0);
+					}
+					else {
+						$("#bdModalPrint").modal('show');
+						var hide = false;
+						//disable printer if in appication properties "enablePdfDownload" is false
+						if ($("#enablePdfDownload").text() == "false") {
+							if ($("#printer").text() == "") {
+								$("#print-btn").hide();
+								$("#print-size").hide();
+								$("#printername").hide();
+								$("#noprinter").show();
+								hide = true;
+							}
+						}
+
+						$("tr[id^='subService_']").remove();
+						$("#printxt").html("Print");
+
+						$("#bdModalRDetails").html(result.recipientName);
+						$("#bdModalRMobile").html(result.recipientMobileNumber.toString().padStart(10, '0'));
+						$("#bdModalRAddress").html(result.receiverAddress.addressLine1 + ", " + (result.receiverAddress.addressLine2 != "" ? result.receiverAddress.addressLine2 + ", " : "") +
+							(result.receiverAddress.landmark != "" ? result.receiverAddress.landmark + ", " : "") + result.receiverAddress.subOffice + ", " + result.receiverAddress.thana + ", " +
+							result.receiverAddress.district + ", " + result.receiverAddress.division + ", " + result.receiverAddress.zone + ", India, " + result.receiverAddress.postalCode);
+						$("#bdModalSDetails").html(result.senderName);
+						$("#bdModalSMobile").html(result.senderMobileNumber);
+						$("#bdModalSAddress").html(result.senderAddress.addressLine1 + ", " +
+							(result.senderAddress.addressLine2 != "" ? result.senderAddress.addressLine2 + "," : "") + (result.senderAddress.landmark != "" ? result.senderAddress.landmark + "," : "") +
+							result.senderAddress.subOffice + ", " + result.senderAddress.thana + ", " +
+							result.senderAddress.district + ", " + result.senderAddress.division + ", " +
+							result.senderAddress.zone + ", India, " + result.senderAddress.postalCode);
+						$("#bdModalDeclerationVal").html(result.parcelDeclerationValue);
+						$("#bdModalParcelContent").html(result.parcelContent);
+						$("#parcelErrors").html("");
+						var count = 0;
+						if (result.rateCalculation.operationStatus != "SUCCESS") {
+							if (result.rateCalculation.rateServiceCategory != null)
+								var errorList = "<li>" + result.rateCalculation.errorMsg + ": " + $("#service option[value=" + result.rateCalculation.rateServiceCategory.serviceId + "]").text() + "</li>"
+							else
+								var errorList = "<li>" + result.rateCalculation.errorMsg + "</li>"
+							$("#parcelErrors").append(errorList);
+							count = count + 1;
+						}
+
+						$.each(result.rateCalculation.subServicesRateCalculation, function (index, subService) {
+							if (subService.operationStatus != "SUCCESS") {
+								if (subService.rateServiceCategory != null)
+									var errorList = "<li>" + subService.errorMsg + ": " + $("input:checkbox[value=" + subService.rateServiceCategory.serviceId + "]").next().next().html() + "</li>"
+								else
+									var errorList = "<li>" + subService.errorMsg + "</li>"
+								$("#parcelErrors").append(errorList);
+								count = count + 1;
+							}
+						});
+						if ((count == 0) && (hide == true)) {
+							$("#parcelErrors").hide();
+						}
+						else if (count == 0) {
+							$("#print-btn").show();
+							$("#parcelErrors").hide();
+						}
+						else {
+							$("#print-btn").hide();
+							$("#parcelErrors").show();
+						}
+
+						if (result.invoiceBreakup != null) {
+							$("#bdModalGeneral").html(result.invoiceBreakup.price);
+							// <!--							if (result.invoiceBreakup.taxPercent != null)-->
+							// <!--								$("#bdModalGeneralLabelTaxP").html("Tax @ " + result.invoiceBreakup.taxPercent);-->
+							// <!--							else-->
+							// <!--								$("#bdModalGeneralLabelTaxP").html("No Tax Applicable");-->
+							$("#bdModalTotalTax").html(result.invoiceBreakup.totalTax);
+							// <!--						    $("#bdModalPickupCharges").html(result.invoiceBreakup.pickupCharges)-->
+							// <!--							$("#bdModalInsCharges").html(result.invoiceBreakup.insCharges)-->
+							// <!--                            $("#bdModalCodCharges").html(result.invoiceBreakup.codCharges)-->
+							$("#bdModalSubTotal").html(result.invoiceBreakup.subTotal);
+							$("#bdModalPayableAmnt").html(result.invoiceBreakup.payableAmnt);
+							$("#bdModalPrice").html(result.invoiceBreakup.payableAmnt);
+							$("#bdModalGeneralLabel").html(result.invoiceBreakup.name);
+							$("#bdModalGeneralLabelTaxC").html("&#x20B9; " + result.invoiceBreakup.totalTax);
+							if (result.invoiceBreakup.subInvoices != null && result.invoiceBreakup.subInvoices.length > 0) {
+								$.each(result.invoiceBreakup.subInvoices, function (index, subService) {
+									if (result.invoiceBreakup.subInvoices[index] != null) {
+										// $("#subService" + index).remove();
+										var subTax;
+										if (subService.taxPercent != null) {
+											subTax = " <p class='tax'>Tax @ " + subService.taxPercent + "</p>";
+										}
+										else
+											subTax = " <p class='tax'>No Tax Applicable</p>";
+										var row = "<tr id='subService_" + index + "'><td>" + subService.name + subTax + "</td>"
+											+ "<td>&#x20B9; <span>" + subService.price + "</span>" + "<p class='tax'>&#x20B9; " + subService.totalTax + "</p></td> </tr>";
+										$("#bdModalGeneralRow").last().after(row);
+									}
+								});
+							}
+						}
+
+					}
+
+				},
+				error: function (xhr, textStatus, errorThrown) {
+					var err = JSON.parse(xhr.responseText);
+					if (err.message == "401 ")
+						$("#rateErrorMsg").html("Unauthorized Access");
+					else
+						$("#rateErrorMsg").html("Not able to connect with Rate API");
+					$("#rateError").show();
+					window.scrollTo(0, 0);
+				},
+				complete: function (data) {
+					$(".overlay").hide();
+				}
+			});
+		}
+		else {
+			window.scrollTo(0, 0);
+			$("#requiredfields").show();
+		}
+
+	});
+
+	$('#bdModalPrint').on('hidden.bs.modal', function () {
+		$(this).find("span,p").html('').end();
+
+	});
+
+	$("#signout").click(function () {
+		location.href = "/logoutSuccessful";
+	});
+
+	$("#getWeight").click(function () {
+		$.ajax({
+			type: "GET",
+			url: "/parcel/weight",
+
+			success: function (result) {
+				$("#parcel-form-weight-ounces").val(result);
+				calculateVolumetricWeight()
+			},
+			error: function (xhr, textStatus, errorThrown) {
+				if (xhr.responseJSON.message == ("unable to connect PB printer"))
+					alert("Pb printer not connected")
+			}
+		})
+	});
+
+
+	$("#print-btn").click(function () {
+
+		var selectedOption = $("input:radio[name='radioButtonValue']:checked").val();
+		if (selectedOption == "YES" && $("#updateAmountId").val().length == 0) {
+			console.log("empty");
+			//$("#errorSpan").html("please enter value");
+			$("#updateAmountId").css('background', 'rgb(255, 204, 203)');
+			$("#errorSpan").show();
+
+		} else {
+
+
+			var parcelDetailVO = $("#parcelForm").serialize();
+			var paperSize = $('#printOption').val();
+
+			var radioButtonValue = $("input:radio[name='radioButtonValue']:checked").val();
+			var updateAmount = $('#updateAmountId').val();
+			var jsonObj = { "radioButtonValue": radioButtonValue, "updateAmount": updateAmount, "paperSize": paperSize };
+
+			$.ajax({
+				type: "POST",
+				url: "/parcel/saveDetails",
+				dataType: "json",
+				cache: false,
+				contentType: "application/json",
+				dataType: "json",
+				data: JSON.stringify(jsonObj),
+
+				beforeSend: function () {
+					$(".overlay").show();
+					window.scrollTo(0, 0);
+					$("#bdModalPrint").modal('hide');
+				},
+				success: function (result) {
+					console.log("6fffff" + result);
+					if (result != null) {
+						$("#parcelCount_home").html(result[0]);
+						$("#paymentCollected").html(result[1]);
+						$("#avalBalance").html(result[2]);
+						$("#totalBalance").html(result[3]);
+						$("#parcelForm").trigger("reset");
+						$(".alert-success").show();
+
+						var service = $("#service").children(":selected").attr("id");
+						console.log("service", service);
+						$.ajax({
+							type: "post",
+							url: "/parcel/getSubService?ajax=true",
+							data: {
+								serviceId: service
+							},
+							success: function (result) {
+								console.log("pppppp" + result);
+								$('.checkbox-div').empty();
+								$.each(result, function (index, subService) {
+									var row = "<div class='col-xs-12 spacer-top-xs'><div class='col-xs-12'><label class='control checkbox'><input id='glp' name='subServices' type='checkbox' value='" + subService.id + "' > <span class='control-indicator'></span><span>" + subService.serviceName + "</span></label></div></div>";
+									$('.checkbox-div').append(row);
+								});
+								//location.reload();
+
+
+							}
+						});
+
+					}
+					location.reload();
+
+				},
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					$(".overlay").hide();
+					$("#someerror").show();
+				},
+				complete: function (data) {
+					$(".overlay").hide();
+				}
+			});
+		}
+	});
+
+
+	var lastBarcode = '';
+	$('#parcelBarcode').focusout(function () {
+		if ($('#parcelBarcode').val() == '')
+			$('#parcelBarcode').val(lastBarcode);
+	});
+
+	$('#parcelBarcode').on('click', function () {
+		if ($('#parcelBarcode').val() != '')
+			lastBarcode = $('#parcelBarcode').val();
+
+		$('#parcelBarcode').val('');
+	});
+
+	$('#parcelBarcode').on('change', function () {
+
+		var barcode = $('#parcelBarcode').val();
+		var data = barcode.split(',');
+		if (data.length > 1) {
+			$('#parcel-form-length').val(data[0]);
+			$('#parcel-form-width').val(data[1]);
+			$('#parcel-form-height').val(data[2]);
+			$('#parcel-form-weight-ounces').val(data[3]);
+			$('#parcelBarcode').val(data[5]);
+			//calculateVolumetricWeight();
+		} else {
+			$('#parcelBarcode').val($('#parcelBarcode').val());
+		}
+	});
+
+	$("#parcel-form-weight-ounces").on('change', function () {
+		$("#parcel-form-weight-ounces").val(parseFloat($("#parcel-form-weight-ounces").val()) * 1000);
+		calculateVolumetricWeight();
+		console.log("inside calculating weight after on change of dead weight input box ");
+
+	});
+
+	var lastLength = '';
+	$('#parcel-form-length').focusout(function () {
+		if ($('#parcel-form-length').val() == '')
+			$('#parcel-form-length').val(lastLength);
+	});
+
+	$('#parcel-form-length').on('click', function () {
+		if ($('#parcel-form-length').val() != '')
+			lastLength = $('#parcel-form-length').val();
+
+		$('#parcel-form-length').val('');
+	});
+
+	/* //Get Weight Random Value */
+
+	function calculateVolumetricWeight() {
+		var length = parseInt(0);
+		var width = parseInt(0);
+		var height = parseInt(0);
+		var dead_weight = parseInt(0);
+
+		if ($('#parcel-form-length').val() != "") {
+			length = $('#parcel-form-length').val();
+		}
+
+		if ($('#parcel-form-width').val() != "") {
+			width = $('#parcel-form-width').val();
+		}
+		if ($('#parcel-form-height').val() != "") {
+			height = $('#parcel-form-height').val();
+		}
+		if ($("#parcel-form-weight-ounces").val() != "") {
+			dead_weight = $("#parcel-form-weight-ounces").val();
+		}
+
+		$.ajax({
+			type: "get",
+			url: "/parcel/calculateVolumetricWeght?ajax=true",
+			data: {
+				length: length,
+				width: width,
+				height: height,
+				dead_weight: dead_weight
+			},
+			success: function (result) {
+				vol_wgt_flag = 1;
+				console.log("setting volumetricweight   " + result);
+				$('#volumetricWeight').val(result);
+				console.log("volumeWeight set in input box");
+			},
+			error: function () {
+				vol_wgt_flag = 0;
+				$("#rateErrorMsg").html("Some error has occured. Could not calculate volumetric weight");
+				$("#rateError").show();
+				window.scrollTo(0, 0);
+			}
+		});
+	}
+
+	$(window).on('load', function () {
+		if ($("#profile").text() != "clientonly") {
+			$.ajax({
+				type: "POST",
+				url: "/client/getLastUpdateTime?ajax=true&",
+				cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+
+				success: function (result) {
+					if (result == "sync required") {
+						$("#syncModal").modal('show');
+					}
+					else if (result == "sync not required") {
+						//$("#syncModal").modal('show');
+					}
+				},
+
+				complete: function (data) {
+					$(".overlay").hide();
+				}
+			});
+		}
+	});
+
+	$("#syncButton1").click(function () {
+		if ($("#profile").text() != "clientonly") {
+			$.ajax({
+				type: "POST",
+				url: "/client/sync?ajax=true&",
+				cache: false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+				beforeSend: function () {
+					$(".overlay").show();
+					//window.scrollTo(0, 0);
+				},
+				success: function (result) {
+					if (result == "success") {
+						$("#syncModal").modal('hide');
+						$("#syncSuccessModal").modal('show');
+					}
+					else if (result == "failure") {
+						$('#syncFail').removeClass('hide');
+					}
+				},
+				error: function () {
+					$('#syncFail').removeClass('hide');
+				},
+				complete: function (data) {
+					$(".overlay").hide();
+				}
+			});
+		}
+	});
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	$("#pic").click(function () {
+
+		var g = $("#photoModal").modal('show');
+		Webcam.set({
+			width: 500,
+			height: 375,
+			dest_width: 500,
+			dest_height: 375,
+			image_format: 'jpeg',
+			jpeg_quality: 90
+		});
+		Webcam.attach('#my_camera');
+
+		Webcam.on('live', function () {
+			Webcam.snap(function (data_uri) {
+				document.getElementById('my_camera').innerHTML =
+					'<img src="' + data_uri + '"/>';
+				$('#pthumbnail').attr("src", data_uri);
+				$("#parcel_image").val(data_uri);
+			});
+
+		});
+	});
+	$("#webcam_close").click(function () {
+		var o = Webcam.reset();
+
+	});
+
+	$("#pthumbnail").on('click', function () {
+		$("#photoModal").modal('show');
+
+		var pic = $("#parcel_image").val();
+
+		document.getElementById('my_camera').innerHTML =
+			'<img src="' + pic + '"/>';
+
+	});
+	$(".parcelpic").on('click', function () {
+		$("#photoModal").modal('show');
+
+		var pic = $("#parcel_image").val();
+
+		document.getElementById('my_camera').innerHTML =
+			'<img src="' + pic + '"/>';
+
+	});
+
+
+</script>
+
+<!-- footer -->
+<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

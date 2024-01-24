@@ -1,0 +1,104 @@
+server-api : 82
+server-application: 81
+rate api = 8080
+client api 84
+
+
+Client ID: 63111663753082
+Client Token: 921a2f1d-6b40-4921-ad6d-9504d689bb07
+
+
+Modifications--------------
+-----address----
+
+* Sender's address details will be fixed as mapped with user
+
+* current address fields (country*,zone*,division*,district*,thana*,sub-office*,pin-code*)
+    proposed new (country*,state/ut*,district*,sub-district*,thana*,sub-office*,pin-code*)
+
+* field validations to be updated as per indian demography
+
+----packaging section-----
+
+*    choose your packaging section will be same 
+
+----choose your service-----
+
+* parcel declaration value will remain same
+
+* parcel content value will remain same
+
+* service and service-categories names
+    https://www.indiapost.gov.in/MBE/Pages/Content/Business-Parcel-New.aspx 
+    only business parcel is available for service category and service name 
+    transit norms are available
+
+    issues----
+    #  tariffes are not defined on the basis of demographic database
+    #  demographic database is also not available
+    #  what about COD, insurance, to pay etc.
+    #  what about document post
+    #  is there any india post api through which we can calculate rate? if yes, can we use that?
+    #  front desk user needs to sync(day end) to push all parcel data to the server, then only parcel can be marked out from the business location from server application.
+            -- On which event balance shoud be deducted?
+
+
+Logo needs to be changed with india post logo as shown below-
+
+Bangladesh post will be replaced by india post
+
+currency symbol needs to be configurable
+
+no change in menu and footer
+
+similar changes needs to be done in amount calculation
+
+
+-------Verify parcel details pop-up------
+
+* what about taxes
+
+* configurable currency symbol
+
+* no other changes
+
+-----printable label-------------
+
+* logo to india post
+
+* configurable currency symbol
+
+* Bangladesh postage -> Indian Postage
+
+* Amount to be removed from label header
+
+* license number of user needs to be printed on the table, location to be discussed
+
+* category code -> ??
+
+* label code -> ??
+
+* Tracking number -> AWB series (numeric or alphanumeric, fixed-length??)
+
+
+flow for wallet, transactions and void parcel
+user license mapping
+user address mapping
+download rate card, hardcoded pdf can be displayed or business post url can be mapped.
+
+---
+
+Bagging process 
+scanning process
+Rebagging process
+dispatch process
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+
+label code and tracking id generation process
+demographic mapping
+walkover from shikhar sir
+account lock logic

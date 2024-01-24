@@ -1,0 +1,1445 @@
+<!-- header -->
+	<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="container fixed-header container-sm-footer">
+	<div class="site-wrapper market-US">
+
+	<!-- Recent transactions table-->
+		<div class="col-md-12">
+			<div id="noDataAll">
+				<h2 class="text-center">	<span th:text="#{no.clients.available}"> No	Clients Available </span><span>!!!</span>
+				</h2>
+			</div>
+			<div id="noDataPending">
+				<h2 class="text-center">	<span th:text="#{no.pending.requests.available}"> No Pending Requests Available </span><span>!!!</span>
+				</h2>
+			</div>
+			<div id="noDataApproved">
+				<h2 class="text-center">	<span th:text="#{no.client.approved}"> No Client Has Been Approved Yet.</span><span>!!!</span>
+				</h2>
+			</div>
+			<div id="noDataCommission">
+				<h2 class="text-center">	<span th:text="#{no.client.commission}"> No Client Has Been Commissioned Yet.</span><span>!!!</span>
+				</h2>
+			</div>
+			<div id="norejected">
+				<h2 class="text-center">	<span th:text="#{no.rejected.client}"> No Rejected Client</span><span>!!!</span>
+				</h2>
+			</div>
+			<div id="noexpired">
+				<h2 class="text-center">	<span th:text="#{no.expired.client}"> No Expired Client</span><span>!!!</span>
+				</h2>
+			</div>
+
+			<div id="all_clients">
+				<h1 class="text-center" th:text="#{registered.clients}">Registered Clients</h1>
+			</div>
+			<div id="pending_requests">
+				<h1 class="text-center" th:text="#{pending.requests}">Pending Requests</h1>
+			</div>
+			<div id="approved_requests">
+				<h1 class="text-center" th:text="#{approved.requests}">Approved Requests</h1>
+			</div>
+			<div id="non_commissioned">
+				<h1 class="text-center" th:text="#{non.commissioned.requests}">Non Commissioned Requests</h1>
+			</div>
+			<div id="rejected">
+				<h1 class="text-center" th:text="#{rejected.clients}">Rejected Clients</h1>
+			</div>
+			<div id="expired">
+				<h1 class="text-center" th:text="#{expired.clients}">Expired Clients</h1>
+			</div>
+
+			<div id="searchContainer" class="col-md-3 col-sm-offset-9 padding-right">
+       			<input type="text" id="searchbox" class="form-control"  placeholder="search">
+   			</div>
+
+				<table id="clientTable" class="text-center table">
+					<thead>
+						<tr>
+							<th class=" text-center" th:text="#{s.no}">S.No.</th>
+							<th class=" text-center" th:text="#{counter.name}">Counter Name</th>
+							<th class=" text-center" th:text="#{client.id}">Client Id</th>
+							<th class="text-center" th:text="#{suboffice1}">Sub Office</th>
+							<th class=" text-center" th:text="#{thana1}">Thana</th>
+							<th class=" text-center" th:text="#{district1}">District</th>
+							<th class=" text-center" th:text="#{status}">Status</th>
+							<th class=" text-center" th:text="#{remarks}">Remarks</th>
+							<th class=" text-center"><span th:text="#{action}">Action</span></th>
+						    <th class=" text-center"><span th:text="#{deactivate}">Deactivate</span></th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+						<!-- <tr th:each="client : ${clients}">
+							<td></td>
+							<td th:text="${client.clientName}"></td>
+							<td th:text="${client.clientId}"></td>
+							<td th:text="${client.clientStatus}"></td>
+							<td th:text="${client.remarks}"></td>
+							<td><a th:if="${client.clientStatus} == 'unauthorized'" href="#">Approval Required</a>
+								<a th:if="${client.clientStatus} == 'approval required'" href="#">Deactivate</a></td>
+							<td>
+         						<span th:if="${client.status}=='ACTIVE'" data-toggle="tooltip" data-placement="bottom" th:title="#{cancel.client}"><a class="delete_icon" href="#"><i class="fa fa-times"  aria-hidden="true"></i></a></span>
+      	 						<span th:if="${client.status}=='DISABLED'"><i class="fa fa-times" aria-hidden="true"></i></span>
+        					</td>
+						</tr> -->
+					</tbody>
+				</table>
+
+				<table id="clientTable2" class="text-center table">
+					<thead>
+						<tr>
+							<th class=" text-center" th:text="#{s.no}">S.No.</th>
+							<th class=" text-center" th:text="#{counter.name}">Counter Name</th>
+							<th class=" text-center" th:text="#{client.id}">Client Id</th>
+							<th class="text-center" th:text="#{suboffice1}">Sub Office</th>
+							<th class=" text-center" th:text="#{thana1}">Thana</th>
+							<th class=" text-center" th:text="#{district1}">District</th>
+							<th class=" text-center" th:text="#{status}">Status</th>
+							<th class=" text-center" th:text="#{remarks}">Remarks</th>
+						    <th class=" text-center"><span th:text="#{deactivate}">Deactivate</span></th>
+						</tr>
+					</thead>
+					<tbody id="tbody2">
+					</tbody>
+				</table>
+
+				<table id="clientTable3" class="text-center table">
+					<thead>
+						<tr>
+							<th class=" text-center" th:text="#{s.no}">S.No.</th>
+							<th class=" text-center" th:text="#{counter.name}">Counter Name</th>
+							<th class=" text-center" th:text="#{client.id}">Client Id</th>
+							<th class="text-center" th:text="#{suboffice1}">Sub Office</th>
+							<th class=" text-center" th:text="#{thana1}">Thana</th>
+							<th class=" text-center" th:text="#{district1}">District</th>
+							<th class=" text-center" th:text="#{status}">Status</th>
+							<th class=" text-center" th:text="#{remarks}">Remarks</th>
+						</tr>
+					</thead>
+					<tbody id="tbody3">
+					</tbody>
+				</table>
+
+		</div>
+		<!-- Recent transactions table end-->
+	</div>
+</div>
+
+<!-- End Container -->
+
+<div class="overlay">
+				<div id="loading-img"></div>
+			</div>
+<!-- Approve Modal -->
+
+<div id="approveModal" class="modal fade" data-backdrop="static" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header text-center">
+				<h3 th:text="#{sure.approve.client}">Are You Sure, You Want To Approve client?</h3>
+
+			</div>
+
+			<div class="label-options" id="reason">
+					<form name='approveForm' id="approveForm">
+						<div class="form-group">
+							<label th:text="#{enter.remarks}">Enter Remarks</label>
+							<input id="input_remarks" name="input_remarks" type="text" class="form-control">
+							<div id="approveErrorContainer" class="errorForm">
+                               <ul></ul>
+                            </div>
+						</div>
+						<div class="text-center">
+						<button id="cancel" type="button" class="btn btn-primary spacer-top-md"  th:text="#{cancel}">Cancel</button>
+						<button id="approve" type="button" class="btn btn-primary spacer-top-md"  th:text="#{approve}">Approve</button>
+						</div>
+					</form>
+				</div>
+			</div>
+	</div>
+</div>
+
+<!--//Approve Modal-->
+
+<!-- Reject Modal -->
+
+<div id="rejectModal" class="modal fade" data-backdrop="static" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header text-center">
+				<h3 th:text="#{sure.reject.client}">Are You Sure, You Want To Reject client?</h3>
+			</div>
+
+			<div class="label-options">
+					<form id='rejectForm'>
+						<div class="form-group">
+							<label th:text="#{enter.remarks.rqd}">Enter Remarks*</label>
+							<input id="input_reject_remarks" name="input_reject_remarks" type="text" class="form-control">
+							<div id="rejectErrorContainer" class="errorForm">
+                               <ul></ul>
+                            </div>
+						</div>
+						<div class="text-center">
+						<button id="cancel-btn" type="button" class="btn btn-primary spacer-top-md"  th:text="#{cancel}">Cancel</button>
+						<button id="reject" type="button" class="btn btn-primary spacer-top-md"  th:text="#{reject}">Reject</button>
+						</div>
+					</form>
+				</div>
+			</div>
+	</div>
+</div>
+
+<!--//Reject Modal-->
+
+<!-- Deactivate Modal -->
+<div id="confirm-modal" class="modal fade" data-backdrop="static"
+	role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content modal-body">
+			<div class="modal-header" id="deactive">
+				<span class="col-xs-12 text-center">
+				<span
+					th:text="#{confirm.deactivate.client}" class="h3">Do You Want To Deactivate
+						This Client</span><span class="h3">?</span>
+			</div>
+
+			<div class="label-options">
+					<form id='expireForm'>
+					<div>
+						<span
+					th:text="#{confirm.deactivate.client.warning}" class="errorForm">IMPORTANT: Please ensure all the data has been synced with server from client machine. All the data will be deleted once the client is deactivated.</span><span class="errorForm">*</span>
+						</span>
+					</div>
+						<div class="form-group spacer-top-sm">
+							<label th:text="#{enter.remarks.rqd}">Enter Remarks*</label>
+							<input id="input_expire_remarks" name="input_expire_remarks" type="text" class="form-control">
+							<div id="expireErrorContainer" class="errorForm">
+                               <ul></ul>
+                            </div>
+						</div>
+						<div class="col-sm-12 text-center">
+							<span><button type="button" class="btn btn-primary"
+							id="noButton" data-dismiss="modal" th:text="#{no}">No</button></span>
+							<span><button type="button" class="btn btn-primary"
+							data-toggle="modal" data-target="#success"
+							id="yesButton" th:text="#{yes}">Yes</button></span>
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
+</div>
+<!-- //Deactivate Modal -->
+
+<!-- Success Deactivate Modal -->
+<div id="success_deactivate" class="modal fade" data-backdrop="static" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-body">
+				<h3 class="text-success text-center">
+					<span th:text="#{success.deactivate}">Client Has Been Deactivated</span><span>!!!</span>
+				</h3>
+			</div>
+			<div class="text-center">
+				<button type="button" data-dismiss="modal"
+					class="btn btn-primary btn-md" id="success_okay_btn_deactivate"
+					th:text="#{okay}">Okay</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End -->
+
+<!-- Success reject Modal -->
+<div id="success_reject" class="modal fade" data-backdrop="static" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-body">
+				<h3 class="text-success text-center">
+					<span th:text="#{success.reject}">The Client Has Been Rejected Successfully</span><span>!!!</span>
+				</h3>
+			</div>
+			<div class="text-center">
+				<button type="button" data-dismiss="modal"
+					class="btn btn-primary btn-md" id="success_okay_btn_reject"
+					th:text="#{okay}">Okay</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- End -->
+
+<!-- Success approve Modal -->
+<div id="success_approve" class="modal fade" data-backdrop="static" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-body">
+				<h3 class="text-success text-center">
+					<span th:text="#{success.approve}">The Client Has Been Approved Successfully</span><span>!!!</span>
+				</h3>
+			</div>
+			<div class="text-center">
+				<button type="button" data-dismiss="modal"
+					class="btn btn-primary btn-md" id="success_okay_btn_approve"
+					th:text="#{okay}">Okay</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- End -->
+
+<!-- Client details Modal -->
+<div id="detailsModal" class="modal fade" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header text-center">
+				<h3 th:text="#{client.details}"> Client Details</h3>
+				<button id="close_success" type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+			</div>
+
+				<div class="label-options" id="displayDetails">
+					<form name="displayAllDetailsForm" id="displayAllDetailsForm">
+						<div class="form-group">
+							<b id="clientId" name="clientId" th:text="#{client.id}">Client ID</b><span>:</span>
+								<span id="clientIdModal"></span>
+						</div>
+
+						<div class="form-group">
+							<b id="clientToken" name="clientToken" th:text="#{client.token}">Client Token</b><span>:</span>
+								<span id="clientTokenModal"></span>
+						</div>
+					</form>
+				</div>
+			</div>
+	</div>
+</div>
+<!-- Client details Modal end -->
+
+<!-- Client all details Modal -->
+<div id="allDetailsModal" class="modal fade" role="dialog" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header text-center">
+				<h3 th:text="#{client.details}"> Client Details</h3>
+				<button id="close_success" type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only" th:text="#{close}">Close</span>
+				</button>
+			</div>
+				<div class="modal-body">
+				<div class="label-options" id="displayDetails">
+					<form name="displayDetailsForm" id="displayDetailsForm">
+						<div class="form-group">
+							<b id="clientId" name="clientId" th:text="#{client.id}">Client ID</b><span>:</span>
+								<span id="clientIdAllModal"></span>
+						</div>
+
+						<div class="form-group">
+							<b id="clientToken" name="clientToken" th:text="#{client.token}">Client Token</b><span>:</span>
+								<span id="clientTokenAllModal"></span>
+						</div>
+
+						<div class="form-group">
+							<b id="counterName" name="counterName" th:text="#{counter.name}">Counter Name</b><span>:</span>
+								<span id="counterNameAllModal"></span>
+						</div>
+
+						<div class="form-group col-md-6">
+							<b id="postalCode" name="postalCode" th:text="#{postal.code1}">Postal Code</b><span>:</span>
+								<span id="postalCodeAllModal"></span>
+						</div>
+
+						<div class="form-group col-md-6">
+							<b id="zone" name="zone" th:text="#{zone1}">Zone</b><span>:</span>
+								<span id="zoneAllModal"></span>
+						</div>
+
+						<div class="form-group col-md-6">
+							<b id="division" name="division" th:text="#{division1}">Division</b><span>:</span>
+								<span id="divisionAllModal"></span>
+						</div>
+
+						<div class="form-group col-md-6">
+							<b id="district" name="district" th:text="#{district1}">District</b><span>:</span>
+								<span id="districtAllModal"></span>
+						</div>
+
+						<div class="form-group col-md-6">
+							<b id="thana" name="thana" th:text="#{thana1}">Thana</b><span>:</span>
+								<span id="thanaAllModal"></span>
+						</div>
+
+						<div class="form-group col-md-6">
+							<b id="subOffice" name="subOffice" th:text="#{suboffice1}">Sub Office</b><span>:</span>
+								<span id="subOfficeAllModal"></span>
+						</div>
+						<div class="col-sm-12 spacer-top-sm text-center">
+							<div id="approve_reject_btn">
+							<div class="col-sm-6">
+								<button type="button" id="approve-btn"
+									class="btn btn-primary btn-md" data-toggle="modal"
+									data-target="#approveModal">
+									<span th:text="#{approve}"> Approve</span>
+								</button>
+							</div>
+							<div class="col-sm-6">
+								<button type="button" id="reject-btn-1"
+									class="btn btn-primary btn-md" data-toggle="modal">
+									<span th:text="#{reject}"> Reject</span>
+								</button>
+							</div>
+							</div>
+							<div class="col-sm-12 text-center">
+							<button type="button" id="deactivate-btn"
+									class="btn btn-primary btn-md" data-toggle="modal">
+									<span th:text="#{deactivate.client}"> Deactivate Client</span>
+							</button>
+							</div>
+							<div class="col-sm-12 text-center">
+								<button type="button" id="reject-btn"
+									class="btn btn-primary btn-md" data-toggle="modal">
+									<span th:text="#{reject}"> Reject</span>
+								</button>
+							</div>
+						   </div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--client all details Modal end -->
+<!-- Error Modal -->
+    <div id="errorModal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="h3 col-xs-12 text-center" th:text="#{sorry.some.error.occurred}">Sorry!! Some error occurred</span>
+                    <button type="button" id="closeButton" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+                </div>
+                <div class="text-center">
+                    <span><button id="tryButton" type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //Error Modal -->
+
+
+<!-- machine already registered Error Modal -->
+    <div id="approveFailErrorModal" class="modal fade" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="h3 col-xs-12 text-center" th:text="#{another.cntr.already.registered}">Sorry!! Another counter is already registered on this machine. Cannot approve this counter. </span>
+                    <button type="button" id="closeButton1" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span><span class="sr-only"
+						th:text="#{close}">Close</span>
+				</button>
+                </div>
+                <div class="text-center">
+                    <span><button id="tryButton1" type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //End Modal -->
+
+
+<script>
+
+function ajaxCallClientDetail(id){
+	$.ajax({
+    	type : "post",
+		url : "/server/fetchClientDetails?ajax=true&",
+		data: {
+			clientId : id
+		},
+		cache : false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+		success : function(result) {
+			$('#detailsModal').modal('show');
+			$("#clientIdModal").html(result.clientId);
+			$("#clientTokenModal").html(result.clientToken);
+		},
+		error : function() {
+			$('#errorModal').modal('show');
+		}
+	});
+}
+
+function ajaxCallAllClientDetail(id,clicked){
+	$.ajax({
+    	type : "post",
+		url : "/server/fetchClientDetails?ajax=true&",
+		data: {
+			clientId : id
+		},
+		cache : false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+		success : function(result) {
+			if(clicked == "status")
+			{
+				$("#deactivate-btn").hide();
+				$("#reject-btn").hide();
+			}
+			else if (clicked == "expire")
+			{
+				$("#approve_reject_btn").hide();
+				$("#reject-btn").hide();
+			}
+			else if (clicked == "reject")
+			{
+				$("#approve_reject_btn").hide();
+				$("#deactivate-btn").hide();
+			}
+			$('#allDetailsModal').modal('show');
+			$("#clientIdAllModal").html(result.clientId);
+			$('#clientTokenAllModal').html(result.clientToken);
+			$("#counterNameAllModal").html(result.clientName);
+			$("#postalCodeAllModal").html(result.postalCode);
+			$("#zoneAllModal").html(result.zone);
+			$("#divisionAllModal").html(result.division);
+			$("#districtAllModal").html(result.district);
+			$("#thanaAllModal").html(result.thana);
+			$("#subOfficeAllModal").html(result.subOffice);
+		},
+		error : function() {
+			alert("error");
+			$('#errorModal').modal('show');
+		}
+	});
+}
+
+$(document).ready(function() {
+
+	//validations on trackid page
+ 	$("#rejectForm").validate({
+		rules : {
+			"input_reject_remarks" : {
+				required : true,
+				nowhitespaceinstartandend:true
+			}
+		},
+	    errorPlacement: function (error, element) {
+	        if (element.attr("name") == "input_reject_remarks")
+	        {
+	          $("#rejectErrorContainer").html(error);
+	          $("#rejectErrorContainer").show();
+	        }
+
+	        //displays a tooltip
+            element.attr('title', error.text());
+            $(element).tooltip({
+                position: {
+                    my: "left+5 center",
+                    at: "right center"
+                },
+                trigger: "hover"
+            });
+        },
+      //highlight the error field with red
+        highlight: function(element, error) {
+            $(element).css('background', '#FFCCCB');
+        },
+
+        // Called when the element is valid:
+        unhighlight: function(element) {
+            $(element).css('background', '#ffffff');
+        }
+	});
+
+  	$("#approveForm").validate({
+		rules : {
+			"input_remarks" : {
+				nowhitespaceinstartandend:true
+			}
+		},
+
+	    errorPlacement: function (error, element) {
+	        if (element.attr("name") == "input_remarks")
+	        {
+	          $("#approveErrorContainer").html(error);
+	          $("#approveErrorContainer").show();
+	        }
+
+	        //displays a tooltip
+            element.attr('title', error.text());
+            $(element).tooltip({
+                position: {
+                    my: "left+5 center",
+                    at: "right center"
+                },
+                trigger: "hover"
+            });
+        },
+      //highlight the error field with red
+        highlight: function(element, error) {
+            $(element).css('background', '#FFCCCB');
+        },
+
+        // Called when the element is valid:
+        unhighlight: function(element) {
+            $(element).css('background', '#ffffff');
+        }
+
+	});
+
+ 	$("#expireForm").validate({
+		rules : {
+			"input_expire_remarks" : {
+				required : true,
+				nowhitespaceinstartandend:true
+			}
+		},
+
+	    errorPlacement: function (error, element) {
+	        if (element.attr("name") == "input_expire_remarks")
+	        {
+	          $("#expireErrorContainer").html(error);
+	          $("#expireErrorContainer").show();
+	        }
+
+	        //displays a tooltip
+            element.attr('title', error.text());
+            $(element).tooltip({
+                position: {
+                    my: "left+5 center",
+                    at: "right center"
+                },
+                trigger: "hover"
+            });
+        },
+      //highlight the error field with red
+        highlight: function(element, error) {
+            $(element).css('background', '#FFCCCB');
+        },
+
+        // Called when the element is valid:
+        unhighlight: function(element) {
+            $(element).css('background', '#ffffff');
+        }
+
+	});
+
+	$('#clientTable').hide();
+	$('#clientTable2').hide();
+	$('#clientTable3').hide();
+	$('#noDataAll').hide();
+	$('#noDataPending').hide();
+	$('#noDataApproved').hide();
+	$('#noDataCommission').hide();
+	$('#all_clients').hide();
+	$('#pending_requests').hide();
+	$('#approved_requests').hide();
+	$('#non_commissioned').hide();
+	$('#searchContainer').hide();
+	$('#norejected').hide();
+	$('#rejected').hide();
+	$('#noexpired').hide();
+	$('#expired').hide();
+
+	if( '[[${type}]]' == "all"){
+
+		var type = '[[${type}]]';
+		$.ajax({
+	        type: "post",
+	        url: "/server/getClientList?ajax=true",
+	        data: {
+                type: type
+            },
+           	success: function(response) {
+				if(response.length == 0)
+				{
+					$('#noDataAll').show();
+				}
+				else
+				{
+					$('#all_clients').show();
+					$('#clientTable').show();
+					$('#searchContainer').show();
+					$.each(response, function(i, item) {
+
+						var del;
+						var stat;
+						if(item.status == 'ACTIVE' && item.clientStatus != 'expired')
+						{
+							del = $('<span><a href="#" class="delete_icon"><i class="fa fa-times del" aria-hidden="true"></i></a></span>')
+						}
+						else if(item.status == 'ACTIVE' && item.clientStatus == 'expired')
+						{
+							del = $('<span>-</span>')
+						}
+						else if(item.status == 'DISABLED')
+						{
+							del = $('<span>-</span>')
+						}
+						if(item.status == 'ACTIVE')
+						{
+							if(item.clientStatus == 'unauthorized' || item.clientStatus == 'expired' || item.clientStatus == 'rejected' ){
+								stat = $('<span>-</span>')
+							}
+							else if(item.clientStatus == 'approval required')
+							{
+								stat = $('<a href="#" class="stat">Approve/Reject</a>')
+							}
+							else if(item.clientStatus == 'approved')
+							{
+								stat = $('<a href="#" class="status_reject">Reject</a>')
+							}
+						}
+						else
+							stat = $('<span>-</span>')
+
+						var n = '<a  class="name">'+item.clientName+'</a>';
+
+						var	data = $('<tr>').append(
+								   $('<td>').text(i+1),
+					               $('<td>').html(n),
+					               $('<td>').text(item.clientId),
+					               $('<td>').text(item.subOffice),
+					               $('<td>').text(item.thana),
+					               $('<td>').text(item.district),
+					               $('<td>').text(item.clientStatus),
+					               $('<td>').text(item.remarks),
+					               $('<td>').html(stat),
+								   $('<td>').html(del)
+							);
+				            $('#tbody').append(data);
+
+				            $('#clientTable #tbody').on('click', '.name', function() {
+
+				            	// get the current row
+				                var currentRow=$(this).closest("tr");
+				                // get current row 3rd table cell  TD value
+				                var id =currentRow.find("td:eq(2)").html();
+
+				                ajaxCallClientDetail(id);
+				            });
+
+				            $('#clientTable #tbody').on('click', '.stat', function() {
+
+				            	// get the current row
+				                var currentRow=$(this).closest("tr");
+				                // get current row 3rd table cell  TD value
+				                var id =currentRow.find("td:eq(2)").html();
+				                var clicked = "status";
+				                ajaxCallAllClientDetail(id,clicked);
+				            });
+
+				            $('#clientTable #tbody').on('click', '.delete_icon', function() {
+
+				            	// get the current row
+				                var currentRow=$(this).closest("tr");
+				                // get current row 3rd table cell  TD value
+				                var id =currentRow.find("td:eq(2)").html();
+				                var clicked = "expire";
+				                ajaxCallAllClientDetail(id,clicked);
+				            });
+
+			               $('#clientTable #tbody').on('click', '.status_expire', function() {
+
+				            	// get the current row
+				                var currentRow=$(this).closest("tr");
+				                // get current row 3rd table cell  TD value
+				                var id =currentRow.find("td:eq(2)").html();
+				                var clicked = "expire";
+				                ajaxCallAllClientDetail(id,clicked);
+				            });
+
+			               $('#clientTable #tbody').on('click', '.status_reject', function() {
+
+				            	// get the current row
+				                var currentRow=$(this).closest("tr");
+				                // get current row 3rd table cell  TD value
+				                var id =currentRow.find("td:eq(2)").html();
+				                var clicked = "reject";
+				                ajaxCallAllClientDetail(id,clicked);
+				            });
+					});
+
+					var dataTable =  $('#clientTable').dataTable({
+					     "oLanguage": {
+					  	   "sLengthMenu": "_MENU_"
+					  	},
+					  //to disble page no for 1st page
+						"fnDrawCallback": function(oSettings) {
+					        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+					        }
+					        else
+					        {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+					        }
+					    }
+				   });
+					$("#searchbox").keyup(function() {
+						 dataTable.fnFilter(this.value);
+						});
+					$(".dataTables_length").css('clear', 'none');
+					$(".dataTables_length").css('margin-top', '-40px');
+					$(".dataTables_length").css('margin-left', '0px');
+					$(".searchbox").css('margin-right','0px');
+				}
+			}
+		});
+	}
+	else if( '[[${type}]]' == "unauthorized"){
+
+		var type = '[[${type}]]';
+
+		$.ajax({
+	        type: "post",
+	        url: "/server/getClientList?ajax=true&",
+	        data: {
+                type: type
+            },
+            success: function(response) {
+				if(response.length == 0)
+				{
+					$('#noDataCommission').show();
+				}
+				else
+				{
+					$('#non_commissioned').show();
+					$('#clientTable2').show();
+					$('#searchContainer').show();
+					$.each(response, function(i, item) {
+
+						var del;
+						var stat;
+						var n = '<a class="name">'+item.clientName+'</a>';
+
+						if(item.status == 'ACTIVE')
+						{
+							del = $('<span><a href="#" class="delete_icon"><i class="fa fa-times del" aria-hidden="true"></i></a></span>')
+						}
+						else if(item.status == 'DISABLED')
+						{
+							del = $('<span>-</span>')
+						}
+
+						var	data = $('<tr>').append(
+								   $('<td>').text(i+1),
+					               $('<td>').html(n),
+					               $('<td>').text(item.clientId),
+					               $('<td>').text(item.subOffice),
+					               $('<td>').text(item.thana),
+					               $('<td>').text(item.district),
+					               $('<td>').text(item.clientStatus),
+					               $('<td>').text(item.remarks),
+								   $('<td>').html(del)
+								);
+
+				               $('#tbody2').append(data);
+
+			 	            	 $('#clientTable2 #tbody2').on('click', '.name', function() {
+
+						            	// get the current row
+						                var currentRow=$(this).closest("tr");
+						                // get current row 3rd table cell  TD value
+						                var id =currentRow.find("td:eq(2)").html();
+
+						                ajaxCallClientDetail(id);
+						            });
+
+						         $('#clientTable2 #tbody2').on('click', '.delete_icon', function() {
+
+						            	// get the current row
+						                var currentRow=$(this).closest("tr");
+						                // get current row 3rd table cell  TD value
+						                var id =currentRow.find("td:eq(2)").html();
+						                var clicked = "expire";
+						                ajaxCallAllClientDetail(id,clicked);
+						            });
+				          });
+					 var dataTable = $('#clientTable2').dataTable({
+					     "oLanguage": {
+					  	   "sLengthMenu": "_MENU_"
+					  	},
+					  //to disble page no for 1st page
+						"fnDrawCallback": function(oSettings) {
+					        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+					        }
+					        else
+					        {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+					        }
+					    }
+				 });
+					$("#searchbox").keyup(function() {
+						 dataTable.fnFilter(this.value);
+						});
+					$(".dataTables_length").css('clear', 'none');
+					$(".dataTables_length").css('margin-top', '-40px');
+					$(".dataTables_length").css('margin-left', '0px');
+				}
+			}
+		});
+	}
+	else if( '[[${type}]]' == "approval required"){
+
+		var type = '[[${type}]]';
+
+		$.ajax({
+	        type: "post",
+	        url: "/server/getClientList?ajax=true&",
+	        data: {
+                type: type
+            },
+            success: function(response) {
+				if(response.length == 0)
+				{
+					$('#noDataPending').show();
+				}
+				else
+				{
+					$('#pending_requests').show();
+					$('#clientTable').show();
+					$('#searchContainer').show();
+					$.each(response, function(i, item) {
+						var del;
+						var stat;
+						var n = '<a class="name">'+item.clientName+'</a>';
+
+						if(item.status == 'ACTIVE')
+						{
+							del = $('<span><a href="#" class="delete_icon"><i class="fa fa-times" aria-hidden="true"></i></a></span>')
+						}
+						else if(item.status == 'DISABLED')
+						{
+							del = $('<span><a href="#" class="activate_icon"><i class="fa fa-check" aria-hidden="true"></i></a></span>')
+						}
+
+						if(item.status == 'ACTIVE')
+						{
+							stat = $('<a href="#" class="stat">Approve/Reject</a>')
+						}
+						else
+							stat = $('<span>-</span>')
+
+						var	data = $('<tr>').append(
+								   $('<td>').text(i+1),
+					               $('<td>').html(n),
+					               $('<td>').text(item.clientId),
+					               $('<td>').text(item.subOffice),
+					               $('<td>').text(item.thana),
+					               $('<td>').text(item.district),
+					               $('<td>').text(item.clientStatus),
+					               $('<td>').text(item.remarks),
+					               $('<td>').html(stat),
+								   $('<td>').html(del)
+								  );
+
+				               $('#tbody').append(data);
+
+				            	 $('#clientTable #tbody').on('click', '.name', function() {
+
+							            	// get the current row
+							                var currentRow=$(this).closest("tr");
+							                // get current row 3rd table cell  TD value
+							                var id =currentRow.find("td:eq(2)").html();
+
+							                ajaxCallClientDetail(id);
+							            });
+
+							            $('#clientTable #tbody').on('click', '.stat', function() {
+
+							            	// get the current row
+							                var currentRow=$(this).closest("tr");
+							                // get current row 3rd table cell  TD value
+							                var id =currentRow.find("td:eq(2)").html();
+							                var clicked = "status";
+							                ajaxCallAllClientDetail(id,clicked);
+							            });
+
+							            $('#clientTable #tbody').on('click', '.delete_icon', function() {
+
+							            	// get the current row
+							                var currentRow=$(this).closest("tr");
+							                // get current row 3rd table cell  TD value
+							                var id =currentRow.find("td:eq(2)").html();
+							                var clicked = "expire";
+							                ajaxCallAllClientDetail(id,clicked);
+							            });
+
+				    });
+					var dataTable =  $('#clientTable').dataTable({
+					     "oLanguage": {
+					  	   "sLengthMenu": "_MENU_"
+					  	},
+					  //to disble page no for 1st page
+						"fnDrawCallback": function(oSettings) {
+					        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+					        }
+					        else
+					        {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+					        }
+					    }
+			    });
+					$("#searchbox").keyup(function() {
+						 dataTable.fnFilter(this.value);
+						});
+					$(".dataTables_length").css('clear', 'none');
+					$(".dataTables_length").css('margin-top', '-40px');
+					$(".dataTables_length").css('margin-left', '0px');
+
+				}
+			}
+		});
+	}
+	else if( '[[${type}]]' == "approved"){
+
+		var type = '[[${type}]]';
+
+		$.ajax({
+	        type: "post",
+	        url: "/server/getClientList?ajax=true&",
+	        data: {
+                type: type
+            },
+            success: function(response) {
+				if(response.length == 0)
+				{
+					$('#noDataApproved').show();
+				}
+				else
+				{
+					$('#clientTable').show();
+					$('#approved_requests').show();
+					$('#searchContainer').show();
+					$.each(response, function(i, item) {
+
+						var del;
+						var stat;
+						var n = '<a class="name">'+item.clientName+'</a>';
+
+						if(item.status == 'ACTIVE')
+						{
+							del = $('<span><a href="#" class="delete_icon"><i class="fa fa-times del" aria-hidden="true"></i></a></span>')
+						}
+						else if(item.status == 'DISABLED')
+						{
+							del = $('<span>-</span>')
+						}
+						if(item.status == 'ACTIVE')
+						{
+							if(item.clientStatus == 'approved')
+							{
+								stat = $('<a href="#" class="status_reject">Reject</a>')
+							}
+						}
+						else
+							stat = $('<span>-</span>')
+
+
+						var	data = $('<tr>').append(
+								   $('<td>').text(i+1),
+					               $('<td>').html(n),
+					               $('<td>').text(item.clientId),
+					               $('<td>').text(item.subOffice),
+					               $('<td>').text(item.thana),
+					               $('<td>').text(item.district),
+					               $('<td>').text(item.clientStatus),
+					               $('<td>').text(item.remarks),
+					               $('<td>').html(stat),
+								   $('<td>').html(del)
+								  );
+				               $('#tbody').append(data);
+
+				               $('#clientTable #tbody').on('click', '.name', function() {
+
+					            	// get the current row
+					                var currentRow=$(this).closest("tr");
+					                // get current row 3rd table cell  TD value
+					                var id =currentRow.find("td:eq(2)").html();
+
+					                ajaxCallClientDetail(id);
+					            });
+
+					            $('#clientTable #tbody').on('click', '.delete_icon', function() {
+
+					            	// get the current row
+					                var currentRow=$(this).closest("tr");
+					                // get current row 3rd table cell  TD value
+					                var id =currentRow.find("td:eq(2)").html();
+					                var clicked = "expire";
+					                ajaxCallAllClientDetail(id,clicked);
+					            });
+
+					            $('#clientTable #tbody').on('click', '.status_reject', function() {
+
+					            	// get the current row
+					                var currentRow=$(this).closest("tr");
+					                // get current row 3rd table cell  TD value
+					                var id =currentRow.find("td:eq(2)").html();
+					                var clicked = "reject";
+					                ajaxCallAllClientDetail(id,clicked);
+					            });
+				    });
+					//donot show the showing 10 record string
+					var dataTable =  $('#clientTable').dataTable({
+					     "oLanguage": {
+					  	   "sLengthMenu": "_MENU_"
+					  	},
+					  //to disble page no for 1st page
+						"fnDrawCallback": function(oSettings) {
+					        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+					        }
+					        else
+					        {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+					        }
+					    }
+				    });
+					$("#searchbox").keyup(function() {
+						 dataTable.fnFilter(this.value);
+						});
+					//to fix position of a page no
+					$(".dataTables_length").css('clear', 'none');
+					$(".dataTables_length").css('margin-top', '-40px');
+					$(".dataTables_length").css('margin-left', '0px');
+				}
+			}
+		});
+	}else if( '[[${type}]]' == "rejected"){
+
+		var type = '[[${type}]]';
+
+		$.ajax({
+	        type: "post",
+	        url: "/server/getClientList?ajax=true&",
+	        data: {
+                type: type
+            },
+			success: function(response) {
+				if(response.length == 0)
+				{
+					$('#norejected').show();
+				}
+				else
+				{
+					$('#clientTable2').show();
+					$('#rejected').show();
+					$('#searchContainer').show();
+					$.each(response, function(i, item) {
+
+						var del;
+						var stat;
+						var n = '<a class="name">'+item.clientName+'</a>';
+						if(item.status == 'ACTIVE')
+						{
+							del = $('<span><a href="#" class="delete_icon"><i class="fa fa-times" aria-hidden="true"></i></a></span>')
+						}
+						else if(item.status == 'DISABLED')
+						{
+							del = $('<span>-</span>')
+						}
+
+						var	data = $('<tr>').append(
+								   $('<td>').text(i+1),
+					               $('<td>').html(n),
+					               $('<td>').text(item.clientId),
+					               $('<td>').text(item.subOffice),
+					               $('<td>').text(item.thana),
+					               $('<td>').text(item.district),
+					               $('<td>').text(item.clientStatus),
+					               $('<td>').text(item.remarks),
+								   $('<td>').html(del)
+								  );
+				               $('#tbody2').append(data);
+
+			 	            	 $('#clientTable2 #tbody2').on('click', '.name', function() {
+
+						            	// get the current row
+						                var currentRow=$(this).closest("tr");
+						                // get current row 3rd table cell  TD value
+						                var id =currentRow.find("td:eq(2)").html();
+
+						                ajaxCallClientDetail(id);
+						            });
+
+						         $('#clientTable2 #tbody2').on('click', '.delete_icon', function() {
+
+						            	// get the current row
+						                var currentRow=$(this).closest("tr");
+						                // get current row 3rd table cell  TD value
+						                var id =currentRow.find("td:eq(2)").html();
+						                var clicked = "expire";
+						                ajaxCallAllClientDetail(id,clicked);
+						            });					});
+					//donot show the showing 10 record string
+					var dataTable =  $('#clientTable2').dataTable({
+					     "oLanguage": {
+					  	   "sLengthMenu": "_MENU_"
+					  	},
+					  //to disble page no for 1st page
+						"fnDrawCallback": function(oSettings) {
+					        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+					        }
+					        else
+					        {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+					        }
+					    }
+				    });
+					$("#searchbox").keyup(function() {
+						 dataTable.fnFilter(this.value);
+						});
+					//to fix position of a page no
+					$(".dataTables_length").css('clear', 'none');
+					$(".dataTables_length").css('margin-top', '-40px');
+					$(".dataTables_length").css('margin-left', '0px');
+				}
+			}
+		});
+	}else if( '[[${type}]]' == "expired"){
+
+		var type = '[[${type}]]';
+
+		$.ajax({
+	        type: "post",
+	        url: "/server/getClientList?ajax=true&",
+	        data: {
+                type: type
+            },
+            success: function(response) {
+				if(response.length == 0)
+				{
+					$('#noexpired').show();
+				}
+				else
+				{
+					$('#clientTable3').show();
+					$('#expired').show();
+					$('#searchContainer').show();
+					$.each(response, function(i, item) {
+
+						var del;
+						var stat;
+						var n = '<a class="name">'+item.clientName+'</a>';
+
+						var	data = $('<tr>').append(
+								   $('<td>').text(i+1),
+					               $('<td>').html(n),
+					               $('<td>').text(item.clientId),
+					               $('<td>').text(item.subOffice),
+					               $('<td>').text(item.thana),
+					               $('<td>').text(item.district),
+					               $('<td>').text(item.clientStatus),
+					               $('<td>').text(item.remarks)
+								  );
+				               $('#tbody3').append(data);
+
+			 	            	 $('#clientTable3 #tbody3').on('click', '.name', function() {
+
+						            	// get the current row
+						                var currentRow=$(this).closest("tr");
+						                // get current row 3rd table cell  TD value
+						                var id =currentRow.find("td:eq(2)").html();
+
+						                ajaxCallClientDetail(id);
+						            });
+					});
+					//donot show the showing 10 record string
+					var dataTable =  $('#clientTable3').dataTable({
+					     "oLanguage": {
+					  	   "sLengthMenu": "_MENU_"
+					  	},
+					  //to disble page no for 1st page
+						"fnDrawCallback": function(oSettings) {
+					        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+					        }
+					        else
+					        {
+					            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+					        }
+					    }
+				    });
+					$("#searchbox").keyup(function() {
+						 dataTable.fnFilter(this.value);
+						});
+					//to fix position of a page no
+					$(".dataTables_length").css('clear', 'none');
+					$(".dataTables_length").css('margin-top', '-40px');
+					$(".dataTables_length").css('margin-left', '0px');
+				}
+			}
+		});
+	}
+ });
+
+$("#approve-btn").click(function() {
+	$("#allDetailsModal").hide();
+	$("#approveModal").show();
+});
+
+$("#reject-btn").click(function() {
+	$("#allDetailsModal").hide();
+	$("#rejectModal").modal('show');
+});
+
+$("#reject-btn-1").click(function() {
+	$("#allDetailsModal").hide();
+	$("#rejectModal").modal('show');
+});
+
+$("#cancel").click(function() {
+	window.location.reload();
+});
+
+$("#cancel-btn").click(function() {
+	window.location.reload();
+});
+
+$("#noButton").click(function() {
+	window.location.reload();
+});
+//
+$("#closeButton").click(function() {
+	window.location.reload();
+});
+
+$("#closeButton1").click(function() {
+	window.location.reload();
+});
+
+
+$("#tryButton").click(function() {
+	window.location.reload();
+});
+
+$("#tryButton1").click(function() {
+	window.location.reload();
+});
+
+
+$("#deactivate-btn").click(function() {
+	$("#allDetailsModal").hide();
+	$("#confirm-modal").modal('show');
+	$('#active').hide();
+});
+
+$("#approve").click(function() {
+	var Id = $('#clientIdAllModal').text();
+
+	var remarks = $('#input_remarks').val();
+
+	$.ajax({
+		type : "post",
+		url : "/server/approveClientDetails?ajax=true&",
+		data : {
+			clientId : Id,
+			remarks : remarks
+		},
+		beforeSend : function() {
+			$("#approveModal").modal('hide');
+		},
+		success : function() {
+			$("#success_approve").modal('show');
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			if(XMLHttpRequest.responseText == "Another counter already regsitered on this machine")
+				$('#approveFailErrorModal').modal('show');
+			else
+			    $('#errorModal').modal('show');
+		},
+		complete : function(data) {
+			$(".overlay").hide();
+		}
+	});
+});
+
+ $("#reject").click(function() {
+	if ($("#rejectForm").valid()) {
+		var Id = $('#clientIdAllModal').text();
+		var remarks = $('#input_reject_remarks').val();
+
+		$.ajax({
+			type : "post",
+			url : "/server/rejectClientDetails?ajax=true&",
+			data : {
+				clientId : Id,
+				remarks : remarks
+			},
+			beforeSend : function() {
+				$("#rejectModal").modal('hide');
+			},
+			success : function() {
+				$("#success_reject").modal('show');
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				$('#errorModal').modal('show');
+			},
+			complete : function(data) {
+				$(".overlay").hide();
+			}
+		});
+ 	  }
+	});
+
+ $("#yesButton").click(function() {
+	if ($("#expireForm").valid()) {
+		var Id = $('#clientIdAllModal').text();
+		var remarks = $('#input_expire_remarks').val();
+
+     	$.ajax({
+			type : "post",
+			url : "/server/expireClient?ajax=true&",
+			data : {
+				clientId : Id,
+				remarks : remarks
+			},
+			beforeSend : function() {
+				$("#confirm-modal").modal('hide');
+			},
+			success : function(result) {
+				$("#success_deactivate").modal('show');
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				$('#errorModal').modal('show');
+			},
+			complete : function(data) {
+				$(".overlay").hide();
+			}
+		 });
+		}
+	});
+
+	$("#success_okay_btn_reject").click(function() {
+		window.location.reload();
+	});
+
+	$("#success_okay_btn_deactivate").click(function() {
+		window.location.reload();
+	});
+
+	$("#success_okay_btn_activate").click(function() {
+		window.location.reload();
+	});
+
+	$("#success_okay_btn_approve").click(function() {
+		window.location.reload();
+	});
+
+ </script>
+<!-- footer -->
+	<th:block th:include="_footer"></th:block>
+<!-- footer -->
+</body>

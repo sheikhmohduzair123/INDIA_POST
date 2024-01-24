@@ -1,0 +1,791 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+<div class="fixed-header container-sm-footer create-label">
+    <div class="site-wrapper market-US">
+         <div class="container container-new"> 
+            <form autocomplete="off" class="myForm" name="rmsForm" id="rmsFormId" role="form" method="post">
+                <div class="form-group col-md-12">
+                    <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+                    <h1 class="text-center" th:text="#{add.rms}">ADD RMS</h1>
+                    <div class="form-group col-md-12 margin-bottom-1">
+                        <input name="RMSId" id="rmsId" class="form-control name" type="hidden" data-toggle="tooltip">
+                        <label>
+								<span th:text="#{rms.name}">RMS Name</span>
+								</label>
+                        <input name="rmsName" id="rmsNameId" type="text" class="form-control" th:placeholder="#{rms.name}">
+                        <div id="ReceiverErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 margin-bottom-1">
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{rms.type}">RMS Type</span>
+									</label>
+                        <select class="form-control name" name="RmsType" id="rmsTypeId">
+							 			  <option value="">select</option>
+								 		<option th:each="rmsType : ${T(com.constants.RmsType).values()}" th:value="${rmsType.rmsType}" th:id="${rmsType}"
+										th:text="${rmsType.rmsType}">
+										</option>
+									</select>
+                        <div id="TypeErrorContainer" class="errorForm">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{rms.country}">Country</span>
+									</label>
+                        <input id="countryId" name="RmsAddress.country" autocomplete="off" type="text" class="form-control" value="Bangladesh" readonly>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 margin-bottom-1">
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{postal.code}">Postal Code</span>
+									</label>
+                        <input id="postalCode" name="RmsAddress.postalCode" autocomplete="off" type="text" class="form-control" th:maxlength="6" th:placeholder="#{postal.code}">
+                       <div id="errorPostal" class="errorForm">
+                        <ul></ul>
+                    </div>
+                        <div id="postalCodeErrorContainer" class="errorForm">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{zone}">Zone</span>
+									</label>
+                        <select class="form-control name" name="RmsAddress.zone" id="zoneId" required="true">
+										<option value="">select</option>
+								 		<option th:each="zone : ${zoneList}" th:value="${zone}" th:id="${zone}"
+										th:text="${zone}">
+										</option>
+							 	   </select> 
+							<div id="zoneErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 margin-bottom-1">
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{division}">Division</span>
+									</label>
+                        <select class="form-control name" name="RmsAddress.division" id="divisionId">
+										<option value="">select</option>
+								 		<option th:each="division : ${divisoinList}" th:value="${division}" th:id="${division}"
+										th:text="${division}">
+										</option>
+									</select> 
+		                 <div id="divisionErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{district}">Disrict</span>
+									</label>
+                         <select class="form-control name" name="RmsAddress.district" id="districtId">
+										<option value="">select</option>
+										 <option th:each="district : ${districtList}" th:value="${district}" th:id="${district}"
+										th:text="${district}">
+										</option>
+									</select> 
+	
+                        <div id="districtErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 margin-bottom-1">
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{thana}">Thana</span>
+								</label>
+                         <select class="form-control name" name="RmsAddress.thana" id="thanaId">
+							<option value="">select</option>
+								 <option th:each="thana : ${thanaList}" th:value="${thana}" th:id="${thana}"
+								th:text="${thana}">
+							</option>
+								</select> 
+		               <div id="thanaErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{suboffice}">Sub Office</span>
+								</label>
+                        <select class="form-control name" name="RmsAddress.subOffice" id="subofficeId">
+							<option value="">select</option>
+								 <option th:each="suboffice : ${subOfficeList}" th:value="${suboffice}" th:id="${suboffice}"
+								th:text="${suboffice}">
+							</option>
+								</select> 
+	
+                        <div id="subOfficeErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 margin-bottom-1">
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{rms.address1}">Address Line1</span>
+								</label>
+                        <input id="addressLine1" name="RmsAddress.addressLine1" autocomplete="off" type="text" class="form-control" th:placeholder="#{rms.address1}">
+                        <div id="address1ErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{rms.address2}">Address Line2</span>
+								</label>
+                        <input id="addressLine2" name="RmsAddress.addressLine2" autocomplete="off" type="text" class="form-control" th:placeholder="#{rms.address2}">
+                    <div id="address2ErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 margin-bottom-1">
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{rms.landmark}">LandMark</span>
+								</label>
+                        <input id="landmarkId" name="RmsAddress.landmark" autocomplete="off" type="text" class="form-control" th:placeholder="#{rms.landmark}">
+                   <div id="landmarkErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                   </div>
+                    <div class="form-group col-md-6">
+                        <label>
+									<span th:text="#{rms.mobile}">Mobile No.</span>
+								</label>
+                        <input id="RmsMobileNumber" name="RmsMobileNumber" autocomplete="off" type="text" class="form-control" th:maxlength="11" th:placeholder="#{rms.mobile}">
+                        <div id="mobileErrorContainer" class="errorForm">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="ErrorContainer" class="errorForm">
+                    <ul></ul>
+                </div>
+                <div class="col-md-12 margin-bottom-1">
+                    <div class="col-md-3 col-md-offset-3">
+                        <button id="registerButton" type="button" class="btn-primary form-control" data-toggle="modal" th:text="#{register.rms}" onclick="saveRMS()">Register</button>
+                        <button id="updateButton" type="button" class="btn-primary form-control" data-toggle="modal" th:text="#{update.rms}" onclick="updateRMSClick()">Update RMS</button>
+
+                    </div>
+                    <div class="col-md-3 ">
+                        <button type="button" id="reset" class="btn-primary form-control" th:text="#{reset}">Reset</button>
+                    </div>
+                </div>
+            </form>
+         </div> 
+        <div class="col-md-12 spacer-top-sm">
+            <div class="col-md-offset-6 col-md-3"></div>
+            <!-- <div class="col-md-1 " style="margin-bottom:-39px; margin-left:24px"> -->
+            <div class="col-md-1 ">
+                <select class="form-control name" name="dropdown" id="dropdownId">
+							 <option value="ACTIVE">Active</option>
+							 <option  value="DISABLED">Disable</option>
+							<option value="ALL">All</option>
+						</select>
+            </div>
+
+            <!-- <div class="col-md-2 "style="margin-left:1111px"> -->
+            <div class="col-md-2">
+                <input type="text" id="searchbox" class="form-control name" placeholder="search">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <div class="col-md-offset-7 col-md-5 "></div>
+            <table id="rmsTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="display:none">Id</th>
+                        <th th:text="#{s.no}">S.no</th>
+                        <th th:text="#{rms.name}">RMS name</th>
+                        <th th:text="#{rms.type}">RMS type</th>
+                        <th th:text="#{rms.mobile}">Mobile No.</th>
+                        <th th:text="#{address}">Address</th>
+                        <th th:text="#{status}">Status</th>
+                        <th th:text="#{updated.on}">Updated On</th>
+                        <th th:text="#{update}">Update</th>
+                        <th th:text="#{delete}">Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="rmsTBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- //MODAL -->
+<div id="deleteModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="messageBeforeDelete" class="modal-header text-center">
+                <span>
+							<h3 class="errorForm" th:text="#{rms.message1}">Are you sure you want to delete RMS?</h3>
+							<h5  class="errorForm" th:text="#{confirm.rmsRollback}">This action cannot be rollback. Rms will be deleted permanently</h5>
+						</span>
+            </div>
+            <div id="messageAfterDelete" class="modal-header text-center">
+                <span>
+						<h3 style="color: green;" th:text="#{rms.message2}">RMS Deleted Successfully</h3>
+						</span>
+            </div>
+            <div class="label-options" id="changePassword">
+                <form name='deleteForm' id="deleteForm" autocomplete="off" role="form" method="post">
+<!--                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+ -->                    <input type="hidden" name="deletedId" id="deletedId">
+                    <button id="submitDeleteButton" type="button" class="btn btn-primary" th:text="#{delete}">Delete</button>
+                    <button id="cancelButton" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" th:text="#{cancel}">Cancel
+							</button>
+                    <button id="okButton" type="button" onclick="javascript:window.location.reload()" class="btn btn-primary" ata-dismiss="modal" aria-hidden="true" th:text="#{okay}">Okay</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //End Modal -->
+<!--Errro Model-->
+<div id="errorModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h2 class="text-center" id="msgerror">something went wrong</h2>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modalCloseButton" class="btn btn-primary btn-md center-block" th:text="#{okay}" data-dismiss="modal">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Model End-->
+
+<!-- //responseModal  -->
+<div id="responseModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <span>
+							<h3 style="color: green;" th:text="#{rms.registration.successfully}" id="responseMsg"></h3>
+						</span>
+<!--             <form name='exist' id="exist" autocomplete="off" method="post">
+ -->
+                <button id="ok" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" th:text="#{okay}">Okay</button>
+<!--             </form>
+ -->        </div>
+    </div>
+</div>
+<!-- //Saved Modal l-->
+
+<script type="text/javascript">
+    var dtable;
+    var rmsNameCheck;
+    var rmsTypeCheck;
+    var rmsPostalCheck;
+    $(document).ready(function() {
+        $('#rmsTBody').empty();
+        $('#updateButton').hide();
+        $('#messageAfterDelete').hide();
+        $('#okButton').hide();
+         $('#zoneId').chosen();
+       	$('#divisionId').chosen();
+       	$('#districtId').chosen();
+        $('#thanaId').chosen();
+        $('#subofficeId').chosen(); 
+        $('#updateRMS').hide();
+
+        rmsdata();
+    });
+
+    $.validator.addMethod("phone", function(phone_number, element) {
+        return this.optional(element) || /^\d{11}$/.test(phone_number);
+    }, "* Must be 11 digits and begin with 07");
+
+    //choosen validation
+    $.validator.setDefaults({
+        ignore: ":hidden:not(select)"
+    });
+
+    //for validation
+   $("#rmsFormId").validate({
+        rules: {
+            "rmsName": {
+
+                required: true,
+                //alphawithspace:true,
+                nowhitespaceinstartandend: true,
+                minlength: 2,
+                maxlength: 15,
+
+            },
+            "RmsType": {
+                required: true
+            },
+            "RmsMobileNumber": {
+                mobiles: true
+            },
+            "RmsAddress.zone": {
+                required: true,
+                address:true
+            },
+            "RmsAddress.postalCode": {
+            	required: true,
+                maxlength: 4,
+                minlength: 4,
+                nowhitespaceinstartandend: true,
+                digits: true
+            },
+            "RmsAddress.division": {
+                required: true,
+                address:true
+            },
+            "RmsAddress.district": {
+                required: true,
+                address:true
+            },
+            "RmsAddress.thana": {
+                required: true,
+                address:true
+            },
+            "RmsAddress.subOffice": {
+                required: true,
+                address:true
+            },
+            "RmsAddress.addressLine1": {
+                required: true,
+                nospecialcharacter:true
+            },
+            "RmsAddress.addressLine2": {
+                nospecialcharacter:true
+            },
+            "RmsAddress.landmark": {
+                nospecialcharacter:true
+            }
+        },
+        errorPlacement: function(error, element) {
+            if ((element.attr("name") == "rmsName")) {
+                $("#ReceiverErrorContainer").html(error);
+                $("#ReceiverErrorContainer").show();
+            } else if ((element.attr("name") == "RmsMobileNumber")) {
+                $("#mobileErrorContainer").html(error);
+                $("#mobileErrorContainer").show();
+            } else if ((element.attr("name") == "RmsType")) {
+                $("#TypeErrorContainer").html(error);
+                $("#TypeErrorContainer").show();
+            } else if ((element.attr("name") == "RmsAddress.zone")) {
+                $("#zoneErrorContainer").html(error);
+                $("#zoneErrorContainer").show();
+            } else if ((element.attr("name") == "RmsAddress.postalCode")) {
+                $("#postalCodeErrorContainer").html(error);
+                $("#postalCodeErrorContainer").show();
+            } else if ((element.attr("name") == "RmsAddress.division")) {
+                $("#divisionErrorContainer").html(error);
+                $("#divisionErrorContainer").show();
+            } else if ((element.attr("name") == "RmsAddress.district")) {
+                $("#districtErrorContainer").html(error);
+                $("#districtErrorContainer").show();
+            } else if ((element.attr("name") == "RmsAddress.thana")) {
+                $("#thanaErrorContainer").html(error);
+                $("#thanaErrorContainer").show();
+            } else if ((element.attr("name") == "RmsAddress.subOffice")) {
+                $("#subOfficeErrorContainer").html(error);
+                $("#subOfficeErrorContainer").show();
+            } else if ((element.attr("name") == "RmsAddress.addressLine1")) {
+                $("#address1ErrorContainer").html(error);
+                $("#address1ErrorContainer").show();
+            }else if ((element.attr("name") == "RmsAddress.addressLine2")) {
+                $("#address2ErrorContainer").html(error);
+                $("#address2ErrorContainer").show();
+            }else if ((element.attr("name") == "RmsAddress.landmark")) {
+                $("#landmarkErrorContainer").html(error);
+                $("#landmarkErrorContainer").show();
+            }
+
+            //displays a tooltip
+            element.attr('title', error.text());
+            $(element).tooltip({
+                position: {
+                    my: "left+5 center",
+                    at: "right center"
+                },
+                trigger: "hover"
+            });
+        },
+        //highlight the error field with red
+        highlight: function(element, error) {
+            $(element).css('background', '#FFCCCB');
+        },
+        // Called when the element is valid:
+        unhighlight: function(element) {
+            $(element).css('background', '#ffffff');
+        }
+    });
+
+    //for RMS table
+    function rmsdata() {
+        var status = $("#dropdownId").val();
+
+        //for RMS
+        $.ajax({
+            type: "post",
+            url: "/masterController/showRMSActiveStatus",
+            data: {
+            	status: status
+            },
+            dataType: "json",
+            cache: false,
+            success: function(result) {
+
+                $.each(result, function(i, item) {
+
+                    var update_date = item.updatedOn;
+                    var uTime = new Date(update_date);
+                    var updateDate = item.updatedOn.substr(0, 10);
+                    var UpdateOndate = updateDate.split("-");
+                    var updatedOnDate_string = UpdateOndate[2] + "-" + UpdateOndate[1] + "-" + UpdateOndate[0];
+
+                    var activeStatus = (item.status == 'ACTIVE') ? $('<button class ="fa fa-edit iBtn"></button>') : " - ";
+                    var deleteColumn = (item.status == 'ACTIVE') ? $('<button class="fa fa-trash dBtn"></button>') : "-";
+
+                    var $tr = $('<tr>').append(
+                        $('<td style="display:none">').text(item.id),
+                        $('<td>').text(i + 1),
+                        $('<td>').text(item.rmsName),
+                        $('<td>').text(item.rmsType),
+                        $('<td>').text(item.rmsMobileNumber == "" ? "" : item.rmsMobileNumber),
+                        $('<td>').text(item.addressLine1 + ", " + (item.addressLine2 == "" ? "" : item.addressLine2 + ", ") + item.zone + ", " + item.division + ", " + item.district + ", " + item.thana + ", " + item.subOffice + ", " + (item.landmark == "" ? "" : item.landmark + ", ") + ", " + item.country + ", " + item.postalCode),
+                        $('<td>').text(item.status),
+                        $('<td>' + updatedOnDate_string + " " + uTime.toString().substring(16, 24) + '</td>'),
+                        $('<td>').html(activeStatus),
+                        $('<td>').html(deleteColumn)
+                    );
+                    $('#rmsTBody').append($tr);
+                });
+                dtable = $('#rmsTable').DataTable({
+                    "order": ([1, "asc"]),
+                    "columnDefs": [{
+                        "width": "10%",
+                        "targets": 2
+                    }],
+                    "paging": true,
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_"
+                    },
+                    //to disble page no for 1st page
+                    "fnDrawCallback": function(oSettings) {
+                        if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                            $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                        } else {
+                            $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                        }
+                    }
+                });
+
+                $(".dataTables_length").css('clear', 'none');
+                $(".dataTables_length").css('margin-top', '-41px');
+                $(".dataTables_length").css('margin-left', '0px');
+            },
+            error: function(response) {
+                console.log("something went wrong");
+            }
+        });
+    }
+
+    $("#searchbox").keyup(function() {
+        dtable.search(this.value).draw();
+    });
+
+    $('#dropdownId').on('change', function() {
+        var table = $('#rmsTable').DataTable();
+        table.destroy();
+        $('#rmsTBody').empty();
+        rmsdata();
+    });
+
+    //Save RMS
+    function saveRMS() {
+
+        if ($("#rmsFormId").valid()) {
+            var rmsDetails = $("#rmsFormId").serialize();
+
+            $.ajax({
+                type: "post",
+                url: "/masterController/actionRMS?ajax=true&",
+                data: rmsDetails,
+                success: function(result) {
+                	if(result!=null){
+                	$("#responseMsg").text(result);
+                	$("#responseModal").modal('show');
+                	}
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+            });
+        }
+    }
+
+    function updateRMS() {
+        if ($("#rmsFormId").valid()) {
+
+            var rmsUpdateDetails = $("#rmsFormId").serialize();
+
+            $.ajax({
+                type: "post",
+                url: "/masterController/actionUpdateRMS?ajax=true&",
+                data: rmsUpdateDetails,
+                success: function(result) {              	
+                	if(result!=null){
+   					$("#responseMsg").text(result);
+                	$("#responseModal").modal('show');                  
+                    }
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+            });
+        }
+    }
+
+    //Update RMS
+    function updateRMSClick() {
+        var formName = $('#rmsNameId').val();
+        var formType = $('#rmsTypeId').val();
+        var formPostal = $('#postalCode').val();
+
+        if (rmsNameCheck == formName && rmsTypeCheck == formType && rmsPostalCheck == formPostal) {
+            updateRMS();
+        } else {
+            //checking if updated data already exist in database
+            var rmsUpdateDetails2 = $("#rmsFormId").serialize();
+            $.ajax({
+                type: "post",
+                url: "/masterController/UpdateButtonExist?ajax=true&",
+                data: rmsUpdateDetails2,
+                success: function(result) {
+                    if (result == false) {
+                        updateRMS();
+                    } else {
+                        $('#existModal').modal('show');
+                    }
+                },
+                error: function(result) {
+                    $('#errorModal').modal('show');
+                }
+
+            });
+        }
+
+    }
+    ///}
+
+    $('#rmsTable').on('click', '.iBtn', function() {
+        $('#registerButton').hide();
+        $('#updateButton').show();
+
+        // get the current row
+        var data = dtable.row($(this).parents('tr')).data();
+
+        $('.myForm #rmsId').val(data[0]);
+        $('.myForm #rmsNameId').val(data[2]);
+        $('.myForm #rmsTypeId').val(data[3]);
+        $('.myForm #RmsMobileNumber').val(data[4]);
+
+        var currentRow = $(this).closest("tr");
+        var col1 = currentRow.find("td:eq(5)").text();
+        var nameArr = col1.split(', ');
+
+        var updateId = currentRow.find("td:eq(0)").text();
+        $(window).scrollTop(0);
+        $.ajax({
+            type: "post",
+            url: "/masterController/updateButtonFilledData?ajax=true&",
+            data: {
+            	updateId: updateId
+            },
+            success: function(item) {
+                rmsNameCheck = item.rmsName;
+                rmsTypeCheck = item.rmsType;
+                rmsPostalCheck = item.rmsAddress.postalCode;
+                $("#zoneId").val(item.rmsAddress.zone).trigger("chosen:updated");
+                $("#divisionId").val(item.rmsAddress.division).trigger("chosen:updated");
+                $("#districtId").val(item.rmsAddress.district).trigger("chosen:updated");
+                $("#thanaId").val(item.rmsAddress.thana).trigger("chosen:updated");
+                $("#subofficeId").val(item.rmsAddress.subOffice).trigger("chosen:updated");
+                $("#landmarkId").val(item.rmsAddress.landmark);
+                //$("#countryId").val(nameArr[8]);
+                $("#postalCode").val(item.rmsAddress.postalCode);
+                $("#addressLine1").val(item.rmsAddress.addressLine1);
+                $("#addressLine2").val(item.rmsAddress.addressLine2);
+            },
+            error: function(result) {
+                $('#errorModal').modal('show');
+            }
+        });
+
+    });
+
+    $('#rmsTable').on('click', '.dBtn', function() {
+
+        $('#deleteModal').modal('show');
+        var currentRow = $(this).closest("tr");
+        var col1 = currentRow.find("td:eq(0)").text(); //get the id from table row
+        $("#deletedId").val(col1);
+
+    });
+
+    //for delete RMS
+    $("#submitDeleteButton").click(function() {
+        var deleteRMS = $("#deleteForm").serialize();
+        $.ajax({
+            type: "post",
+            url: "/masterController/actionDeleteRms?ajax=true&",
+            data: deleteRMS,
+            success: function(result) {
+                $('#messageAfterDelete').show();
+                $('#messageBeforeDelete').hide();
+                $('#submitDeleteButton').hide();
+                $('#cancelButton').hide();
+                $('#okButton').show();
+
+            },
+            error: function() {
+                $('#errorModal').modal('show');
+            }
+        });
+    });
+    $('#ok').on('click', function() {
+        location.reload();
+    });
+
+    $('#rmsNameId').on('keyup', function() {
+        if ($(this).val().length > 1) {
+            document.getElementById("rmsTypeId").disabled = false;
+        } else {
+            document.getElementById("rmsTypeId").disabled = true;
+            $('#rmsTypeId').val('');
+        }
+    });
+
+    $(document).ready(function() {
+
+        //Check if body height is higher than window height :)
+        if ($(document).height() > $(window).height()) {
+            $("#foot").addClass("footer-top-margin");
+        }
+
+        // Trigger ajax event on sender address after 4th character typed.
+        $('#postalCode').on('keyup', function() {
+        	$("#errorPostal").hide();
+            if ($(this).val().length == 4) {
+                var pincode = $("#postalCode").val();
+                $.ajax({
+                    type: "post",
+                    url: "/parcel/getAddressByPostalcode",
+                    data: {
+                        postalCode: pincode
+                    },
+                    success: function(result) {
+                    	
+                    	if(result!=""){
+                    	
+                        $("#zoneId").val(result.zone).trigger("chosen:updated").click();
+                        $("#divisionId").val(result.division).trigger("chosen:updated").click();
+                        $("#districtId").val(result.district).trigger("chosen:updated").click();
+                        $("#thanaId").val(result.thana).trigger("chosen:updated").click();
+                        $("#subofficeId").val(result.subOffice).trigger("chosen:updated").click(); //click function is used for
+                    }
+                    
+                    else{
+               		 $("#errorPostal").text("Postal code does not exist");
+                        $("#postalCode").css('background', 'rgb(255, 204, 203)');
+                        $("#errorPostal").show();
+                        $("#postalCode").val('');
+                        $("#zoneId").val('').trigger("chosen:updated");
+                        $("#divisionId").val('').trigger("chosen:updated");
+                        $("#districtId").val('').trigger("chosen:updated");
+                        $("#thanaId").val('').trigger("chosen:updated");
+                        $("#subofficeId").val('').trigger("chosen:updated");
+               	}
+              }
+                });
+            }
+        });
+ 
+        // End of block
+
+        $('#reset').on('click', function() {
+            $('#registerButton').show();
+            $('#updateButton').hide();
+
+            $('.myForm #rmsId').val('');
+            $('.myForm #rmsNameId').val('');
+            $('.myForm #rmsTypeId').val('');
+            $('.myForm #postalCode').val('');
+            $('.myForm #RmsMobileNumber').val('');
+            $("#addressLine1").val('');
+            $("#addressLine2").val('');
+            $("#landmarkId").val('');
+            $("#zoneId").val('').trigger("chosen:updated");
+            $("#divisionId").val('').trigger("chosen:updated");
+            $("#districtId").val('').trigger("chosen:updated");
+            $("#thanaId").val('').trigger("chosen:updated");
+            $("#subofficeId").val('').trigger("chosen:updated");
+        });
+
+         $('#zoneId').on('change', function() {
+        	  $('.myForm #postalCode').val('').trigger("chosen:updated");
+            $("#zoneId").val('').trigger("chosen:updated");
+            $("#divisionId").val('').trigger("chosen:updated");
+            $("#districtId").val('').trigger("chosen:updated");
+            $("#thanaId").val('').trigger("chosen:updated");
+            $("#subofficeId").val('').trigger("chosen:updated");
+        });
+
+        $('#divisionId').on('change', function() {
+            $('.myForm #postalCode').val('').trigger("chosen:updated");
+            $("#zoneId").val('').trigger("chosen:updated");
+            $("#divisionId").val('').trigger("chosen:updated");
+            $("#districtId").val('').trigger("chosen:updated");
+            $("#thanaId").val('').trigger("chosen:updated");
+            $("#subofficeId").val('').trigger("chosen:updated"); 
+        });
+
+        $('#districtId').on('change', function() {
+            $('.myForm #postalCode').val('').trigger("chosen:updated");
+            $("#zoneId").val('').trigger("chosen:updated");
+            $("#divisionId").val('').trigger("chosen:updated");
+            $("#districtId").val('').trigger("chosen:updated");
+            $("#thanaId").val('').trigger("chosen:updated");
+            $("#subofficeId").val('').trigger("chosen:updated"); 
+        });
+
+        $('#thanaId').on('change', function() {
+            $('.myForm #postalCode').val('').trigger("chosen:updated");
+            $("#zoneId").val('').trigger("chosen:updated");
+            $("#divisionId").val('').trigger("chosen:updated");
+            $("#districtId").val('').trigger("chosen:updated");
+            $("#thanaId").val('').trigger("chosen:updated");
+            $("#subofficeId").val('').trigger("chosen:updated"); 
+        });
+
+        $('#subofficeId').on('change', function() {
+            $('.myForm #postalCode').val('').trigger("chosen:updated");
+            $("#zoneId").val('').trigger("chosen:updated");
+            $("#divisionId").val('').trigger("chosen:updated");
+            $("#districtId").val('').trigger("chosen:updated");
+            $("#thanaId").val('').trigger("chosen:updated");
+            $("#subofficeId").val('').trigger("chosen:updated"); 
+        });
+     });
+</script>
+<th:block th:include="_footer"></th:block>
+</body>

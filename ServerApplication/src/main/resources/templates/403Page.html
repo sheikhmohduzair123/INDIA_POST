@@ -1,0 +1,96 @@
+<!-- <!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Access Denied</title>
+</head>
+
+<body>
+    Include _menu.html
+    <th:block th:include="/_menu"></th:block>
+
+    <h3 th:if="${message != null}" th:utext="${message}" style="color: red;"></h3>
+
+    <div th:if="${userInfo != null}" th:utext="${userInfo}"></div>
+
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="locale.language" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<link rel="icon" href="/assets/images/favicon.ico">
+	<title>India Post</title>
+
+	<script src="/assets/js/jquery.min.js"> </script>
+<!-- 	<script src="/assets/js/global.js"> </script>
+ -->	<script src="/assets/js/bootstrap.min.js"></script>
+	<script src="/assets/js/jquery.cookie.js"></script>
+	<script src="/assets/js/popper.min.js"></script>
+	<script src="/assets/js/address.js"></script>
+	<script src="/assets/js/jquery.dataTables.min.js"></script>
+	<script src="/assets/js/dataTables.bootstrap4.min.js"></script>
+	<script src="/validation/jquery.validate.min.js"> </script>
+	<script src="/validation/additional-methods.js"> </script>
+	<script th:src="${'/validation/messages_'+#locale+'.js'}"></script>
+	<link rel="stylesheet" href="/assets/css/bootstrapv3.3.7.css">
+	<link rel="stylesheet" href="/assets/css/angular-loading-bar.css">
+	<link rel="stylesheet" href="/assets/css/ui-select.css">
+	<link rel="stylesheet" href="/assets/css/yamm3.css">
+	<link rel="stylesheet" href="/assets/css/main.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/dataTables.material.min.css"/>
+	<script type="text/javascript" src="/assets/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="/assets/js/dataTables.bootstrap4.min.js"></script>
+</head>
+<body class="create-label">
+<div id="header" class="header">
+    <div class="navbar yamm navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsed-navbar">
+                    <span class="sr-only" th:text="#{toggle.navigation}">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+                </button>
+                <span><img src="/assets/images/bdw.png" class="logo"></span><a class="navbar-brand brand-text"><span th:text="#{BDPost}">BD
+						Post</span></a>
+			</div>
+			<!-- Menu -->
+
+			<!-- Menu -->
+		</div>
+	</div>
+</div>
+<div class="fixed-header container-sm-footer">
+<div class="site-wrapper market-US">
+    <!-- header -->
+<!--    <th:block th:include="/_header"></th:block>-->
+    <!-- /header -->
+	<div class="container">
+		<div class="col-md-12">
+            <div class="error-template spacer-top-lg ">
+	            <div class="col-sm-3 text-right">
+					<i class="errorIcon fa-exclamation-triangle "></i>
+<!--	    		<span class="glyphicon glyphicon-alert fa-5x"></span>-->
+	    		</div>
+	        	<div class="col-sm-9">
+		        	<h1><span th:text="#{oops}">Oops</span><span>!</span></h1>
+<!--		            <h2><span>404 </span><span th:text="#{not.found}">Not Found</span></h2>-->
+	        		<p> <span th:text="#{unauthorized.error.string}">You are not authorized to view this page.</span></p>
+	            	<div class="error-actions">
+	            		<a href="/logoutSuccessful"><span th:text="#{back}">Please Click Here To Login Again </span></a>
+	            	</div>
+	         	</div>
+            </div>
+        </div>
+	</div>
+</div>
+</div>
+	<th:block th:include="_footer"></th:block>
+</body>

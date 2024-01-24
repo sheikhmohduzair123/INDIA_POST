@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <title>User Info</title>
+   </head>
+   <body>
+      <!-- Include _menu.html -->
+      <th:block th:include="/_menu"></th:block>
+       
+       
+      <h2>User Info Page</h2>
+      <h3>Welcome : <span th:utext="${#request.userPrincipal.name}"></span></h3>
+      <b>This is protected page!</b>  
+       
+      <br/><br/>
+       
+      <div th:if="${userInfo != null}" th:utext="${userInfo}"></div>
+            <form name='form' th:action="@{/printLabel}" method='POST'>
+         <table>
+            <tr>
+               <td>Sender</td>
+               <td><textarea name='sender' cols="52" rows="10"></textarea></td>
+            </tr>
+            <tr>
+               <td>Recipient</td>
+               <td><textarea name='recipient' cols="52" rows="10"></textarea></td>
+            </tr>
+            <tr>
+               <td><input name="submit" type="submit" value="Print" /></td>
+            </tr>
+         </table>
+      </form>
+       
+   </body>
+    
+</html>

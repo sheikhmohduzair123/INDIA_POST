@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  db:
+    container_name: clientdb
+    build:
+      context: ./client-db
+      dockerfile: Dockerfile 
+    ports:
+      - '5432:5432'
+    volumes:
+      - ${PWD}/db:/var/lib/postgresql/data
+    networks:
+      - india-post-network
+  
+  # clientapplication:
+  #   container_name: client-application
+  #   image: registry.gitlab.com/liberintech/india-post/client-application:0.1.1
+  #   environment:
+  #     DB_HOST: db
+  #     DB_PORT: 5432
+  #     DB_USER: postgres
+  #     DB_PASSWORD: postgres 
+  #     DB_NAME: postgres   
+  #   ports:
+  #     - "84:84"
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - india-post-network
+
+  clientapi: 
+    container_name: rate-api 
+    image: registry.gitlab.com/liberintech/india-post/rate-api:0.1.0
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - india-post-network
+      
+networks:
+  india-post-network:
+    driver: bridge
+    external: true
+
+volumes: 
+  db-data:
+    driver: local

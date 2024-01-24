@@ -1,0 +1,308 @@
+<!-- header -->
+<th:block th:include="_header"></th:block>
+<!-- /header -->
+
+<div class="fixed-header container-sm-footer create-label">
+
+<div class="site-wrapper market-US">
+<div class="container" >
+		<h1 class="text-center spacer-bottom-xl spacer-top-xl" th:text="#{parcel.dispatch.status}">Parcel Dispatch Status</h1>
+
+
+		  <!-- Input the track id -->
+        
+            <form id="dispatchStatusForm" autocomplete="off"  role="form" >
+            <div class="col-md-12">
+            <div class="form-group col-md-4 col-md-offset-2">
+                    <label> <span th:text=#{enter.track.id}>Enter/Scan Track ID </span> <span>*</span></label>
+                    <input id="trackId" name="trackId" type="text" th:maxlength="11" class="form-control">
+                </div>
+                <div class="form-group col-md-4 spacer-bottom-xl dropdown show">
+                  <label> <span for="role" th:text="#{dispatch.status}">Dispatch Status</span> <span>*</span></label>
+					<select class="form-control name" name="dispatchStatus" id="dispatchStatus">
+							 			  <option value="">select</option>
+								 		<option th:each="dispatchStatus : ${T(com.constants.DispatchStatus).values()}" th:value="${dispatchStatus.dispatchStatus}" th:id="${dispatchStatus}"
+										th:text="${dispatchStatus.dispatchStatus}">
+										</option>
+									</select>
+										<div id="TypeErrorContainer" class="errorForm">
+                </div>
+                </div>
+                </div>
+                <div class="col-md-12">
+                <div class="form-group col-md-4 col-md-offset-2">
+						<label> <span for="dob" th:text="#{date}">dob</span></label>
+						<input id="dateOfBirth" name="dateOfBirth" type="date" class="form-control">
+						  <div id="dateErrorContainer" class="errorForm errorHeight text-left">
+					<p th:text="#{not.valid.date}">Please select a valid date. Date does not exist!!</p>
+		      	</div> 
+					</div>
+                 
+        
+               
+               <div class="form-group col-md-4">
+               <label> <span for="dob" th:text="#{time}">dob</span></label>
+                <div class='input-group date' id='datetimepicker3'>
+                    <input id="time" name="time" type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                    </span>
+                    
+                    
+              </div>
+     
+			  </div>
+       
+               
+             <div class="form-group col-md-7  col-md-offset-5 spacer-top-md">
+             <button id="updateButton" type="button"
+             class="btn btn-primary btn-lg" th:text=#{update.status}>Update</button>
+             </div>
+             </div>
+             
+             </form>
+        
+        <!-- Input the track id end-->
+
+
+</div>
+</div>
+
+</div>
+
+<!-- Track Id not present Error Modal -->
+<div id="trackIdNotPresentModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+                      th:text="#{trackid.not.present.error}">Sorry this bag does
+					not exist. Please try again with correct Track ID.</span>
+          
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+                             id="noTrackFound" data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Bag Id not present Error Modal -->
+
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+				<span class="h3 col-xs-12 text-center"
+                      th:text="#{error.string}">Sorry, an error has occurred!</span>
+       
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary"
+                              id="errorButton" data-dismiss="modal" th:text="#{try.again}">Try Again</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Error Modal -->
+
+<!-- Success Modal -->
+<div id="successModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+            <span class="h3 col-xs-12 text-center" th:text="#{dispatch.status.updated}">Dispatch Status Updated</span>
+           </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary" id="okButton"
+                              data-dismiss="modal" th:text="#{okay}">okay</button></span>
+                              
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Success Modal -->
+
+<!-- Wrong Destination Modal -->
+<div id="bagWrongDestinationModal" class="modal fade"
+     data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+           		<span class="h3 col-xs-12 text-center"
+                      th:text="#{bag.reached.wrong.destination}">Bag reached wrong destination!!</span>
+             
+            </div>
+            <div class="text-center">
+				<span><button type="button" class="btn btn-primary" id="wrongDestinationError"
+                              data-dismiss="modal" th:text="#{okay}">Okay</button></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //Wrong Destination Modal -->
+
+
+
+<script type="text/javascript">
+
+ var d = new Date();
+ var year = d.getFullYear();
+ var day = ("0" + d.getDate()).slice(-2);
+ var month = ("0" + (d.getMonth() + 1)).slice(-2);
+ var fullTime =year+"-"+month+"-"+day;
+ //$("#dateOfBirth").attr("max",fullTime);
+ 
+ 
+//for validation
+ $("#dispatchStatusForm").validate(
+ 		{
+ 			rules: {
+ 				"trackId": {
+ 					
+ 					required: true,
+ 					nowhitespaceinstartandend: true,
+ 					minlength:11,
+ 					maxlength:11,
+ 					digits : true
+ 					
+ 				},
+ 				 dispatchStatus:"required",
+ 				 
+ 				
+ 				"time":{
+ 					required : true
+ 				}
+ 			}
+ 		});
+ 		
+ $(window).on('load',function(){
+	   
+
+		now = new Date();
+
+		var day = ("0" + now.getDate()).slice(-2);
+		var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+		today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+		
+		  var hours = now.getHours();
+		  var minutes = now.getMinutes();
+		  var ampm = hours >= 12 ? 'PM' : 'AM';
+		  hours = hours % 12;
+		  hours = hours ? hours : 12; // the hour '0' should be '12'
+		  if (hours.toString().length == 1) hours = '0' + hours;
+		  if (minutes.toString().length == 1) minutes = '0' + minutes;
+		  var strTime = hours + ':' + minutes + ' ' + ampm;
+				
+		$("#dateOfBirth").val(today);
+		$("#time").val(strTime);
+		$('#dateErrorContainer').hide();
+
+		
+});
+	
+ $('#dateOfBirth').on('change', function() {
+		var today = new Date();
+
+		var day = ("0" + today.getDate()).slice(-2);
+		var month = ("0" + (today.getMonth() + 1)).slice(-2);
+
+	   var today1 = today.getFullYear()+"-"+(month)+"-"+(day) ;
+
+	    //if date doesnot exist
+		if($('#dateOfBirth').val() > today1)
+			$('#dateErrorContainer').show();
+		else
+			$('#dateErrorContainer').hide();
+
+		});
+
+ 
+     $('#datetimepicker3').datetimepicker({
+    	 
+         format: 'hh:mm A'
+       /*   maxDate: moment(),
+         useCurrent: true */
+     });
+   
+	
+ 				
+ $("#updateButton").click(function() {
+	 
+		if($("#dispatchStatusForm").valid()){ 
+			if($('#dateOfBirth').val() > today){
+				$('#dateErrorContainer').show();
+			}
+			else{
+			 var status = $('#dispatchStatus').val();
+             var trackId = $('#trackId').val();
+             var date =$('#dateOfBirth').val();
+             var time1=$('#time').val();
+             var res=time1.split(" ");
+             var timeValue=res[0];
+             var timeValue1=res[1]
+			    $.ajax({
+		    	type : "get",
+				url : "/po/getDisptachStatusDetails",
+				data : {
+					trackId : trackId,
+					dispatchStatus : status,
+					date :date,
+					timeValue :timeValue,
+					timeValue1:timeValue1
+				},
+				//dataType : "json",
+				cache : false, // To unable request pages to be cached & reinitialize the ajax call on every button click
+				success : function(result) {
+                    if (result == "success") {
+
+    					$("#successModal").modal('show');
+    				} else if (result == "failure") {
+
+    					//$("#trackIdNotPresentModal").modal('show');
+    					$('#errorModal').modal('show');
+    					
+    				}
+    				else if (result == "wrong destination") {
+
+    					$("#bagWrongDestinationModal").modal('show');
+    				}
+		    	},
+				error : function(result) {
+					$('#errorModal').modal('show');
+				}
+			});
+			}
+		}
+		
+	});
+ 
+ $("#okButton").click(function() {
+		window.location.reload();
+		$('#trackId').val("");
+	});
+ 		
+ $("#noTrackFound").click(function() {
+		window.location.reload();
+		$('#trackId').val("");
+	});
+ $("#wrongDestinationError").click(function() {
+		window.location.reload();
+		$('#trackId').val("");
+	});
+ $("#wrongDestinationError").click(function() {
+		window.location.reload();
+		$('#trackId').val("");
+	});
+ 
+ 
+</script>
+
+<th:block th:include="_footer"></th:block>
+</body>
